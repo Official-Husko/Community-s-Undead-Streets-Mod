@@ -31,7 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Biohazard Default.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NativeUI">
@@ -72,9 +73,6 @@
     <Compile Include="Stats.cs" />
     <Compile Include="UpdaterClass.cs" />
     <Compile Include="ZombiePed.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Biohazard Default.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
