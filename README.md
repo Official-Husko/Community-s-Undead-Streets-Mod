@@ -24,6 +24,6 @@ Not sure how to install? Click [here](https://github.com/Stahlhelm-TV/Community-
 
 Known bugs that have been reported.
 	
-[Check](https://github.com/Stahlhelm-TV/bug-reports/issues)
-[Report a Bug or Issue](https://github.com/Stahlhelm-TV/bug-reports/issues/new/choose)
+[Check](https://github.com/Stahlhelm-TV/bug-reports/issues)  
+[Report a Bug or Issue](https://github.com/Stahlhelm-TV/bug-reports/issues/new/choose)  
 	
