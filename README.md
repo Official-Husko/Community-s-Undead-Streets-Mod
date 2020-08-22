@@ -1,11 +1,9 @@
-![alt text](https://i.imgur.com/k5eCLl5_d.webp?maxwidth=640&shape=thumb&fidelity=medium "Undead Streets")
-### Alpha Release v0.1
+![alt text](https://i.imgur.com/HYdOh7x.png?maxwidth=640&shape=thumb&fidelity=medium "Community's Walking Dead Mod")
+### Source out of the Box
 
-## Introduction
+## Read This!
 
-Welcome to Undead Streets, a zombie apocalypse mod for Grand Theft Auto 5. This has been inspired by the brilliant Simple Zombies mod by sollaholla (https://www.gta5-mods.com/scripts/simple-zombies).
-
-Please note that this is an early Alpha release of the mod, and therefore there will undoubtably be bugs and missing features (such as crafting and base building). Please help by posting any problems you encounter either in the comments on the download page or on the forum thread.
+This is the Source unmodified
 
 ## Mod Features
 
