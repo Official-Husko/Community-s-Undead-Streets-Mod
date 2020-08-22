@@ -1,4 +1,4 @@
-![alt text](https://i.imgur.com/k5eCLl5_d.webp?maxwidth=640&shape=thumb&fidelity=medium "Undead Streets")
+![alt text](https://i.imgur.com/HYdOh7x.png?maxwidth=640&shape=thumb&fidelity=medium "Community's Walking Dead Mod")
 ### Alpha Release v0.1
 
 ## Introduction
