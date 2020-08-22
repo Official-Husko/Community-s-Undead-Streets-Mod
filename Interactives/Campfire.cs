@@ -44,7 +44,7 @@ namespace CWDM.Interactives
                     if (Game.IsDisabledControlJustPressed(2, Control.Context) && !CampfireMenu.Visible && !Main.MasterMenuPool.IsAnyMenuOpen())
                     {
                         Ped[] peds = World.GetNearbyPeds(Game.Player.Character.Position, 50f).Where(IsEnemy).ToArray();
-                        if (!peds.Any())
+                        if (peds.Length == 0)
                         {
                             Vector3 val = prop.Position - Game.Player.Character.Position;
                             Game.Player.Character.Heading = val.ToHeading();
@@ -60,7 +60,7 @@ namespace CWDM.Interactives
             }
         }
 
-        public void AddMenuCook(UIMenu menu)
+        public static void AddMenuCook(UIMenu menu)
         {
             Crafting.AddCraftingItemsToMenu(menu, CraftType.Campfire);
             menu.OnItemSelect += (sender, item, index) =>

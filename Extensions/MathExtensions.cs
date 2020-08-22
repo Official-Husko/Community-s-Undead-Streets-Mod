@@ -10,17 +10,13 @@ namespace CWDM.Extensions
         {
             get
             {
-                if (random == null)
-                {
-                    random = new Random();
-                }
-                return random;
+                return random ?? (random = new Random());
             }
         }
 
         private static Random random;
 
-        public static Vector3 RandomDirection(bool zeroZ)
+        public static Vector3 RandomDirection(this bool zeroZ)
         {
             Vector3 direction;
             if (zeroZ)
@@ -45,7 +41,7 @@ namespace CWDM.Extensions
             return CachedRandom.Next(0, 2) == 0;
         }
 
-        public static T GetRandomElementFromList<T>(List<T> list)
+        public static T GetRandomElementFromList<T>(this List<T> list)
         {
             if (list == null)
             {
@@ -55,7 +51,7 @@ namespace CWDM.Extensions
             return list[CachedRandom.Next(list.Count)];
         }
 
-        public static T GetRandomElementFromArray<T>(T[] array)
+        public static T GetRandomElementFromArray<T>(this T[] array)
         {
             if (array == null)
             {
@@ -65,7 +61,7 @@ namespace CWDM.Extensions
             return array[CachedRandom.Next(array.Length)];
         }
 
-        public static int Abs(int value)
+        public static int Abs(this int value)
         {
             if (value >= 0)
             {
@@ -77,7 +73,7 @@ namespace CWDM.Extensions
             }
         }
 
-        public static float Min(float x, float y)
+        public static float Min(this float x, float y)
         {
             if (x <= y)
             {
@@ -89,7 +85,7 @@ namespace CWDM.Extensions
             }
         }
 
-        public static int Min(int x, int y)
+        public static int Min(this int x, int y)
         {
             if (x <= y)
             {
@@ -101,7 +97,7 @@ namespace CWDM.Extensions
             }
         }
 
-        public static int Max(int x, int y)
+        public static int Max(this int x, int y)
         {
             if (x >= y)
             {
@@ -113,7 +109,7 @@ namespace CWDM.Extensions
             }
         }
 
-        public static float Max(float x, float y)
+        public static float Max(this float x, float y)
         {
             if (x >= y)
             {
@@ -125,14 +121,14 @@ namespace CWDM.Extensions
             }
         }
 
-        public static int TrimValue(int value, int min, int max)
+        public static int TrimValue(this int value, int min, int max)
         {
             value = Max(min, value);
             value = Min(max, value);
             return value;
         }
 
-        public static float TrimValue(float value, float min, float max)
+        public static float TrimValue(this float value, float min, float max)
         {
             value = Max(min, value);
             value = Min(max, value);

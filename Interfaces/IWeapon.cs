@@ -16,10 +16,7 @@ namespace CWDM.Interfaces
             set;
         }
 
-        WeaponComponent[] Components
-        {
-            get;
-            set;
-        }
+        WeaponComponent[] GetComponents();
+        void SetComponents(WeaponComponent[] value);
     }
 }

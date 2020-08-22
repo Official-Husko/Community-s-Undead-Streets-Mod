@@ -4,10 +4,7 @@ namespace CWDM.Interfaces
 {
     public interface ICraftable
     {
-        RequiredMaterial[] RequiredMaterials
-        {
-            get;
-            set;
-        }
+        RequiredMaterial[] GetRequiredMaterials();
+        void SetRequiredMaterials(RequiredMaterial[] value);
     }
 }

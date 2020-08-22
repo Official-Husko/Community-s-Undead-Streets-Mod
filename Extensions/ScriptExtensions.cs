@@ -5,7 +5,7 @@ namespace CWDM.Extensions
 {
     public static class ScriptExtensions
     {
-        public static void TerminateScript(string script)
+        public static void TerminateScript(this string script)
         {
             int scriptHash = Game.GenerateHash(script);
             if (Function.Call<bool>((Hash)0xF86AA3C56BA31381, scriptHash))

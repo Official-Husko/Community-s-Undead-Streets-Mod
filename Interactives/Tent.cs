@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using CWDM.Extensions;
 
-
 namespace CWDM.Interactives
 {
     public class Tent : Script
@@ -26,7 +25,7 @@ namespace CWDM.Interactives
                     if (Game.IsDisabledControlJustPressed(2, Control.Context))
                     {
                         Ped[] peds = World.GetNearbyPeds(Game.Player.Character.Position, 50f).Where(IsEnemy).ToArray();
-                        if (!peds.Any())
+                        if (peds.Length == 0)
                         {
                             Vector3 val = prop.Position - Game.Player.Character.Position;
                             Game.Player.Character.Heading = val.ToHeading();
@@ -46,10 +45,7 @@ namespace CWDM.Interactives
                             {
                                 for (int i = 0; i < Population.AnimalPeds.Count; i++)
                                 {
-                                    if (Population.AnimalPeds[i].pedEntity != null)
-                                    {
-                                        Population.AnimalPeds[i].pedEntity.Delete();
-                                    }
+                                    Population.AnimalPeds[i].pedEntity?.Delete();
                                     Population.AnimalPeds.RemoveAt(i);
                                 }
                             }
@@ -57,10 +53,7 @@ namespace CWDM.Interactives
                             {
                                 for (int i = 0; i < Population.ZombiePeds.Count; i++)
                                 {
-                                    if (Population.ZombiePeds[i].pedEntity != null)
-                                    {
-                                        Population.ZombiePeds[i].pedEntity.Delete();
-                                    }
+                                    Population.ZombiePeds[i].pedEntity?.Delete();
                                     Population.ZombiePeds.RemoveAt(i);
                                 }
                             }
@@ -72,10 +65,7 @@ namespace CWDM.Interactives
                                     {
                                         continue;
                                     }
-                                    if (Population.SurvivorPeds[i].pedEntity != null)
-                                    {
-                                        Population.SurvivorPeds[i].pedEntity.Delete();
-                                    }
+                                    Population.SurvivorPeds[i].pedEntity?.Delete();
                                     Population.SurvivorPeds.RemoveAt(i);
                                 }
                             }

@@ -100,7 +100,7 @@ namespace CWDM.Extensions
             return "INVALID";
         }
 
-        public static void StartEffect(ScreenEffect effectName, int duration = 0, bool looped = false)
+        public static void StartEffect(this ScreenEffect effectName, int duration = 0, bool looped = false)
         {
             Function.Call(Hash._START_SCREEN_EFFECT, EffectToString(effectName), duration, looped);
         }
@@ -110,12 +110,12 @@ namespace CWDM.Extensions
             Function.Call(Hash._STOP_ALL_SCREEN_EFFECTS);
         }
 
-        public static void StopEffect(ScreenEffect screenEffect)
+        public static void StopEffect(this ScreenEffect screenEffect)
         {
             Function.Call(Hash._STOP_SCREEN_EFFECT, EffectToString(screenEffect));
         }
 
-        public static bool EffectIsActive(ScreenEffect screenEffect)
+        public static bool EffectIsActive(this ScreenEffect screenEffect)
         {
             return Function.Call<bool>(Hash._GET_SCREEN_EFFECT_IS_ACTIVE, EffectToString(screenEffect));
         }

@@ -15,8 +15,7 @@ namespace CWDM.Extensions
             double x = v2.X - v1.X;
             double y = v2.Y - v1.Y;
             double z = v2.Z - v1.Z;
-            distance = Math.Sqrt((x * x) + (y * y) + (z * z));
-            return distance;
+            return Math.Sqrt((x * x) + (y * y) + (z * z));
         }
 
         public static double DistanceBetween(this Entity p1, Entity p2)
@@ -27,8 +26,7 @@ namespace CWDM.Extensions
             double x = v2.X - v1.X;
             double y = v2.Y - v1.Y;
             double z = v2.Z - v1.Z;
-            distance = Math.Sqrt((x * x) + (y * y) + (z * z));
-            return distance;
+            return Math.Sqrt((x * x) + (y * y) + (z * z));
         }
 
         public static bool HasClearLineOfSight(this Entity entity, Entity target, float visionDistance)

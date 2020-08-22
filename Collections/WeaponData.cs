@@ -19,17 +19,23 @@ namespace CWDM.Collections
             set;
         }
 
-        public WeaponComponent[] Components
+        private WeaponComponent[] components;
+
+        public WeaponComponent[] GetComponents()
         {
-            get;
-            set;
+            return components;
+        }
+
+        public void SetComponents(WeaponComponent[] value)
+        {
+            components = value;
         }
 
         public WeaponData(int ammo, WeaponHash hash, WeaponComponent[] components)
         {
             Ammo = ammo;
             Hash = hash;
-            Components = components;
+            SetComponents(components);
         }
     }
 }

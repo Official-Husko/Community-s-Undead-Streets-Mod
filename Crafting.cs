@@ -48,7 +48,7 @@ namespace CWDM
                 if (craftables[i].GetType() == typeof(InventoryItemCraftable))
                 {
                     InventoryItemCraftable item = (InventoryItemCraftable)craftables[i];
-                    foreach (RequiredMaterial requiredMaterial in item.RequiredMaterials)
+                    foreach (RequiredMaterial requiredMaterial in item.GetRequiredMaterials())
                     {
                         string name = requiredMaterial.Material.Name;
                         int amount = requiredMaterial.RequiredAmount;
@@ -58,7 +58,7 @@ namespace CWDM
                 else if (craftables[i].GetType() == typeof(InventoryItemRestoreCraftable))
                 {
                     InventoryItemRestoreCraftable item = (InventoryItemRestoreCraftable)craftables[i];
-                    foreach (RequiredMaterial requiredMaterial in item.RequiredMaterials)
+                    foreach (RequiredMaterial requiredMaterial in item.GetRequiredMaterials())
                     {
                         string name = requiredMaterial.Material.Name;
                         int amount = requiredMaterial.RequiredAmount;
@@ -68,7 +68,7 @@ namespace CWDM
                 else if (craftables[i].GetType() == typeof(InventoryMaterialCraftable))
                 {
                     InventoryMaterialCraftable item = (InventoryMaterialCraftable)craftables[i];
-                    foreach (RequiredMaterial requiredMaterial in item.RequiredMaterials)
+                    foreach (RequiredMaterial requiredMaterial in item.GetRequiredMaterials())
                     {
                         string name = requiredMaterial.Material.Name;
                         int amount = requiredMaterial.RequiredAmount;
@@ -84,7 +84,7 @@ namespace CWDM
             if (item.GetType() == typeof(InventoryItemCraftable))
             {
                 InventoryItemCraftable check = (InventoryItemCraftable)item;
-                foreach (RequiredMaterial requiredMaterial in check.RequiredMaterials)
+                foreach (RequiredMaterial requiredMaterial in check.GetRequiredMaterials())
                 {
                     if (requiredMaterial.RequiredAmount > PlayerInventory.PlayerInventoryItems.Find(match: a => a.Name == requiredMaterial.Material.Name).Amount)
                     {
@@ -95,7 +95,7 @@ namespace CWDM
             else if (item.GetType() == typeof(InventoryItemRestoreCraftable))
             {
                 InventoryItemRestoreCraftable check = (InventoryItemRestoreCraftable)item;
-                foreach (RequiredMaterial requiredMaterial in check.RequiredMaterials)
+                foreach (RequiredMaterial requiredMaterial in check.GetRequiredMaterials())
                 {
                     if (requiredMaterial.RequiredAmount > PlayerInventory.PlayerInventoryItems.Find(match: a => a.Name == requiredMaterial.Material.Name).Amount)
                     {
@@ -106,7 +106,7 @@ namespace CWDM
             else if (item.GetType() == typeof(InventoryMaterialCraftable))
             {
                 InventoryMaterialCraftable check = (InventoryMaterialCraftable)item;
-                foreach (RequiredMaterial requiredMaterial in check.RequiredMaterials)
+                foreach (RequiredMaterial requiredMaterial in check.GetRequiredMaterials())
                 {
                     if (requiredMaterial.RequiredAmount > PlayerInventory.PlayerInventoryMaterials.Find(match: a => a.Name == requiredMaterial.Material.Name).Amount)
                     {
@@ -143,7 +143,7 @@ namespace CWDM
                     if (item.GetType() == typeof(InventoryItemCraftable))
                     {
                         InventoryItemCraftable check = (InventoryItemCraftable)item;
-                        foreach (RequiredMaterial requiredMaterial in check.RequiredMaterials)
+                        foreach (RequiredMaterial requiredMaterial in check.GetRequiredMaterials())
                         {
                             PlayerInventory.UpdateMaterialsInventory(requiredMaterial.Material, requiredMaterial.RequiredAmount, InventoryUpdate.Decrease);
                         }
@@ -151,7 +151,7 @@ namespace CWDM
                     else if (item.GetType() == typeof(InventoryItemRestoreCraftable))
                     {
                         InventoryItemRestoreCraftable check = (InventoryItemRestoreCraftable)item;
-                        foreach (RequiredMaterial requiredMaterial in check.RequiredMaterials)
+                        foreach (RequiredMaterial requiredMaterial in check.GetRequiredMaterials())
                         {
                             PlayerInventory.UpdateMaterialsInventory(requiredMaterial.Material, requiredMaterial.RequiredAmount, InventoryUpdate.Decrease);
                         }
@@ -159,7 +159,7 @@ namespace CWDM
                     else if (item.GetType() == typeof(InventoryMaterialCraftable))
                     {
                         InventoryMaterialCraftable check = (InventoryMaterialCraftable)item;
-                        foreach (RequiredMaterial requiredMaterial in check.RequiredMaterials)
+                        foreach (RequiredMaterial requiredMaterial in check.GetRequiredMaterials())
                         {
                             PlayerInventory.UpdateMaterialsInventory(requiredMaterial.Material, requiredMaterial.RequiredAmount, InventoryUpdate.Decrease);
                         }

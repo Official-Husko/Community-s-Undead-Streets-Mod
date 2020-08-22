@@ -33,7 +33,7 @@ namespace CWDM.Extensions
 
         public static void Recruit(this Ped ped, Ped leader)
         {
-            if (!(leader == null))
+            if (leader != null)
             {
                 int groupLimit = Character.MaxPlayerGroupSize;
                 if (leader == Game.Player.Character && leader.CurrentPedGroup.Count() < groupLimit)

@@ -10,8 +10,7 @@ namespace CWDM.Extensions
         public static VehicleDoor GetRandomDoor(this Vehicle vehicle)
         {
             VehicleDoor[] vehicleDoors = vehicle.GetDoors();
-            VehicleDoor door = MathExtensions.GetRandomElementFromArray(vehicleDoors);
-            return door;
+            return vehicleDoors.GetRandomElementFromArray();
         }
 
         public static VehicleWindow GetRandomWindow(this Vehicle vehicle)
@@ -20,7 +19,7 @@ namespace CWDM.Extensions
             vehicleWindows = (from v in vehicleWindows
                               where Function.Call<bool>(Hash.IS_VEHICLE_WINDOW_INTACT, vehicle.Handle, (int)v)
                               select v).ToArray();
-            VehicleWindow window = MathExtensions.GetRandomElementFromArray(vehicleWindows);
+            VehicleWindow window = vehicleWindows.GetRandomElementFromArray();
             return window;
         }
 

@@ -13,17 +13,23 @@ namespace CWDM.Inventory
             set;
         }
 
-        public RequiredMaterial[] RequiredMaterials
+        private RequiredMaterial[] requiredMaterials;
+
+        public RequiredMaterial[] GetRequiredMaterials()
         {
-            get;
-            set;
+            return requiredMaterials;
+        }
+
+        public void SetRequiredMaterials(RequiredMaterial[] value)
+        {
+            requiredMaterials = value;
         }
 
         public InventoryItemRestoreCraftable(string name, string description, int amount, int maxAmount, LootType[] lootTypes, RestoreType restoreType, float restore, CraftType craftType, RequiredMaterial[] requiredMaterials)
             : base(name, description, amount, maxAmount, lootTypes, restoreType, restore)
         {
             CraftType = craftType;
-            RequiredMaterials = requiredMaterials;
+            SetRequiredMaterials(requiredMaterials);
         }
     }
 }

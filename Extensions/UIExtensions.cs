@@ -15,7 +15,7 @@ namespace CWDM.Extensions
             Function.Call(Hash.CLEAR_ALL_HELP_MESSAGES);
         }
 
-        public static void DisplayHelpTextThisFrame(string helpText)
+        public static void DisplayHelpTextThisFrame(this string helpText)
         {
             if (!Main.MasterMenuPool.IsAnyMenuOpen())
             {

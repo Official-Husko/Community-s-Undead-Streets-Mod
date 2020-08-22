@@ -100,7 +100,7 @@ namespace CWDM.Wrappers
                     Vector3 val = target.Position - pedEntity.Position;
                     pedEntity.Heading = val.ToHeading();
                     Task.Delay(100);
-                    if (target.IsDead == true)
+                    if (target.IsDead)
                     {
                         if (!Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, pedEntity, "amb@world_human_bum_wash@male@high@idle_a", "idle_b", 3))
                         {
