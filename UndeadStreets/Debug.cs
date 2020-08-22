@@ -3,7 +3,7 @@ using System.IO;
 
 namespace CWDM
 {
-	public class Debug
+	public static class Debug
 	{
 		public static void Log(String message)
 		{

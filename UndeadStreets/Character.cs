@@ -47,13 +47,13 @@ namespace CWDM
         public static int lowEnergyTicksBetweenUpdates = 100;
         public static int lowEnergyTicksSinceLastUpdate;
 
-        public void Update()
+        public static void Update()
         {
             Game.Player.WantedLevel = 0;
             StatsUpdate();
         }
 
-        public void ResetCharacter()
+        public static void ResetCharacter()
         {
             Game.Player.Money = 0;
             Game.Player.Character.Weapons.RemoveAll();
@@ -99,7 +99,7 @@ namespace CWDM
             playerVehicle = null;
         }
 
-        public void StatsUpdate()
+        public static void StatsUpdate()
         {
             hungerTicksSinceLastUpdate++;
             if (hungerTicksSinceLastUpdate >= hungerTicksBetweenUpdates)

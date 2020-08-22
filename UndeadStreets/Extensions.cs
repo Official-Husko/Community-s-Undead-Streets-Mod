@@ -7,7 +7,7 @@ namespace CWDM
 {
     public static class Extensions
     {
-        public static Vehicle SpawnVehicle(Model model, Vector3 position, float heading = 0.0f)
+        public static Vehicle SpawnVehicle(this Model model, Vector3 position, float heading = 0.0f)
         {
             if (!model.IsVehicle || !model.Request(1000))
             {
@@ -22,7 +22,7 @@ namespace CWDM
 
         public static void Recruit(this Ped ped, Ped leader)
         {
-            if (!(leader == null))
+            if (leader != null)
             {
                 PedGroup group = leader.CurrentPedGroup;
                 ped.LeaveGroup();
@@ -53,40 +53,34 @@ namespace CWDM
             }
         }
 
-        public static double DistanceBetween(Entity p1, Entity p2)
+        public static double DistanceBetween(this Entity p1, Entity p2)
         {
             Vector3 v1 = p1.Position;
             Vector3 v2 = p2.Position;
-            double distance;
             double x = v2.X - v1.X;
             double y = v2.Y - v1.Y;
             double z = v2.Z - v1.Z;
-            distance = Math.Sqrt((x * x) + (y * y) + (z * z));
-            return distance;
+            return Math.Sqrt((x * x) + (y * y) + (z * z));
         }
 
-        public static double DistanceBetweenV3(Vector3 p1, Vector3 p2)
+        public static double DistanceBetweenV3(this Vector3 p1, Vector3 p2)
         {
             Vector3 v1 = p1;
             Vector3 v2 = p2;
-            double distance;
             double x = v2.X - v1.X;
             double y = v2.Y - v1.Y;
             double z = v2.Z - v1.Z;
-            distance = Math.Sqrt((x * x) + (y * y) + (z * z));
-            return distance;
+            return Math.Sqrt((x * x) + (y * y) + (z * z));
         }
 
-        public static double DistanceTo(Entity p1, Vector3 p2)
+        public static double DistanceTo(this Entity p1, Vector3 p2)
         {
             Vector3 v1 = p1.Position;
             Vector3 v2 = p2;
-            double distance;
             double x = v2.X - v1.X;
             double y = v2.Y - v1.Y;
             double z = v2.Z - v1.Z;
-            distance = Math.Sqrt((x * x) + (y * y) + (z * z));
-            return distance;
+            return Math.Sqrt((x * x) + (y * y) + (z * z));
         }
 
         public static bool IsOnScreen(this Vector3 vector3)
@@ -117,7 +111,7 @@ namespace CWDM
             Function.Call(Hash.CLEAR_ALL_HELP_MESSAGES);
         }
 
-        public static void DisplayHelpTextThisFrame(string helpText)
+        public static void DisplayHelpTextThisFrame(this string helpText)
         {
             Function.Call(Hash._SET_TEXT_COMPONENT_FORMAT, "CELL_EMAIL_BCON");
             for (int i = 0; i < helpText.Length; i += 99)

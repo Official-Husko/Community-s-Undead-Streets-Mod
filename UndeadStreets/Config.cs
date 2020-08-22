@@ -193,7 +193,7 @@ namespace CWDM
                 Character.energyDecrease = Settings.GetValue("player", "energy_rate", 0.0002f);
                 Settings.Save();
             }
-            if (Population.customCityVehicles == true)
+            if (Population.customCityVehicles)
             {
                 try
                 {
@@ -204,7 +204,7 @@ namespace CWDM
                     Debug.Log(x.ToString());
                 }
             }
-            if (Population.customCountryVehicles == true)
+            if (Population.customCountryVehicles)
             {
                 try
                 {
@@ -215,7 +215,7 @@ namespace CWDM
                     Debug.Log(x.ToString());
                 }
             }
-            if (Population.customZombies == true)
+            if (Population.customZombies)
             {
                 try
                 {
@@ -226,7 +226,7 @@ namespace CWDM
                     Debug.Log(x.ToString());
                 }
             }
-            if (Population.customSurvivors == true)
+            if (Population.customSurvivors)
             {
                 try
                 {
@@ -237,7 +237,7 @@ namespace CWDM
                     Debug.Log(x.ToString());
                 }
             }
-            if (Population.customCountryAnimals == true)
+            if (Population.customCountryAnimals)
             {
                 try
                 {
@@ -248,7 +248,7 @@ namespace CWDM
                     Debug.Log(x.ToString());
                 }
             }
-            if (Population.customCityAnimals == true)
+            if (Population.customCityAnimals)
             {
                 try
                 {

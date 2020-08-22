@@ -86,7 +86,7 @@ namespace CWDM
             }*/
         }
 
-        public void Custom_Respawn()
+        public static void Custom_Respawn()
         {
             Function.Call(Hash.TERMINATE_ALL_SCRIPTS_WITH_THIS_NAME, "respawn_controller");
             Function.Call(Hash.IGNORE_NEXT_RESTART, true);
@@ -102,7 +102,7 @@ namespace CWDM
                 Game.TimeScale = 1f;
                 Function.Call(Hash._STOP_ALL_SCREEN_EFFECTS);
                 Function.Call(Hash.NETWORK_REQUEST_CONTROL_OF_ENTITY, Game.Player.Character.Handle);
-                float heading = 266;
+                const float heading = 266;
                 Function.Call(Hash.NETWORK_RESURRECT_LOCAL_PLAYER, respawnLoc.X, respawnLoc.Y, respawnLoc.Z, heading, false, false);
                 Wait(2000);
                 Character.ResetCharacter();

@@ -5,7 +5,6 @@ using GTA;
 using GTA.Native;
 using NativeUI;
 
-
 namespace CWDM
 {
     public enum FoodType
@@ -88,21 +87,23 @@ namespace CWDM
 
     public interface ICraftable
     {
-        MaterialCraftable[] RequiredMaterials
-        {
-            get;
-            set;
-        }
+        MaterialCraftable[] GetRequiredMaterials();
+        void SetRequiredMaterials(MaterialCraftable[] value);
     }
 
     [Serializable]
     public class InventoryCraftableMaterial : InventoryItem, ICraftable
     {
+        private MaterialCraftable[] requiredMaterials;
 
-        public MaterialCraftable[] RequiredMaterials
+        public MaterialCraftable[] GetRequiredMaterials()
         {
-            get;
-            set;
+            return requiredMaterials;
+        }
+
+        public void SetRequiredMaterials(MaterialCraftable[] value)
+        {
+            requiredMaterials = value;
         }
 
         public InventoryCraftableMaterial(string name, string description, int amount, int maxAmount, MaterialCraftable[] requiredMaterials)
@@ -112,7 +113,7 @@ namespace CWDM
             Description = description;
             Amount = amount;
             MaxAmount = maxAmount;
-            RequiredMaterials = requiredMaterials;
+            SetRequiredMaterials(requiredMaterials);
         }
     }
 
@@ -132,16 +133,22 @@ namespace CWDM
     [Serializable]
     public class InventoryCraftableFoodItem : InventoryFoodItem, IFood, ICraftable
     {
-        public MaterialCraftable[] RequiredMaterials
+        private MaterialCraftable[] requiredMaterials;
+
+        public MaterialCraftable[] GetRequiredMaterials()
         {
-            get;
-            set;
+            return requiredMaterials;
+        }
+
+        public void SetRequiredMaterials(MaterialCraftable[] value)
+        {
+            requiredMaterials = value;
         }
 
         public InventoryCraftableFoodItem(string name, string description, int amount, int maxAmount, FoodType foodType, float restore, MaterialCraftable[] requiredMaterials)
             : base(name, description, amount, maxAmount, foodType, restore)
         {
-            RequiredMaterials = requiredMaterials;
+            SetRequiredMaterials(requiredMaterials);
         }
     }
 
@@ -193,7 +200,7 @@ namespace CWDM
     [Serializable]
     public class Inventory : Script
     {
-        private List<Ped> lootedPeds = new List<Ped>();
+        private readonly List<Ped> lootedPeds = new List<Ped>();
         public static List<InventoryItem> playerItemInventory = new List<InventoryItem>();
         public static InventoryFoodItem bottleWater = new InventoryFoodItem("Water Bottle", "A bottle of water", 0, 10, FoodType.Drink, 0.2f);
         public static InventoryFoodItem bottleSoda = new InventoryFoodItem("Soda Bottle", "A bottle of soda", 0, 10, FoodType.Drink, 0.15f);
@@ -245,7 +252,7 @@ namespace CWDM
             Main.MasterMenuPool.RefreshIndex();
             KeyDown += (o, e) =>
             {
-                if (e.KeyCode == Main.InventoryKey && Main.ModActive == true && !Main.MasterMenuPool.IsAnyMenuOpen())
+                if (e.KeyCode == Main.InventoryKey && Main.ModActive && !Main.MasterMenuPool.IsAnyMenuOpen())
                 {
                     inventoryMenu.Visible = !inventoryMenu.Visible;
                 }
@@ -290,16 +297,9 @@ namespace CWDM
                             craftCampfireMenu.Visible = !craftCampfireMenu.Visible;
                         }
                     }
-                    if (craftCampfireMenu.Visible)
-                    {
-                        Game.Player.CanControlCharacter = false;
-                    }
-                    else
-                    {
-                        Game.Player.CanControlCharacter = true;
-                    }
+                    Game.Player.CanControlCharacter = !craftCampfireMenu.Visible;
                     Ped ped = World.GetClosest(Game.Player.Character.Position, World.GetNearbyPeds(Game.Player.Character, 1.5f));
-                    if (!(ped == null) && ped.IsDead && ped.IsHuman && !lootedPeds.Contains(ped))
+                    if (ped?.IsDead == true && ped.IsHuman && !lootedPeds.Contains(ped))
                     {
                         Extensions.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to search corpse");
                         Game.DisableControlThisFrame(2, GTA.Control.Context);
@@ -365,7 +365,7 @@ namespace CWDM
                             }
                         }
                     }
-                    else if (!(ped == null) && ped.IsDead && !ped.IsHuman && !lootedPeds.Contains(ped))
+                    else if (ped?.IsDead == true && !ped.IsHuman && !lootedPeds.Contains(ped))
                     {
                         Extensions.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to harvest meat from animal corpse");
                         Game.DisableControlThisFrame(2, GTA.Control.Context);
@@ -389,7 +389,6 @@ namespace CWDM
                                     UI.Notify("You have harvested ~b~Raw Meat ~g~(" + playerMaterialInventory.Find(material => material.Name == "Raw Meat").Amount + "/" + playerMaterialInventory.Find(material => material.Name == "Raw Meat").MaxAmount + ")", true);
                                     lootedPeds.Add(ped);
                                 }
-
                             }
                             else
                             {
@@ -405,7 +404,7 @@ namespace CWDM
             }
         }
 
-        public void AddCraftingCooking(UIMenu menu)
+        public static void AddCraftingCooking(UIMenu menu)
         {
             UIMenuItem cookRawMeat = new UIMenuItem("Cook Raw Meat", "Cook Raw Meat so it can be eaten");
             cookRawMeat.SetRightLabel("(" + playerMaterialInventory.Find(material => material.Name == "Raw Meat").Amount + ")");
@@ -438,7 +437,7 @@ namespace CWDM
             };
         }
 
-        public void AddItemsSubMenu(UIMenu menu)
+        public static void AddItemsSubMenu(UIMenu menu)
         {
             itemsSubMenu = Main.MasterMenuPool.AddSubMenu(menu, "Items", "See what useful items you are carrying");
             var banner = new UIResRectangle
@@ -467,7 +466,7 @@ namespace CWDM
                                 {
                                     Character.currentHungerLevel = 1.0f;
                                 }
-                                playerItemInventory[index].Amount -= 1;
+                                playerItemInventory[index].Amount--;
                                 item.SetRightLabel("(" + playerItemInventory[index].Amount + "/" + playerItemInventory[index].MaxAmount + ")");
                                 UI.Notify("Used ~b~" + item.Text + "~w~ to replenish Hunger levels.");
                             }
@@ -485,7 +484,7 @@ namespace CWDM
                                 {
                                     Character.currentThirstLevel = 1.0f;
                                 }
-                                playerItemInventory[index].Amount -= 1;
+                                playerItemInventory[index].Amount--;
                                 item.SetRightLabel("(" + playerItemInventory[index].Amount + "/" + playerItemInventory[index].MaxAmount + ")");
                                 UI.Notify("Used ~b~" + item.Text + "~w~ to replenish Thirst levels.");
                             }
@@ -507,7 +506,7 @@ namespace CWDM
                                 {
                                     Character.currentHungerLevel = 1.0f;
                                 }
-                                playerItemInventory[index].Amount -= 1;
+                                playerItemInventory[index].Amount--;
                                 item.SetRightLabel("(" + playerItemInventory[index].Amount + "/" + playerItemInventory[index].MaxAmount + ")");
                                 UI.Notify("Used ~b~" + item.Text + "~w~ to replenish Hunger levels.");
                             }
@@ -525,7 +524,7 @@ namespace CWDM
                                 {
                                     Character.currentThirstLevel = 1.0f;
                                 }
-                                playerItemInventory[index].Amount -= 1;
+                                playerItemInventory[index].Amount--;
                                 item.SetRightLabel("(" + playerItemInventory[index].Amount + "/" + playerItemInventory[index].MaxAmount + ")");
                                 UI.Notify("Used ~b~" + item.Text + "~w~ to replenish Thirst levels.");
                             }
@@ -543,7 +542,7 @@ namespace CWDM
             };
         }
 
-        public void AddMaterialsSubMenu(UIMenu menu)
+        public static void AddMaterialsSubMenu(UIMenu menu)
         {
             materialsSubMenu = Main.MasterMenuPool.AddSubMenu(menu, "Materials", "See what materials that can be used for crafting you are carrying");
             var banner = new UIResRectangle

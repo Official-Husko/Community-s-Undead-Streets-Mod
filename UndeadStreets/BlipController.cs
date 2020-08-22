@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using GTA;
 using GTA.Native;
 
-
 namespace CWDM
 {
     public class BlipController : Script
@@ -22,7 +21,7 @@ namespace CWDM
             }
         }
 
-        public void PersonalVehicleBlip()
+        public static void PersonalVehicleBlip()
         {
             if (Character.playerVehicle != null)
             {
@@ -41,7 +40,7 @@ namespace CWDM
                     }
                 }
             }
-            if (Character.playerVehicle != null && Character.playerVehicle.Health == 0)
+            if (Character.playerVehicle?.Health == 0)
             {
                 Blip blip = Character.playerVehicle.CurrentBlip;
                 blip.Remove();
@@ -49,7 +48,7 @@ namespace CWDM
             }
         }
 
-        public void RemoveAllUnrequiredBlips()
+        public static void RemoveAllUnrequiredBlips()
         {
             Function.Call(Hash.SET_THIS_SCRIPT_CAN_REMOVE_BLIPS_CREATED_BY_ANY_SCRIPT, true);
             foreach (var blip in GetAllBlips())
