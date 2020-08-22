@@ -7,9 +7,9 @@ namespace CWDM
 {
     public class ModMenu : Script
     {
-        private UIMenu mainMenu;
+        private readonly UIMenu mainMenu;
 
-        public void AddMenuSaveInventory(UIMenu menu)
+        public static void AddMenuSaveInventory(UIMenu menu)
         {
             var newitem = new UIMenuItem("Save Inventory", "Save your current inventory");
             menu.AddItem(newitem);
@@ -22,7 +22,7 @@ namespace CWDM
             };
         }
 
-        public void AddMenuLoadInventory(UIMenu menu)
+        public static void AddMenuLoadInventory(UIMenu menu)
         {
             var newitem = new UIMenuItem("Load Inventory", "Load saved inventory (This will wipe your current inventory)");
             menu.AddItem(newitem);
@@ -35,7 +35,7 @@ namespace CWDM
             };
         }
 
-        public void AddMenuRegisterVehicle(UIMenu menu)
+        public static void AddMenuRegisterVehicle(UIMenu menu)
         {
             var newitem = new UIMenuItem("Register Vehicle", "Set current vehicle as Personal Vehicle");
             menu.AddItem(newitem);
@@ -48,7 +48,7 @@ namespace CWDM
             };
         }
 
-        public void AddMenuSaveWeapons(UIMenu menu)
+        public static void AddMenuSaveWeapons(UIMenu menu)
         {
             var newitem = new UIMenuItem("Save Weapons", "Save your current Weapons and Ammo");
             menu.AddItem(newitem);
@@ -61,7 +61,7 @@ namespace CWDM
             };
         }
 
-        public void AddMenuLoadWeapons(UIMenu menu)
+        public static void AddMenuLoadWeapons(UIMenu menu)
         {
             var newitem = new UIMenuItem("Load Weapons", "Load saved Weapons and Ammo (This will wipe your current Weapons and Ammo)");
             menu.AddItem(newitem);
@@ -74,7 +74,7 @@ namespace CWDM
             };
         }
 
-        public void AddMenuSaveVehicle(UIMenu menu)
+        public static void AddMenuSaveVehicle(UIMenu menu)
         {
             var newitem = new UIMenuItem("Save Vehicle", "Save your current Personal Vehicle");
             menu.AddItem(newitem);
@@ -87,7 +87,7 @@ namespace CWDM
             };
         }
 
-        public void AddMenuLoadVehicle(UIMenu menu)
+        public static void AddMenuLoadVehicle(UIMenu menu)
         {
             var newitem = new UIMenuItem("Load Vehicle", "Load saved Personal Vehicle (This will wipe your current Personal Vehicle)");
             menu.AddItem(newitem);
@@ -100,7 +100,7 @@ namespace CWDM
             };
         }
 
-        public void AddMenuSaveGroup(UIMenu menu)
+        public static void AddMenuSaveGroup(UIMenu menu)
         {
             var newitem = new UIMenuItem("Save Group", "Save your current group");
             menu.AddItem(newitem);
@@ -113,7 +113,7 @@ namespace CWDM
             };
         }
 
-        public void AddMenuLoadGroup(UIMenu menu)
+        public static void AddMenuLoadGroup(UIMenu menu)
         {
             var newitem = new UIMenuItem("Load Group", "Load saved group (This will wipe your current group)");
             menu.AddItem(newitem);
@@ -148,7 +148,7 @@ namespace CWDM
             Tick += OnTick;
             KeyDown += (o, e) =>
             {
-                if (e.KeyCode == Main.MenuKey && Main.ModActive == true && !Main.MasterMenuPool.IsAnyMenuOpen())
+                if (e.KeyCode == Main.MenuKey && Main.ModActive && !Main.MasterMenuPool.IsAnyMenuOpen())
                 {
                     mainMenu.Visible = !mainMenu.Visible;
                 }

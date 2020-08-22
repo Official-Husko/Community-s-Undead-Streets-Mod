@@ -163,7 +163,7 @@ namespace CWDM
         }
     }
 
-    public class PlayerVehicle
+    public static class PlayerVehicle
     {
         public static VehicleCollection PlayerVehicleCollection = new VehicleCollection();
 
@@ -176,7 +176,7 @@ namespace CWDM
         public static void LoadVehicleFromVehicleData(VehicleData vehicleData)
         {
             Model model = new Model(vehicleData.Hash);
-            Vehicle vehicle = Extensions.SpawnVehicle(model, vehicleData.Position, vehicleData.Heading);
+            Vehicle vehicle = model.SpawnVehicle(vehicleData.Position, vehicleData.Heading);
             if (vehicle != null)
             {
                 vehicle.Rotation = vehicleData.Rotation;

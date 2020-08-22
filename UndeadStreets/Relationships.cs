@@ -2,7 +2,7 @@ using GTA;
 
 namespace CWDM
 {
-    public class Relationships
+    public static class Relationships
     {
         public static int PlayerGroup;
         public static int FriendlyGroup;

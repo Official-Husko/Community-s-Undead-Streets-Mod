@@ -9,7 +9,7 @@ namespace CWDM
     {
         public Ped pedEntity;
         public Ped target;
-        public bool isRunner = false;
+        public bool isRunner;
         public bool newSearch = true;
 
         public ZombiePed(Ped pedEntity)
@@ -24,11 +24,11 @@ namespace CWDM
 
         public override void Update()
         {
-            if (pedEntity.IsOnFire == true)
+            if (pedEntity.IsOnFire)
             {
                 pedEntity.Kill();
             }
-            if (pedEntity.IsAlive != true || Extensions.DistanceBetween(pedEntity, Game.Player.Character) > 100)
+            if (!pedEntity.IsAlive || pedEntity.DistanceBetween(Game.Player.Character) > 100)
             {
                 if (pedEntity.CurrentBlip.Exists())
                 {
@@ -51,7 +51,7 @@ namespace CWDM
             {
                 Function.Call(Hash.STOP_CURRENT_PLAYING_AMBIENT_SPEECH, pedEntity.Handle);
             }
-            if (isRunner == true)
+            if (isRunner)
             {
                 if (!Function.Call<bool>(Hash.HAS_ANIM_SET_LOADED, "move_m@injured"))
                 {
@@ -70,7 +70,7 @@ namespace CWDM
             if (target == null)
             {
                 target = FindTarget();
-                if (target == null && newSearch == true)
+                if (target == null && newSearch)
                 {
                     pedEntity.Task.WanderAround();
                     newSearch = false;
@@ -79,21 +79,21 @@ namespace CWDM
             }
             else
             {
-                if (target.IsAlive != true || Extensions.DistanceBetween(pedEntity, target) >= 80 || target.RelationshipGroup == Relationships.ZombieGroup)
+                if (!target.IsAlive || pedEntity.DistanceBetween(target) >= 80 || target.RelationshipGroup == Relationships.ZombieGroup)
                 {
                     target = null;
                     newSearch = true;
                     target = FindTarget();
-                    if (target == null && newSearch == true)
+                    if (target == null && newSearch)
                     {
                         pedEntity.Task.WanderAround();
                         newSearch = false;
                         return;
                     }
                 }
-                if (target != null && (Extensions.DistanceBetween(pedEntity, target) <= 1.2) && !target.IsInVehicle())
+                if (target != null && (pedEntity.DistanceBetween(target) <= 1.2) && !target.IsInVehicle())
                 {
-                    if (target.IsDead == true)
+                    if (target.IsDead)
                     {
                         if (!Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, pedEntity, "amb@world_human_bum_wash@male@high@idle_a", "idle_b", 3))
                         {
@@ -130,7 +130,7 @@ namespace CWDM
                                 target = null;
                                 newSearch = true;
                                 target = FindTarget();
-                                if (target == null && newSearch == true)
+                                if (target == null && newSearch)
                                 {
                                     pedEntity.Task.WanderAround();
                                     newSearch = false;
@@ -151,7 +151,7 @@ namespace CWDM
                 }
                 else
                 {
-                    if (isRunner == true)
+                    if (isRunner)
                     {
                         if (!Function.Call<bool>(Hash.HAS_ANIM_SET_LOADED, "move_m@injured"))
                         {
@@ -200,7 +200,7 @@ namespace CWDM
             Ped[] targets = World.GetNearbyPeds(pedEntity.Position, 50f);
             foreach (Ped ped in targets)
             {
-                if (ped != null && ped.RelationshipGroup != Relationships.ZombieGroup && ped.IsAlive == true && ped.IsHuman == true && (pedEntity.HasClearLineOfSight(ped, 35f) || CanHearPed(pedEntity, ped)))
+                if (ped != null && ped.RelationshipGroup != Relationships.ZombieGroup && ped.IsAlive && ped.IsHuman && (pedEntity.HasClearLineOfSight(ped, 35f) || CanHearPed(pedEntity, ped)))
                 {
                     return ped;
                 }

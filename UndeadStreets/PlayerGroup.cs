@@ -24,11 +24,8 @@ namespace CWDM
             set;
         }
 
-        WeaponComponent[] Components
-        {
-            get;
-            set;
-        }
+        WeaponComponent[] GetComponents();
+        void SetComponents(WeaponComponent[] value);
     }
 
     [Serializable]
@@ -46,17 +43,23 @@ namespace CWDM
             set;
         }
 
-        public WeaponComponent[] Components
+        private WeaponComponent[] components;
+
+        public WeaponComponent[] GetComponents()
         {
-            get;
-            set;
+            return components;
+        }
+
+        public void SetComponents(WeaponComponent[] value)
+        {
+            components = value;
         }
 
         public Weapon(int ammo, WeaponHash hash, WeaponComponent[] components)
         {
             Ammo = ammo;
             Hash = hash;
-            Components = components;
+            SetComponents(components);
         }
     }
 
@@ -200,7 +203,7 @@ namespace CWDM
     {
         public static PedCollection PlayerPedCollection = new PedCollection();
         public static List<Weapon> PlayerWeapons = new List<Weapon>();
-        private UIMenu mainMenu;
+        private readonly UIMenu mainMenu;
         private Ped currentGroupPed;
         private PedTasks taskApply;
 
@@ -225,13 +228,10 @@ namespace CWDM
             Ped ped = World.CreatePed(pedData.Hash, pedData.Position);
             SurvivorPed survivorPed = new SurvivorPed(ped);
             Population.survivorList.Add(survivorPed);
-            if (!(ped == null))
+            if (ped != null)
             {
                 ped.Rotation = pedData.Rotation;
-                pedData.Weapons.ForEach(delegate (Weapon w)
-                {
-                    ped.Weapons.Give(w.Hash, w.Ammo, true, true);
-                });
+                pedData.Weapons.ForEach((Weapon w) => ped.Weapons.Give(w.Hash, w.Ammo, true, true));
                 pedData.Handle = ped.Handle;
                 ped.Recruit(Game.Player.Character);
                 SetPedTasks(ped, pedData.Task);
@@ -243,7 +243,6 @@ namespace CWDM
             ped.Task.ClearAll();
             if (task == PedTasks.Follow)
             {
-
             }
             else if (task == PedTasks.Guard)
             {
@@ -283,7 +282,7 @@ namespace CWDM
                                              where Game.Player.Character.Weapons.HasWeapon(hash)
                                              select hash;
             WeaponComponent[] componentHashes = (WeaponComponent[])Enum.GetValues(typeof(WeaponComponent));
-            List<Weapon> weapons = hashes.ToList().ConvertAll(delegate (WeaponHash hash)
+            List<Weapon> weapons = hashes.ToList().ConvertAll((WeaponHash hash) =>
             {
                 GTA.Weapon weapon = Game.Player.Character.Weapons[hash];
                 WeaponComponent[] components = (from h in componentHashes
@@ -296,10 +295,7 @@ namespace CWDM
 
         public static void LoadPlayerWeapons()
         {
-            PlayerWeapons.ForEach(delegate (Weapon w)
-            {
-                Game.Player.Character.Weapons.Give(w.Hash, w.Ammo, true, true);
-            });
+            PlayerWeapons.ForEach((Weapon w) => Game.Player.Character.Weapons.Give(w.Hash, w.Ammo, true, true));
         }
 
         public static void AddPedData(Ped ped)
@@ -310,7 +306,7 @@ namespace CWDM
                                              where ped.Weapons.HasWeapon(hash)
                                              select hash;
             WeaponComponent[] componentHashes = (WeaponComponent[])Enum.GetValues(typeof(WeaponComponent));
-            List<Weapon> weapons = hashes.ToList().ConvertAll(delegate (WeaponHash hash)
+            List<Weapon> weapons = hashes.ToList().ConvertAll((WeaponHash hash) =>
             {
                 GTA.Weapon weapon = ped.Weapons[hash];
                 WeaponComponent[] components = (from h in componentHashes
@@ -409,7 +405,7 @@ namespace CWDM
             if (Main.ModActive)
             {
                 Ped ped = World.GetClosest(Game.Player.Character.Position, World.GetNearbyPeds(Game.Player.Character, 1.5f));
-                if (!(ped == null) && !ped.IsDead && ped.IsHuman && ped.RelationshipGroup == Relationships.FriendlyGroup)
+                if (ped?.IsDead == false && ped.IsHuman && ped.RelationshipGroup == Relationships.FriendlyGroup)
                 {
                     Extensions.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to recruit");
                     Game.DisableControlThisFrame(2, GTA.Control.Context);
@@ -425,7 +421,7 @@ namespace CWDM
                         }
                     }
                 }
-                else if (!(ped == null) && !ped.IsDead && ped.IsHuman && ped.RelationshipGroup == Game.Player.Character.RelationshipGroup)
+                else if (ped?.IsDead == false && ped.IsHuman && ped.RelationshipGroup == Game.Player.Character.RelationshipGroup)
                 {
                     Extensions.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to manage Group");
                     Game.DisableControlThisFrame(2, GTA.Control.Context);

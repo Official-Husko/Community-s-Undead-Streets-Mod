@@ -19,7 +19,6 @@ namespace CWDM
 
         public override void Update()
         {
-
         }
     }
 }

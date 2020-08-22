@@ -9,7 +9,7 @@ namespace CWDM
     public class StartMenu : Script
     {
         private bool runners = false;
-        private UIMenu mainMenu;
+        private readonly UIMenu mainMenu;
 
         public void AddMenuRunners(UIMenu menu)
         {
@@ -20,19 +20,12 @@ namespace CWDM
                 if (item == newitem)
                 {
                     runners = checked_;
-                    if (runners == true)
-                    {
-                        Population.zombieRunners = true;
-                    }
-                    else
-                    {
-                        Population.zombieRunners = false;
-                    }
+                    Population.zombieRunners = runners;
                 }
             };
         }
 
-        public void AddMenuGender(UIMenu menu)
+        public static void AddMenuGender(UIMenu menu)
         {
             var gender = new List<dynamic>
             {
@@ -55,7 +48,6 @@ namespace CWDM
                         Character.playerGender = Gender.Female;
                     }
                 }
-
             };
         }
 
@@ -90,7 +82,7 @@ namespace CWDM
             Tick += OnTick;
             KeyDown += (o, e) =>
             {
-                if (e.KeyCode == Main.MenuKey && Main.ModActive == false && !Main.MasterMenuPool.IsAnyMenuOpen())
+                if (e.KeyCode == Main.MenuKey && !Main.ModActive && !Main.MasterMenuPool.IsAnyMenuOpen())
                 {
                     mainMenu.Visible = !mainMenu.Visible;
                 }

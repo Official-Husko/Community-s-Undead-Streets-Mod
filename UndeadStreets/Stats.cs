@@ -3,15 +3,14 @@ using System.Drawing;
 using GTA;
 using NativeUI;
 
-
 namespace CWDM
 {
     public class Stats : Script
     {
-        private TimerBarPool hudPool;
-        private BarTimerBar hungerBar;
-        private BarTimerBar thirstBar;
-        private BarTimerBar energyBar;
+        private readonly TimerBarPool hudPool;
+        private readonly BarTimerBar hungerBar;
+        private readonly BarTimerBar thirstBar;
+        private readonly BarTimerBar energyBar;
 
         public Stats()
         {

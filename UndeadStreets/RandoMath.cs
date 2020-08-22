@@ -4,26 +4,22 @@ using GTA.Math;
 
 namespace CWDM
 {
-    class RandoMath
+    internal static class RandoMath
     {
-
         public static Random CachedRandom
         {
             get
             {
-                if (random == null)
-                {
-                    random = new Random();
-                }
-                return random;
+                return random ?? (random = new Random());
             }
         }
 
-        static Random random;
+        private static Random random;
 
         public static Vector3 RandomDirection(bool zeroZ)
         {
-            Vector3 theDirection = Vector3.Zero;
+            _ = Vector3.Zero;
+            Vector3 theDirection;
             if (zeroZ)
             {
                 theDirection = Vector3.RandomXY();
@@ -49,23 +45,19 @@ namespace CWDM
 
         public static T GetRandomElementFromList<T>(List<T> theList)
         {
-            if (theList == null) return default(T);
+            if (theList == null) return default;
             return theList[CachedRandom.Next(theList.Count)];
         }
 
         public static T GetRandomElementFromArray<T>(T[] theArray)
         {
-            if (theArray == null) return default(T);
+            if (theArray == null) return default;
             return theArray[CachedRandom.Next(theArray.Length)];
         }
 
         public static int Abs(int value)
         {
-            if (value >= 0) return value;
-            else
-            {
-                return value * -1;
-            }
+            return value >= 0 ? value : value * -1;
         }
 
         public static float Min(float x, float y)

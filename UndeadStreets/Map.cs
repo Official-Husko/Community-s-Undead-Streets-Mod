@@ -3,13 +3,13 @@ using GTA.Native;
 
 namespace CWDM
 {
-	public class Map
+	public class Map //Static will break something in Main.cs!
 	{
 		public static Weather[] weathers = { Weather.Clear, Weather.Clearing, Weather.Clouds, Weather.ExtraSunny,
 											Weather.Foggy, Weather.Neutral, Weather.Overcast, Weather.Raining,
 											Weather.Smog, Weather.ThunderStorm };
 
-		public void Update()
+		public static void Update()
 		{
 			Game.DisableControlThisFrame(85, GTA.Control.VehicleRadioWheel);
 			Game.DisableControlThisFrame(81, GTA.Control.VehicleNextRadio);
@@ -113,14 +113,14 @@ namespace CWDM
 			{
 				foreach (Ped ped in all_ped)
 				{
-					if (ped.IsAlive != true)
+					if (!ped.IsAlive)
 					{
 						if (ped.CurrentBlip.Exists())
 						{
 							ped.CurrentBlip.Remove();
 						}
 					}
-					if (Extensions.DistanceBetween(ped, Game.Player.Character) > (Population.maxSpawnDistance + 30) && ped.RelationshipGroup == Relationships.ZombieGroup)
+					if (ped.DistanceBetween(Game.Player.Character) > (Population.maxSpawnDistance + 30) && ped.RelationshipGroup == Relationships.ZombieGroup)
 					{
 						if (ped.CurrentBlip.Exists())
 						{
@@ -128,7 +128,7 @@ namespace CWDM
 						}
 						ped.Delete();
 					}
-					if (Extensions.DistanceBetween(ped, Game.Player.Character) > 1000 && ped.RelationshipGroup != Relationships.PlayerGroup)
+					if (ped.DistanceBetween(Game.Player.Character) > 1000 && ped.RelationshipGroup != Relationships.PlayerGroup)
 					{
 						if (ped.CurrentBlip.Exists())
 						{
@@ -145,7 +145,7 @@ namespace CWDM
 				{
 					if (vehicle != Character.playerVehicle)
 					{
-						if (Extensions.DistanceBetween(vehicle, Game.Player.Character) > (Population.maxSpawnDistance + 30))
+						if (vehicle.DistanceBetween(Game.Player.Character) > (Population.maxSpawnDistance + 30))
 						{
 							if (vehicle.CurrentBlip.Exists())
 							{
@@ -158,7 +158,7 @@ namespace CWDM
 			}
 		}
 
-		public void Setup()
+		public static void Setup()
 		{
 			Function.Call(Hash.ADD_SCENARIO_BLOCKING_AREA, -10000.0f, -10000.0f, -1000.0f, 10000.0f, 10000.0f, 1000.0f, 0, 1, 1, 1);
 			Function.Call(Hash.CLEAR_AREA, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z, 1000F, false, false, false, false);
