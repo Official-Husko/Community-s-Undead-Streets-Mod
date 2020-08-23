@@ -10,6 +10,8 @@ Visit [Stable][3] Branch for a stable build
 - **Player Configurable**
   - [ ] Custom Vehicle List for the City, Friendlies, Neutral, and foes  
   - [ ] Custom Safe Zones  
+  - [ ] Custom Zombies  
+  - [ ] Custom Survivors  
     
 ## Do not Download and compile this source version!
   
