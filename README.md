@@ -6,9 +6,11 @@ Visit [Experimental][2] Branch for an experimental build
 Visit [Stable][3] Branch for a stable build  
 
 ## Current WIP Features
-
-...
-
+    
+- **Player Configurable**
+  - [ ] Custom Vehicle List for the City, Friendlies, Neutral, and foes  
+  - [ ] Custom Safe Zones  
+    
 ## Do not Download and compile this source version!
   
 In this branch we will edit the source and add new stuff which might not be complete yet or only a simple way which shouldn't be used to play with.  
