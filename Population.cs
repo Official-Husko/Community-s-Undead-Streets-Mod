@@ -325,13 +325,11 @@ namespace CWDM
 
         public void OnTick(object sender, EventArgs e)
         {
-            if (Main.ModActive && Map.MapPrepared && Character.CharacterReset)
-            {
-                PopulateZombies();
-                PopulateVehicles();
-                PopulateAnimals();
-                PopulateSurvivors();
-            }
+            if (!Main.ModActive || !Map.MapPrepared || !Character.CharacterReset) return;
+            PopulateZombies();
+            //PopulateVehicles();
+            //PopulateAnimals();
+            //PopulateSurvivors();
         }
 
         public static bool IsSafeZone(Vector3 position)
@@ -399,168 +397,145 @@ namespace CWDM
 
         public static void PopulateVehicles()
         {
-            if (EnableVehicles)
+            if (!EnableVehicles) return;
+            Vector3 spawnPosition;
+            int zoneMaxVehicles = MaxVehicles;
+            if (EnableCityPopulationDifference && !IsCityZone(Game.Player.Character.Position))
             {
-                Vector3 spawnPosition;
-                int zoneMaxVehicles = MaxVehicles;
-                if (EnableCityPopulationDifference && !IsCityZone(Game.Player.Character.Position))
+                zoneMaxVehicles = MaxVehicles / 2;
+            }
+            Vehicle[] vehicles = World.GetAllVehicles();
+            List<Vehicle> vehiclesList = new List<Vehicle>(vehicles);
+            for (int i = 0; i < zoneMaxVehicles; i++)
+            {
+                if (vehiclesList.Count >= zoneMaxVehicles)
                 {
-                    zoneMaxVehicles = MaxVehicles / 2;
+                    continue;
                 }
-                Vehicle[] vehicles = World.GetAllVehicles();
-                List<Vehicle> vehiclesList = new List<Vehicle>(vehicles);
-                for (int i = 0; i < zoneMaxVehicles; i++)
+                spawnPosition = World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance), true);
+                Vector3 checkPosition = spawnPosition.Around(5);
+                if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() || (float)Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance || IsSafeZone(checkPosition))
                 {
-                    if (vehiclesList.Count >= zoneMaxVehicles)
-                    {
-                        continue;
-                    }
-                    spawnPosition = World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance), true);
-                    Vector3 checkPosition = spawnPosition.Around(5);
-                    if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() || (float)Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance || IsSafeZone(checkPosition))
-                    {
-                        continue;
-                    }
-                    try
-                    {
-                        Vehicles.Add(SpawnVehicle(spawnPosition));
-                    }
-                    catch (Exception x)
-                    {
-                        Log.Write(x.ToString());
-                    }
+                    continue;
+                }
+                try
+                {
+                    Vehicles.Add(SpawnVehicle(spawnPosition));
+                }
+                catch (Exception x)
+                {
+                    Log.Write(x.ToString());
                 }
             }
         }
 
         public static void PopulateAnimals()
         {
-            if (EnableAnimals)
+            if (!EnableAnimals) return;
+            Vector3 spawnPosition;
+            int zoneMaxAnimals = MaxAnimals;
+            if (EnableCityPopulationDifference)
             {
-                Vector3 spawnPosition;
-                int zoneMaxAnimals = MaxAnimals;
-                if (EnableCityPopulationDifference)
+                if (!IsCityZone(Game.Player.Character.Position))
                 {
-                    if (!IsCityZone(Game.Player.Character.Position))
-                    {
-                        zoneMaxAnimals = MaxAnimals / 2;
-                    }
+                    zoneMaxAnimals = MaxAnimals / 2;
                 }
-                Ped[] peds = World.GetAllPeds();
-                List<Ped> pedsList = new List<Ped>(peds);
-                for (int i = 0; i < pedsList.Count; i++)
+            }
+            Ped[] peds = World.GetAllPeds();
+            List<Ped> pedsList = new List<Ped>(peds);
+            for (int i = 0; i < pedsList.Count; i++)
+            {
+                if (pedsList[i].RelationshipGroup != Relationships.AnimalGroup)
                 {
-                    if (pedsList[i].RelationshipGroup != Relationships.AnimalGroup)
-                    {
-                        pedsList.RemoveAt(i);
-                    }
+                    pedsList.RemoveAt(i);
                 }
-                for (int i = 0; i < zoneMaxAnimals; i++)
+            }
+            for (int i = 0; i < zoneMaxAnimals; i++)
+            {
+                if (pedsList.Count >= zoneMaxAnimals)
                 {
-                    if (pedsList.Count >= zoneMaxAnimals)
-                    {
-                        continue;
-                    }
-                    Random random = new Random();
-                    int chance = random.Next(0, 1);
-                    if (chance == 0)
-                    {
-                        spawnPosition = World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance), true);
-                    }
-                    else
-                    {
-                        spawnPosition = World.GetNextPositionOnSidewalk(Game.Player.Character.Position.Around(MaxSpawnDistance));
-                    }
-                    Vector3 checkPosition = spawnPosition.Around(5);
-                    if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() || (float)Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance || IsSafeZone(checkPosition))
-                    {
-                        continue;
-                    }
-                    try
-                    {
-                        AnimalPeds.Add(SpawnAnimal(spawnPosition));
-                    }
-                    catch (Exception x)
-                    {
-                        Log.Write(x.ToString());
-                    }
+                    continue;
+                }
+                Random random = new Random();
+                int chance = random.Next(0, 1);
+                spawnPosition = chance == 0 ? World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance), true) : World.GetNextPositionOnSidewalk(Game.Player.Character.Position.Around(MaxSpawnDistance));
+                Vector3 checkPosition = spawnPosition.Around(5);
+                if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() || (float)Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance || IsSafeZone(checkPosition))
+                {
+                    continue;
+                }
+                try
+                {
+                    AnimalPeds.Add(SpawnAnimal(spawnPosition));
+                }
+                catch (Exception x)
+                {
+                    Log.Write(x.ToString());
                 }
             }
         }
 
         public static void PopulateSurvivors()
         {
-            if (EnableSurvivors)
+            if (!EnableSurvivors) return;
+            TimeSpan timeSpan = new TimeSpan(0, SurvivorTimeMins, 0);
+            DateTime checkTime = SurvivorLastSpawnTime.Add(timeSpan);
+            if (checkTime >= DateTime.UtcNow) return;
+            SurvivorLastSpawnTime = DateTime.UtcNow;
+            Vector3 spawnPosition;
+            bool inVehicle = false;
+            if (EnableSurvivorVehicles)
             {
-                TimeSpan timeSpan = new TimeSpan(0, SurvivorTimeMins, 0);
-                DateTime checkTime = SurvivorLastSpawnTime.Add(timeSpan);
-                if (checkTime < DateTime.UtcNow)
+                Random random1 = new Random();
+                int chance1 = random1.Next(0, 10);
+                if (chance1 > 6)
                 {
-                    SurvivorLastSpawnTime = DateTime.UtcNow;
-                    Vector3 spawnPosition;
-                    bool inVehicle = false;
-                    if (EnableSurvivorVehicles)
-                    {
-                        Random random1 = new Random();
-                        int chance1 = random1.Next(0, 10);
-                        if (chance1 > 6)
-                        {
-                            inVehicle = true;
-                        }
-                    }
-                    GroupType groupType = GroupType.Friendly;
-                    Random random2 = new Random();
-                    int chance2 = random2.Next(0, 3);
-                    if (chance2 == 0)
-                    {
-                        groupType = GroupType.Friendly;
-                    }
-                    else if (chance2 == 1)
-                    {
-                        groupType = GroupType.Neutral;
-                    }
-                    else if (chance2 == 2)
-                    {
-                        groupType = GroupType.Hostile;
-                    }
-                    int groupSize = 1;
-                    Random random3 = new Random();
-                    if (groupType == GroupType.Friendly)
-                    {
-                        groupSize = random3.Next(MinFriendlyGroup, MaxFriendlyGroup);
-                    }
-                    else if (groupType == GroupType.Neutral)
-                    {
-                        groupSize = random3.Next(MinNeutralGroup, MaxNeutralGroup);
-                    }
-                    else if (groupType == GroupType.Hostile)
-                    {
-                        groupSize = random3.Next(MinHostileGroup, MaxHostileGroup);
-                    }
-                    Random random4 = new Random();
-                    int chance4 = random4.Next(0, 2);
-                    if (chance4 == 0)
-                    {
-                        spawnPosition = World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance * 2), true);
-                    }
-                    else
-                    {
-                        spawnPosition = World.GetNextPositionOnSidewalk(Game.Player.Character.Position.Around(MaxSpawnDistance * 2));
-                    }
-                    Vector3 checkPosition = spawnPosition.Around(5);
-                    if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() || (float)Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance || IsSafeZone(checkPosition))
-                    {
-                        return;
-                    }
-                    try
-                    {
-                        SpawnSurvivorGroup(groupType, groupSize, spawnPosition, inVehicle);
-                    }
-                    catch (Exception x)
-                    {
-                        Log.Write(x.ToString());
-                    }
+                    inVehicle = true;
                 }
+            }
+            GroupType groupType = GroupType.Friendly;
+            Random random2 = new Random();
+            switch (random2.Next(0, 3))
+            {
+                case 0:
+                    groupType = GroupType.Friendly;
+                    break;
+                case 1:
+                    groupType = GroupType.Neutral;
+                    break;
+                case 2:
+                    groupType = GroupType.Hostile;
+                    break;
+            }
+            int groupSize = 1;
+            Random random3 = new Random();
+            switch (groupType)
+            {
+                case GroupType.Friendly:
+                    groupSize = random3.Next(MinFriendlyGroup, MaxFriendlyGroup);
+                    break;
+                case GroupType.Neutral:
+                    groupSize = random3.Next(MinNeutralGroup, MaxNeutralGroup);
+                    break;
+                case GroupType.Hostile:
+                    groupSize = random3.Next(MinHostileGroup, MaxHostileGroup);
+                    break;
+            }
+            Random random4 = new Random();
+            int chance4 = random4.Next(0, 2);
+            spawnPosition = chance4 == 0 ? World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance * 2), true) : World.GetNextPositionOnSidewalk(Game.Player.Character.Position.Around(MaxSpawnDistance * 2));
+            Vector3 checkPosition = spawnPosition.Around(5);
+            if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() || (float)Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance || IsSafeZone(checkPosition))
+            {
+                return;
+            }
+            try
+            {
+                SpawnSurvivorGroup(groupType, groupSize, spawnPosition, inVehicle);
+            }
+            catch (Exception x)
+            {
+                Log.Write(x.ToString());
             }
         }
 
@@ -575,30 +550,37 @@ namespace CWDM
             }
             for (int i = 0; i < peds.Count; i++)
             {
-                if (groupType == GroupType.Friendly)
+                switch (groupType)
                 {
-                    peds[i].RelationshipGroup = Relationships.FriendlyGroup;
-                    Blip blip = peds[i].AddBlip();
-                    blip.Color = BlipColor.Blue;
-                    blip.Scale = 0.65f;
-                    blip.Name = "Friendly";
+                    case GroupType.Friendly:
+                    {
+                        peds[i].RelationshipGroup = Relationships.FriendlyGroup;
+                        Blip blip = peds[i].AddBlip();
+                        blip.Color = BlipColor.Blue;
+                        blip.Scale = 0.65f;
+                        blip.Name = "Friendly";
+                        break;
+                    }
+                    case GroupType.Neutral:
+                    {
+                        peds[i].RelationshipGroup = Relationships.NeutralGroup;
+                        Blip blip = peds[i].AddBlip();
+                        blip.Color = BlipColor.Yellow;
+                        blip.Scale = 0.65f;
+                        blip.Name = "Neutral";
+                        break;
+                    }
+                    case GroupType.Hostile:
+                    {
+                        peds[i].RelationshipGroup = Relationships.HostileGroup;
+                        Blip blip = peds[i].AddBlip();
+                        blip.Color = BlipColor.Red;
+                        blip.Scale = 0.65f;
+                        blip.Name = "Hostile";
+                        break;
+                    }
                 }
-                else if (groupType == GroupType.Neutral)
-                {
-                    peds[i].RelationshipGroup = Relationships.NeutralGroup;
-                    Blip blip = peds[i].AddBlip();
-                    blip.Color = BlipColor.Yellow;
-                    blip.Scale = 0.65f;
-                    blip.Name = "Neutral";
-                }
-                else if (groupType == GroupType.Hostile)
-                {
-                    peds[i].RelationshipGroup = Relationships.HostileGroup;
-                    Blip blip = peds[i].AddBlip();
-                    blip.Color = BlipColor.Red;
-                    blip.Scale = 0.65f;
-                    blip.Name = "Hostile";
-                }
+
                 if (i == 0)
                 {
                     pedGroup.Add(peds[i], true);
@@ -610,21 +592,23 @@ namespace CWDM
                     peds[i].SetTask(PedTask.Follow);
                 }
             }
-            if (inVehicle)
+
+            if (!inVehicle) return;
             {
                 Model model = GetRandomVehicleModel();
-                if (groupType == GroupType.Friendly)
+                switch (groupType)
                 {
-                    model = GetRandomFriendlyVehicleModel();
+                    case GroupType.Friendly:
+                        model = GetRandomFriendlyVehicleModel();
+                        break;
+                    case GroupType.Neutral:
+                        model = GetRandomNeutralVehicleModel();
+                        break;
+                    case GroupType.Hostile:
+                        model = GetRandomHostileVehicleModel();
+                        break;
                 }
-                else if (groupType == GroupType.Neutral)
-                {
-                    model = GetRandomNeutralVehicleModel();
-                }
-                if (groupType == GroupType.Hostile)
-                {
-                    model = GetRandomHostileVehicleModel();
-                }
+
                 Vehicles.Add(new VehicleEntity(CreatePersistentVehicle(model, World.GetNextPositionOnStreet(position), MathExtensions.RandomHeading())));
                 Vehicle vehicle = Vehicles[Vehicles.Count - 1].vehicle;
                 for (int i = 0; i < peds.Count; i++)
@@ -651,14 +635,7 @@ namespace CWDM
         public static SurvivorPed SpawnSurvivor(Vector3 position)
         {
             Ped ped;
-            if (CustomSurvivors)
-            {
-                ped = World.CreatePed(GetRandomSurvivorModel(), position);
-            }
-            else
-            {
-                ped = World.CreateRandomPed(position);
-            }
+            ped = CustomSurvivors ? World.CreatePed(GetRandomSurvivorModel(), position) : World.CreateRandomPed(position);
             Function.Call(Hash.SET_PED_FLEE_ATTRIBUTES, ped.Handle, 0, 0);
             Function.Call(Hash.SET_PED_PATH_CAN_USE_CLIMBOVERS, ped.Handle, true);
             Function.Call(Hash.SET_PED_PATH_CAN_USE_LADDERS, ped.Handle, true);
@@ -688,65 +665,46 @@ namespace CWDM
             ped.Weapons.Select(ped.Weapons.BestWeapon.Hash, true);
             ped.Money = 0;
             ped.NeverLeavesGroup = true;
-            SurvivorPed survivorPed = new SurvivorPed(ped);
-            return survivorPed;
+            return new SurvivorPed(ped);
         }
 
         public static Model GetRandomFriendlyVehicleModel()
         {
-            Model model = new Model(MathExtensions.GetRandomElementFromList(FriendlyVehicleModels));
-            return model;
+            return new Model(FriendlyVehicleModels.GetRandomElementFromList());
         }
 
         public static Model GetRandomNeutralVehicleModel()
         {
-            Model model = new Model(MathExtensions.GetRandomElementFromList(NeutralVehicleModels));
-            return model;
+            return new Model(NeutralVehicleModels.GetRandomElementFromList());
         }
 
         public static Model GetRandomHostileVehicleModel()
         {
-            Model model = new Model(MathExtensions.GetRandomElementFromList(HostileVehicleModels));
-            return model;
+            return new Model(HostileVehicleModels.GetRandomElementFromList());
         }
 
         public static Model GetRandomZombieModel()
         {
-            Model model = new Model(MathExtensions.GetRandomElementFromList(ZombieModels));
-            return model;
+            return new Model(ZombieModels.GetRandomElementFromList());
         }
 
         public static Model GetRandomSurvivorModel()
         {
-            Model model = new Model(MathExtensions.GetRandomElementFromList(SurvivorModels));
+            Model model = new Model(SurvivorModels.GetRandomElementFromList());
             return model.Request(1500) ? model : null;
         }
 
         public static Model GetRandomAnimalModel()
         {
             Model model;
-            if (IsCityZone(Game.Player.Character.Position))
-            {
-                model = new Model(MathExtensions.GetRandomElementFromList(CityAnimalModels));
-            }
-            else
-            {
-                model = new Model(MathExtensions.GetRandomElementFromList(CountryAnimalModels));
-            }
+            model = IsCityZone(Game.Player.Character.Position) ? new Model(CityAnimalModels.GetRandomElementFromList()) : new Model(CountryAnimalModels.GetRandomElementFromList());
             return model.Request(1500) ? model : null;
         }
 
         public static Model GetRandomVehicleModel()
         {
             Model model;
-            if (IsCityZone(Game.Player.Character.Position))
-            {
-                model = new Model(MathExtensions.GetRandomElementFromList(CityVehicleModels));
-            }
-            else
-            {
-                model = new Model(MathExtensions.GetRandomElementFromList(CountryVehicleModels));
-            }
+            model = IsCityZone(Game.Player.Character.Position) ? new Model(CityVehicleModels.GetRandomElementFromList()) : new Model(CountryVehicleModels.GetRandomElementFromList());
             return model.Request(1500) ? model : null;
         }
 
@@ -808,8 +766,7 @@ namespace CWDM
                 ped = World.CreateRandomPed(position);
             }
             Infect(ped);
-            ZombiePed zombiePed = new ZombiePed(ped);
-            return zombiePed;
+            return new ZombiePed(ped);
         }
 
         public static void Infect(Ped ped)

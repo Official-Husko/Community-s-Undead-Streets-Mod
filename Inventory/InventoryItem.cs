@@ -30,10 +30,16 @@ namespace CWDM.Inventory
             set;
         }
 
-        public LootType[] LootTypes
+        private LootType[] lootTypes;
+
+        public LootType[] GetLootTypes()
         {
-            get;
-            set;
+            return lootTypes;
+        }
+
+        public void SetLootTypes(LootType[] value)
+        {
+            lootTypes = value;
         }
 
         public InventoryItem(string name, string description, int amount, int maxAmount, LootType[] lootTypes)
@@ -42,7 +48,7 @@ namespace CWDM.Inventory
             Description = description;
             Amount = amount;
             MaxAmount = maxAmount;
-            LootTypes = lootTypes;
+            SetLootTypes(lootTypes);
         }
     }
 }

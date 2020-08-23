@@ -11,7 +11,6 @@ namespace CWDM.Extensions
         {
             Vector3 v1 = p1.Position;
             Vector3 v2 = p2;
-            double distance;
             double x = v2.X - v1.X;
             double y = v2.Y - v1.Y;
             double z = v2.Z - v1.Z;
@@ -22,7 +21,6 @@ namespace CWDM.Extensions
         {
             Vector3 v1 = p1.Position;
             Vector3 v2 = p2.Position;
-            double distance;
             double x = v2.X - v1.X;
             double y = v2.Y - v1.Y;
             double z = v2.Z - v1.Z;

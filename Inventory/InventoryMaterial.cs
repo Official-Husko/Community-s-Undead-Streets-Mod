@@ -13,7 +13,7 @@ namespace CWDM.Inventory
             Description = description;
             Amount = amount;
             MaxAmount = maxAmount;
-            LootTypes = lootTypes;
+            SetLootTypes(lootTypes);
         }
     }
 }

@@ -1108,7 +1108,7 @@ namespace CWDM
             {
                 World.SetBlackout(false);
             }
-            Weather rndWeather = MathExtensions.GetRandomElementFromArray(Weathers);
+            Weather rndWeather = Weathers.GetRandomElementFromArray();
             World.TransitionToWeather(rndWeather, 0f);
             Function.Call(Hash.SET_CLOCK_TIME, 07, 00, 00);
             Function.Call(Hash.SET_CLOCK_DATE, 01, 01, 2020);
@@ -1215,7 +1215,7 @@ namespace CWDM
         {
             foreach (string script in KillScripts)
             {
-                ScriptExtensions.TerminateScript(script);
+                script.TerminateScript();
             }
         }
 

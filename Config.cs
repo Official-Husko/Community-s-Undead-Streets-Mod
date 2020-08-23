@@ -10,7 +10,6 @@ using CWDM.Inventory;
 
 namespace CWDM
 {
-   
     public static class Config
     {
         public static ScriptSettings Settings;

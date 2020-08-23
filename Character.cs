@@ -55,7 +55,7 @@ namespace CWDM
             {
                 characterModels = characterFemaleModels;
             }
-            PlayerModel = new Model(MathExtensions.GetRandomElementFromArray(characterModels));
+            PlayerModel = new Model(characterModels.GetRandomElementFromArray());
             PlayerModel.Request(500);
             if (PlayerModel.IsInCdImage && PlayerModel.IsValid)
             {

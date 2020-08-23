@@ -40,7 +40,7 @@ namespace CWDM.Interactives
                             Character.CurrentHungerLevel -= 0.25f;
                             Character.CurrentThirstLevel -= 0.3f;
                             World.CurrentDayTime.Add(new TimeSpan(6, 0, 0));
-                            World.Weather = MathExtensions.GetRandomElementFromArray(Map.Weathers);
+                            World.Weather = Map.Weathers.GetRandomElementFromArray();
                             if (Population.AnimalPeds.Count > 0)
                             {
                                 for (int i = 0; i < Population.AnimalPeds.Count; i++)

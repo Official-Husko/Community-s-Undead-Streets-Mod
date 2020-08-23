@@ -117,12 +117,12 @@ namespace CWDM
                     List<InventoryMaterial> materialsToFind = PlayerInventory.PlayerInventoryMaterials;
                     for (int i = 0; i < materialsToFind.Count; i++)
                     {
-                        if (!materialsToFind[i].LootTypes.Contains(LootType.Animal))
+                        if (!materialsToFind[i].GetLootTypes().Contains(LootType.Animal))
                         {
                             materialsToFind.RemoveAt(i);
                         }
                     }
-                    InventoryMaterial materialFound = MathExtensions.GetRandomElementFromList(materialsToFind);
+                    InventoryMaterial materialFound = materialsToFind.GetRandomElementFromList();
                     int invCheckAmount = PlayerInventory.PlayerInventoryMaterials.Find(material => material.Name == materialFound.Name).Amount;
                     int invCheckMaxAmount = PlayerInventory.PlayerInventoryMaterials.Find(material => material.Name == materialFound.Name).MaxAmount;
                     if (invCheckAmount == invCheckMaxAmount)
@@ -170,12 +170,12 @@ namespace CWDM
                     List<InventoryItem> itemsToFind = PlayerInventory.PlayerInventoryItems;
                     for (int i = 0; i < itemsToFind.Count; i++)
                     {
-                        if (!itemsToFind[i].LootTypes.Contains(type))
+                        if (!itemsToFind[i].GetLootTypes().Contains(type))
                         {
                             itemsToFind.RemoveAt(i);
                         }
                     }
-                    InventoryItem itemFound = MathExtensions.GetRandomElementFromList(itemsToFind);
+                    InventoryItem itemFound = itemsToFind.GetRandomElementFromList();
                     int invCheckAmount = PlayerInventory.PlayerInventoryItems.Find(item => item.Name == itemFound.Name).Amount;
                     int invCheckMaxAmount = PlayerInventory.PlayerInventoryItems.Find(item => item.Name == itemFound.Name).MaxAmount;
                     if (invCheckAmount == invCheckMaxAmount)
@@ -196,12 +196,12 @@ namespace CWDM
                     List<InventoryMaterial> materialsToFind = PlayerInventory.PlayerInventoryMaterials;
                     for (int i = 0; i < materialsToFind.Count; i++)
                     {
-                        if (!materialsToFind[i].LootTypes.Contains(type))
+                        if (!materialsToFind[i].GetLootTypes().Contains(type))
                         {
                             materialsToFind.RemoveAt(i);
                         }
                     }
-                    InventoryMaterial materialFound = MathExtensions.GetRandomElementFromList(materialsToFind);
+                    InventoryMaterial materialFound = materialsToFind.GetRandomElementFromList();
                     int invCheckAmount = PlayerInventory.PlayerInventoryMaterials.Find(material => material.Name == materialFound.Name).Amount;
                     int invCheckMaxAmount = PlayerInventory.PlayerInventoryMaterials.Find(material => material.Name == materialFound.Name).MaxAmount;
                     if (invCheckAmount == invCheckMaxAmount)
