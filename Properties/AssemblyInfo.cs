@@ -4,13 +4,13 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CWDM")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("TheSpaceDad")]
-[assembly: AssemblyProduct("CWDM")]
-[assembly: AssemblyCopyright("Copyright © TheSpaceDad 2020")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTitle("Community's Walking Dead Mod")]
+[assembly: AssemblyDescription("Advanced Zombie Mod for Grand Theft Auto V")]
+[assembly: AssemblyConfiguration("DEBUG")]
+[assembly: AssemblyCompany("Community's Walking Dead Mod")]
+[assembly: AssemblyProduct("Community's Walking Dead Mod")]
+[assembly: AssemblyCopyright("Copyright © Community's Walking Dead Mod 2020")]
+[assembly: AssemblyTrademark("Community's Walking Dead Mod")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
