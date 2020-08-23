@@ -1,6 +1,10 @@
 ![alt text](https://i.imgur.com/HYdOh7x.png?maxwidth=640&shape=thumb&fidelity=medium "Community's Walking Dead Mod")
 ### Development Branch
 
+Visit [Dev][1] Branch to see our WIP Features  
+Visit [Experimental][2] Branch for an experimental build  
+Visit [Stable][3] Branch for a stable build  
+
 ## Current WIP Features
 
 ...
@@ -13,12 +17,12 @@ If you want to use a Stable Release go to releases or this [Stable Branch](https
 
 ## Known Bugs/Errors
 
-Known bugs that exist in the current Alpha release are:
-	
-* All (most?) doors/gates in the game that are usually locked will open. The upside is you can access some of the basic interiors, but the downside is that electric gates open automatically and there shouldn’t really be any electricity! I’m looking into somehow keeping the gates locked but the doors open
-	
-* Car headlights don’t work as the mod uses the game’s “blackout” feature, so that there are no lights or electricity. Not sure how to get around this one yet!
+Zombies not Spawning correctly or not at all.
+1 Hit Bug
+Zombies do not attack
+After certain amount of deaths mods stops working
+Performance Issues???
 
-* The colours for text, UI and menus are a bit random and need to be standardised/simplified!
-
-Again, if you find any other bugs please let me know in the comments section on the download page or on the forum thread.
+[1]:https://github.com/Stahlhelm-TV/Community-s-Walking-Dead-Mod/tree/dev
+[2]:https://github.com/Stahlhelm-TV/Community-s-Walking-Dead-Mod/tree/experimental
+[3]:https://github.com/Stahlhelm-TV/Community-s-Walking-Dead-Mod/tree/stable
