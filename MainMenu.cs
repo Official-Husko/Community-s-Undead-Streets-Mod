@@ -80,7 +80,7 @@ namespace CWDM
 
         public MainMenu()
         {
-            MainModMenu = new UIMenu("Undead Streets", "Main Menu");
+            MainModMenu = new UIMenu("CWDM", "Main Menu");
             Main.MasterMenuPool.Add(MainModMenu);
             AddMenuGameLoad(MainModMenu);
             AddMenuVehicleRegister(MainModMenu);
