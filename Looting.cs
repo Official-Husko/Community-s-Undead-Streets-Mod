@@ -1,18 +1,19 @@
-﻿using GTA;
+﻿using CWDM.Enums;
+using CWDM.Extensions;
+using CWDM.Inventory;
+using GTA;
 using GTA.Math;
 using GTA.Native;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CWDM.Enums;
-using CWDM.Extensions;
-using CWDM.Inventory;
 
 namespace CWDM
 {
     public class Looting : Script
     {
         public static List<Entity> LootedEntities = new List<Entity>();
+
         public static Model[] StoreModels =
         {
             new Model("v_ret_247shelves01"),
@@ -21,6 +22,7 @@ namespace CWDM
             new Model("v_ret_247shelves04"),
             new Model("v_ret_247shelves05")
         };
+
         public static Model[] BinModels =
         {
             new Model("phei_heist_kit_bin_01"),
@@ -75,6 +77,7 @@ namespace CWDM
             new Model("prop_dumpster_4a"),
             new Model("prop_dumpster_4b")
         };
+
         public static Model[] SkipModels =
         {
             new Model("prop_skip_01a"),
@@ -88,6 +91,7 @@ namespace CWDM
             new Model("prop_skip_08b"),
             new Model("prop_skip_10a")
         };
+
         public static Vector3[] StoreLocations =
         {
             new Vector3(-3041.777f, 588.7258f, 7.908933f),

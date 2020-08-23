@@ -1,11 +1,11 @@
-﻿using GTA;
+﻿using CWDM.Enums;
+using CWDM.Extensions;
+using CWDM.Wrappers;
+using GTA;
 using GTA.Math;
 using GTA.Native;
 using System;
 using System.Collections.Generic;
-using CWDM.Enums;
-using CWDM.Extensions;
-using CWDM.Wrappers;
 
 namespace CWDM
 {
@@ -42,13 +42,16 @@ namespace CWDM
         public static float MaxSpawnDistance = 75f;
         public static DateTime SurvivorLastSpawnTime = new DateTime();
         public static bool CustomZombies = false;
+
         public static List<string> ZombieModels = new List<string>
         {
             "u_f_y_corpse_01",
             "u_m_y_corpse_01",
             "u_m_y_zombie_01"
         };
+
         public static bool CustomSurvivors = false;
+
         public static List<string> SurvivorModels = new List<string>
         {
             "mp_m_waremech_01",
@@ -56,7 +59,9 @@ namespace CWDM
             "mp_m_weapwork_01",
             "s_m_y_xmech_02"
         };
+
         public static bool CustomCountryAnimals = false;
+
         public static List<string> CountryAnimalModels = new List<string>
         {
             "a_c_cat_01",
@@ -74,7 +79,9 @@ namespace CWDM
             "a_c_shepherd",
             "a_c_westy"
         };
+
         public static bool CustomCityAnimals = false;
+
         public static List<string> CityAnimalModels = new List<string>
         {
             "a_c_cat_01",
@@ -85,7 +92,9 @@ namespace CWDM
             "a_c_shepherd",
             "a_c_westy"
         };
+
         public static bool CustomCountryVehicles = false;
+
         public static List<string> CountryVehicleModels = new List<string>
         {
             "ambulance",
@@ -153,7 +162,9 @@ namespace CWDM
             "warrener",
             "taxi"
         };
+
         public static bool CustomCityVehicles = false;
+
         public static List<string> CityVehicleModels = new List<string>
         {
             "ambulance",
@@ -228,7 +239,9 @@ namespace CWDM
             "fugitive",
             "taxi"
         };
+
         public static bool CustomFriendlyVehicles = false;
+
         public static List<string> FriendlyVehicleModels = new List<string>
         {
             "insurgent2",
@@ -239,7 +252,9 @@ namespace CWDM
             "xls2",
             "guardian"
         };
+
         public static bool CustomNeutralVehicles = false;
+
         public static List<string> NeutralVehicleModels = new List<string>
         {
             "insurgent2",
@@ -250,7 +265,9 @@ namespace CWDM
             "xls2",
             "guardian"
         };
+
         public static bool CustomHostileVehicles = false;
+
         public static List<string> HostileVehicleModels = new List<string>
         {
             "insurgent2",
@@ -261,7 +278,9 @@ namespace CWDM
             "xls2",
             "guardian"
         };
+
         public static bool EnableSafeZones = false;
+
         public static List<string> SafeZones = new List<string>
         {
             "Los Santos International Airport",
@@ -273,6 +292,7 @@ namespace CWDM
             "Terminal",
             "Humane Labs and Research"
         };
+
         public static List<string> CityZones = new List<string>
         {
             "Los Santos International Airport",
@@ -327,9 +347,9 @@ namespace CWDM
         {
             if (!Main.ModActive || !Map.MapPrepared || !Character.CharacterReset) return;
             PopulateZombies();
-            //PopulateVehicles();
-            //PopulateAnimals();
-            //PopulateSurvivors();
+            PopulateVehicles();
+            PopulateAnimals();
+            PopulateSurvivors();
         }
 
         public static bool IsSafeZone(Vector3 position)
@@ -500,9 +520,11 @@ namespace CWDM
                 case 0:
                     groupType = GroupType.Friendly;
                     break;
+
                 case 1:
                     groupType = GroupType.Neutral;
                     break;
+
                 case 2:
                     groupType = GroupType.Hostile;
                     break;
@@ -514,9 +536,11 @@ namespace CWDM
                 case GroupType.Friendly:
                     groupSize = random3.Next(MinFriendlyGroup, MaxFriendlyGroup);
                     break;
+
                 case GroupType.Neutral:
                     groupSize = random3.Next(MinNeutralGroup, MaxNeutralGroup);
                     break;
+
                 case GroupType.Hostile:
                     groupSize = random3.Next(MinHostileGroup, MaxHostileGroup);
                     break;
@@ -553,32 +577,32 @@ namespace CWDM
                 switch (groupType)
                 {
                     case GroupType.Friendly:
-                    {
-                        peds[i].RelationshipGroup = Relationships.FriendlyGroup;
-                        Blip blip = peds[i].AddBlip();
-                        blip.Color = BlipColor.Blue;
-                        blip.Scale = 0.65f;
-                        blip.Name = "Friendly";
-                        break;
-                    }
+                        {
+                            peds[i].RelationshipGroup = Relationships.FriendlyGroup;
+                            Blip blip = peds[i].AddBlip();
+                            blip.Color = BlipColor.Blue;
+                            blip.Scale = 0.65f;
+                            blip.Name = "Friendly";
+                            break;
+                        }
                     case GroupType.Neutral:
-                    {
-                        peds[i].RelationshipGroup = Relationships.NeutralGroup;
-                        Blip blip = peds[i].AddBlip();
-                        blip.Color = BlipColor.Yellow;
-                        blip.Scale = 0.65f;
-                        blip.Name = "Neutral";
-                        break;
-                    }
+                        {
+                            peds[i].RelationshipGroup = Relationships.NeutralGroup;
+                            Blip blip = peds[i].AddBlip();
+                            blip.Color = BlipColor.Yellow;
+                            blip.Scale = 0.65f;
+                            blip.Name = "Neutral";
+                            break;
+                        }
                     case GroupType.Hostile:
-                    {
-                        peds[i].RelationshipGroup = Relationships.HostileGroup;
-                        Blip blip = peds[i].AddBlip();
-                        blip.Color = BlipColor.Red;
-                        blip.Scale = 0.65f;
-                        blip.Name = "Hostile";
-                        break;
-                    }
+                        {
+                            peds[i].RelationshipGroup = Relationships.HostileGroup;
+                            Blip blip = peds[i].AddBlip();
+                            blip.Color = BlipColor.Red;
+                            blip.Scale = 0.65f;
+                            blip.Name = "Hostile";
+                            break;
+                        }
                 }
 
                 if (i == 0)
@@ -601,9 +625,11 @@ namespace CWDM
                     case GroupType.Friendly:
                         model = GetRandomFriendlyVehicleModel();
                         break;
+
                     case GroupType.Neutral:
                         model = GetRandomNeutralVehicleModel();
                         break;
+
                     case GroupType.Hostile:
                         model = GetRandomHostileVehicleModel();
                         break;
@@ -829,7 +855,7 @@ namespace CWDM
             }
             ped.CanWrithe = false;
             ped.MaxHealth = ZombieHealth;
-            ped.Health = ped.MaxHealth;
+            ped.Health = ZombieHealth;
             ped.Armor = 0;
             ped.Money = 0;
             ped.SetSeeingRange(35f);

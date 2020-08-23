@@ -1,5 +1,5 @@
-﻿using GTA;
-using CWDM.Extensions;
+﻿using CWDM.Extensions;
+using GTA;
 
 namespace CWDM.Wrappers
 {

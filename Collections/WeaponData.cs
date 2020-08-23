@@ -1,6 +1,6 @@
-﻿using GTA.Native;
+﻿using CWDM.Interfaces;
+using GTA.Native;
 using System;
-using CWDM.Interfaces;
 
 namespace CWDM.Collections
 {

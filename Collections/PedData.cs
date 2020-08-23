@@ -1,7 +1,7 @@
-﻿using GTA.Math;
+﻿using CWDM.Enums;
+using GTA.Math;
 using System;
 using System.Collections.Generic;
-using CWDM.Enums;
 
 namespace CWDM.Collections
 {

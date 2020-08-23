@@ -1,12 +1,12 @@
-﻿using GTA;
+﻿using CWDM.Collections;
+using CWDM.Inventory;
+using GTA;
 using GTA.Native;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using CWDM.Collections;
-using CWDM.Inventory;
 
 namespace CWDM
 {

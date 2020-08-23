@@ -1,11 +1,11 @@
-﻿using GTA;
+﻿using CWDM.Enums;
+using CWDM.Extensions;
+using GTA;
 using GTA.Native;
 using NativeUI;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using CWDM.Enums;
-using CWDM.Extensions;
 
 namespace CWDM
 {
@@ -42,29 +42,29 @@ namespace CWDM
             switch (e.KeyCode)
             {
                 case Keys.F6:
-                {
-                    Ped[] all_ped = World.GetAllPeds();
-                    Vehicle[] all_veh = World.GetAllVehicles();
-                    List<Ped> pedsList = new List<Ped>(all_ped);
-                    for (int i = 0; i < pedsList.Count; i++)
                     {
-                        if (pedsList[i].RelationshipGroup != Relationships.ZombieGroup)
+                        Ped[] all_ped = World.GetAllPeds();
+                        Vehicle[] all_veh = World.GetAllVehicles();
+                        List<Ped> pedsList = new List<Ped>(all_ped);
+                        for (int i = 0; i < pedsList.Count; i++)
                         {
-                            pedsList.RemoveAt(i);
+                            if (pedsList[i].RelationshipGroup != Relationships.ZombieGroup)
+                            {
+                                pedsList.RemoveAt(i);
+                            }
                         }
+                        UI.Notify($"Zombies: {Population.ZombiePeds.Count}~n~Animals: {Population.AnimalPeds.Count}~n~Total Peds: {all_ped.Length}~n~Total Zombie Peds: {pedsList.Count}~n~Vehicles: {Population.Vehicles.Count}~n~Total Vehicles: {all_veh.Length}");
+                        break;
                     }
-                    UI.Notify($"Zombies: {Population.ZombiePeds.Count}~n~Animals: {Population.AnimalPeds.Count}~n~Total Peds: {all_ped.Length}~n~Total Zombie Peds: {pedsList.Count}~n~Vehicles: {Population.Vehicles.Count}~n~Total Vehicles: {all_veh.Length}");
-                    break;
-                }
                 case Keys.F7:
-                {
-                    string coords = $"Co-ordinates: {Game.Player.Character.Position}";
-                    string heading = $"Heading: {Game.Player.Character.Heading}";
-                    UI.Notify($"{coords}~n~{heading}~n~~n~Written to log!");
-                    Log.Write(coords);
-                    Log.Write(heading);
-                    break;
-                }
+                    {
+                        string coords = $"Co-ordinates: {Game.Player.Character.Position}";
+                        string heading = $"Heading: {Game.Player.Character.Heading}";
+                        UI.Notify($"{coords}~n~{heading}~n~~n~Written to log!");
+                        Log.Write(coords);
+                        Log.Write(heading);
+                        break;
+                    }
             }
         }
 

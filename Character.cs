@@ -1,9 +1,9 @@
-﻿using GTA;
+﻿using CWDM.Extensions;
+using GTA;
 using GTA.Math;
 using GTA.Native;
 using System;
 using System.Collections.Generic;
-using CWDM.Extensions;
 
 namespace CWDM
 {
@@ -35,6 +35,7 @@ namespace CWDM
         public static float MaxBatteryLevel = 1.0f;
         public static float BatteryDecrease = 0f;
         public static bool CustomWeaponLoadout = false;
+
         public static List<string> WeaponLoadout = new List<string>
         {
             "weapon_pistol",

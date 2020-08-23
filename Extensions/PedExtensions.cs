@@ -1,7 +1,7 @@
-﻿using GTA;
+﻿using CWDM.Enums;
+using GTA;
 using GTA.Native;
 using System.Linq;
-using CWDM.Enums;
 
 namespace CWDM.Extensions
 {

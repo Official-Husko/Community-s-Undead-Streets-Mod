@@ -1,9 +1,9 @@
-﻿using GTA;
+﻿using CWDM.Extensions;
+using GTA;
 using GTA.Math;
 using GTA.Native;
 using System;
 using System.Threading.Tasks;
-using CWDM.Extensions;
 
 namespace CWDM.Wrappers
 {
@@ -115,7 +115,7 @@ namespace CWDM.Wrappers
                         target.ApplyDamage(Population.ZombieDamage);
                         if (target == Game.Player.Character)
                         {
-                            // Placeholder for Zombie Infection mode code 
+                            // Placeholder for Zombie Infection mode code
                         }
                         else
                         {

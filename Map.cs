@@ -1,8 +1,8 @@
-﻿using GTA;
+﻿using CWDM.Extensions;
+using GTA;
 using GTA.Math;
 using GTA.Native;
 using System.Linq;
-using CWDM.Extensions;
 
 namespace CWDM
 {
@@ -10,6 +10,7 @@ namespace CWDM
     {
         public static bool MapPrepared = false;
         public static bool Electricity = false;
+
         public static Weather[] Weathers =
         {
             Weather.Clear,
@@ -23,11 +24,13 @@ namespace CWDM
             Weather.Smog,
             Weather.ThunderStorm
         };
+
         public static Model[] LockedDoors =
         {
             new Model("v_ilev_gc_door03"),
             new Model("v_ilev_gc_door04")
         };
+
         public static Model[] ElectricDoors =
         {
             new Model("apa_prop_ss1_mpint_garage2"),
@@ -140,6 +143,7 @@ namespace CWDM
             new Model("v_ilev_tow_doorliftb"),
             new Model("xm_prop_base_slide_door")
         };
+
         public static string[] KillScripts =
         {
             "abigail1",

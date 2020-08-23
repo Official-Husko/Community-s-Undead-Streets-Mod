@@ -1,9 +1,9 @@
-﻿using GTA;
+﻿using CWDM.Enums;
+using CWDM.Inventory;
+using GTA;
 using GTA.Native;
 using NativeUI;
 using System.Collections.Generic;
-using CWDM.Enums;
-using CWDM.Inventory;
 
 namespace CWDM
 {

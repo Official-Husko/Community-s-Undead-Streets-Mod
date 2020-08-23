@@ -1,9 +1,9 @@
-﻿using GTA;
+﻿using CWDM.Extensions;
+using GTA;
 using GTA.Math;
 using GTA.Native;
 using System;
 using System.Collections.Generic;
-using CWDM.Extensions;
 
 namespace CWDM
 {

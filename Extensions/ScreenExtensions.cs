@@ -1,5 +1,5 @@
-﻿using GTA.Native;
-using CWDM.Enums;
+﻿using CWDM.Enums;
+using GTA.Native;
 
 namespace CWDM.Extensions
 {

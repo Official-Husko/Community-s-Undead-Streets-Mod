@@ -1,8 +1,8 @@
-﻿using GTA;
+﻿using CWDM.Extensions;
+using GTA;
 using GTA.Math;
 using System;
 using System.Linq;
-using CWDM.Extensions;
 
 namespace CWDM.Interactives
 {

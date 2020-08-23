@@ -1,12 +1,12 @@
-﻿using GTA;
+﻿using CWDM.Enums;
+using CWDM.Extensions;
+using CWDM.Inventory;
+using GTA;
 using GTA.Math;
 using NativeUI;
 using System;
 using System.Drawing;
 using System.Linq;
-using CWDM.Enums;
-using CWDM.Extensions;
-using CWDM.Inventory;
 
 namespace CWDM.Interactives
 {
