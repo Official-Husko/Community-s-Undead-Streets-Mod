@@ -352,12 +352,9 @@ namespace CWDM
         {
             Vector3 spawnPosition;
             int zoneMaxZombies = MaxZombies;
-            if (EnableCityPopulationDifference)
+            if (EnableCityPopulationDifference && !IsCityZone(Game.Player.Character.Position))
             {
-                if (!IsCityZone(Game.Player.Character.Position))
-                {
-                    zoneMaxZombies = MaxZombies / 2;
-                }
+                zoneMaxZombies = MaxZombies / 2;
             }
             Ped[] peds = World.GetAllPeds();
             List<Ped> pedsList = new List<Ped>(peds);
@@ -406,12 +403,9 @@ namespace CWDM
             {
                 Vector3 spawnPosition;
                 int zoneMaxVehicles = MaxVehicles;
-                if (EnableCityPopulationDifference)
+                if (EnableCityPopulationDifference && !IsCityZone(Game.Player.Character.Position))
                 {
-                    if (!IsCityZone(Game.Player.Character.Position))
-                    {
-                        zoneMaxVehicles = MaxVehicles / 2;
-                    }
+                    zoneMaxVehicles = MaxVehicles / 2;
                 }
                 Vehicle[] vehicles = World.GetAllVehicles();
                 List<Vehicle> vehiclesList = new List<Vehicle>(vehicles);
