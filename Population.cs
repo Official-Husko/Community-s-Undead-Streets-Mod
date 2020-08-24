@@ -1,11 +1,11 @@
-﻿using CWDM.Enums;
+﻿using System;
+using System.Collections.Generic;
+using CWDM.EntityWrappers;
+using CWDM.Enums;
 using CWDM.Extensions;
-using CWDM.Wrappers;
 using GTA;
 using GTA.Math;
 using GTA.Native;
-using System;
-using System.Collections.Generic;
 
 namespace CWDM
 {
@@ -40,7 +40,7 @@ namespace CWDM
         public static int MaxHostileGroup = 4;
         public static float MinSpawnDistance = 50f;
         public static float MaxSpawnDistance = 75f;
-        public static DateTime SurvivorLastSpawnTime = new DateTime();
+        public static DateTime SurvivorLastSpawnTime;
         public static bool CustomZombies = false;
 
         public static List<string> ZombieModels = new List<string>
@@ -334,7 +334,7 @@ namespace CWDM
             "Richman",
             "GWC and Golfing Society",
             "West Vinewood",
-            "Vinewood Racetrack",
+            "Vinewood Racetrack"
         };
 
         public Population()
@@ -354,10 +354,7 @@ namespace CWDM
 
         public static bool IsSafeZone(Vector3 position)
         {
-            if (!EnableSafeZones)
-            {
-                return false;
-            }
+            if (!EnableSafeZones) return false;
             return SafeZones.Exists(a => a.Equals(World.GetZoneName(position)));
         }
 
@@ -369,41 +366,29 @@ namespace CWDM
         public static void PopulateZombies()
         {
             Vector3 spawnPosition;
-            int zoneMaxZombies = MaxZombies;
+            var zoneMaxZombies = MaxZombies;
             if (EnableCityPopulationDifference && !IsCityZone(Game.Player.Character.Position))
-            {
                 zoneMaxZombies = MaxZombies / 2;
-            }
-            Ped[] peds = World.GetAllPeds();
-            List<Ped> pedsList = new List<Ped>(peds);
-            for (int i = 0; i < pedsList.Count; i++)
-            {
+            var peds = World.GetAllPeds();
+            var pedsList = new List<Ped>(peds);
+            for (var i = 0; i < pedsList.Count; i++)
                 if (pedsList[i].RelationshipGroup != Relationships.ZombieGroup)
-                {
                     pedsList.RemoveAt(i);
-                }
-            }
-            for (int i = 0; i < zoneMaxZombies; i++)
+            for (var i = 0; i < zoneMaxZombies; i++)
             {
-                if (pedsList.Count >= zoneMaxZombies)
-                {
-                    continue;
-                }
-                Random random = new Random();
-                int chance = random.Next(0, 1);
+                if (pedsList.Count >= zoneMaxZombies) continue;
+                var random = new Random();
+                var chance = random.Next(0, 1);
                 if (chance == 0)
-                {
-                    spawnPosition = World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance), true);
-                }
+                    spawnPosition =
+                        World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance), true);
                 else
-                {
-                    spawnPosition = World.GetNextPositionOnSidewalk(Game.Player.Character.Position.Around(MaxSpawnDistance));
-                }
-                Vector3 checkPosition = spawnPosition.Around(5);
-                if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() || (float)Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance || IsSafeZone(checkPosition))
-                {
-                    continue;
-                }
+                    spawnPosition =
+                        World.GetNextPositionOnSidewalk(Game.Player.Character.Position.Around(MaxSpawnDistance));
+                var checkPosition = spawnPosition.Around(5);
+                if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() ||
+                    (float) Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance ||
+                    IsSafeZone(checkPosition)) continue;
                 try
                 {
                     ZombiePeds.Add(SpawnZombie(spawnPosition));
@@ -419,25 +404,20 @@ namespace CWDM
         {
             if (!EnableVehicles) return;
             Vector3 spawnPosition;
-            int zoneMaxVehicles = MaxVehicles;
+            var zoneMaxVehicles = MaxVehicles;
             if (EnableCityPopulationDifference && !IsCityZone(Game.Player.Character.Position))
-            {
                 zoneMaxVehicles = MaxVehicles / 2;
-            }
-            Vehicle[] vehicles = World.GetAllVehicles();
-            List<Vehicle> vehiclesList = new List<Vehicle>(vehicles);
-            for (int i = 0; i < zoneMaxVehicles; i++)
+            var vehicles = World.GetAllVehicles();
+            var vehiclesList = new List<Vehicle>(vehicles);
+            for (var i = 0; i < zoneMaxVehicles; i++)
             {
-                if (vehiclesList.Count >= zoneMaxVehicles)
-                {
-                    continue;
-                }
-                spawnPosition = World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance), true);
-                Vector3 checkPosition = spawnPosition.Around(5);
-                if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() || (float)Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance || IsSafeZone(checkPosition))
-                {
-                    continue;
-                }
+                if (vehiclesList.Count >= zoneMaxVehicles) continue;
+                spawnPosition =
+                    World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance), true);
+                var checkPosition = spawnPosition.Around(5);
+                if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() ||
+                    (float) Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance ||
+                    IsSafeZone(checkPosition)) continue;
                 try
                 {
                     Vehicles.Add(SpawnVehicle(spawnPosition));
@@ -453,37 +433,27 @@ namespace CWDM
         {
             if (!EnableAnimals) return;
             Vector3 spawnPosition;
-            int zoneMaxAnimals = MaxAnimals;
+            var zoneMaxAnimals = MaxAnimals;
             if (EnableCityPopulationDifference)
-            {
                 if (!IsCityZone(Game.Player.Character.Position))
-                {
                     zoneMaxAnimals = MaxAnimals / 2;
-                }
-            }
-            Ped[] peds = World.GetAllPeds();
-            List<Ped> pedsList = new List<Ped>(peds);
-            for (int i = 0; i < pedsList.Count; i++)
-            {
+            var peds = World.GetAllPeds();
+            var pedsList = new List<Ped>(peds);
+            for (var i = 0; i < pedsList.Count; i++)
                 if (pedsList[i].RelationshipGroup != Relationships.AnimalGroup)
-                {
                     pedsList.RemoveAt(i);
-                }
-            }
-            for (int i = 0; i < zoneMaxAnimals; i++)
+            for (var i = 0; i < zoneMaxAnimals; i++)
             {
-                if (pedsList.Count >= zoneMaxAnimals)
-                {
-                    continue;
-                }
-                Random random = new Random();
-                int chance = random.Next(0, 1);
-                spawnPosition = chance == 0 ? World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance), true) : World.GetNextPositionOnSidewalk(Game.Player.Character.Position.Around(MaxSpawnDistance));
-                Vector3 checkPosition = spawnPosition.Around(5);
-                if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() || (float)Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance || IsSafeZone(checkPosition))
-                {
-                    continue;
-                }
+                if (pedsList.Count >= zoneMaxAnimals) continue;
+                var random = new Random();
+                var chance = random.Next(0, 1);
+                spawnPosition = chance == 0
+                    ? World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance), true)
+                    : World.GetNextPositionOnSidewalk(Game.Player.Character.Position.Around(MaxSpawnDistance));
+                var checkPosition = spawnPosition.Around(5);
+                if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() ||
+                    (float) Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance ||
+                    IsSafeZone(checkPosition)) continue;
                 try
                 {
                     AnimalPeds.Add(SpawnAnimal(spawnPosition));
@@ -498,23 +468,21 @@ namespace CWDM
         public static void PopulateSurvivors()
         {
             if (!EnableSurvivors) return;
-            TimeSpan timeSpan = new TimeSpan(0, SurvivorTimeMins, 0);
-            DateTime checkTime = SurvivorLastSpawnTime.Add(timeSpan);
+            var timeSpan = new TimeSpan(0, SurvivorTimeMins, 0);
+            var checkTime = SurvivorLastSpawnTime.Add(timeSpan);
             if (checkTime >= DateTime.UtcNow) return;
             SurvivorLastSpawnTime = DateTime.UtcNow;
             Vector3 spawnPosition;
-            bool inVehicle = false;
+            var inVehicle = false;
             if (EnableSurvivorVehicles)
             {
-                Random random1 = new Random();
-                int chance1 = random1.Next(0, 10);
-                if (chance1 > 6)
-                {
-                    inVehicle = true;
-                }
+                var random1 = new Random();
+                var chance1 = random1.Next(0, 10);
+                if (chance1 > 6) inVehicle = true;
             }
-            GroupType groupType = GroupType.Friendly;
-            Random random2 = new Random();
+
+            var groupType = GroupType.Friendly;
+            var random2 = new Random();
             switch (random2.Next(0, 3))
             {
                 case 0:
@@ -529,8 +497,9 @@ namespace CWDM
                     groupType = GroupType.Hostile;
                     break;
             }
-            int groupSize = 1;
-            Random random3 = new Random();
+
+            var groupSize = 1;
+            var random3 = new Random();
             switch (groupType)
             {
                 case GroupType.Friendly:
@@ -545,14 +514,16 @@ namespace CWDM
                     groupSize = random3.Next(MinHostileGroup, MaxHostileGroup);
                     break;
             }
-            Random random4 = new Random();
-            int chance4 = random4.Next(0, 2);
-            spawnPosition = chance4 == 0 ? World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance * 2), true) : World.GetNextPositionOnSidewalk(Game.Player.Character.Position.Around(MaxSpawnDistance * 2));
-            Vector3 checkPosition = spawnPosition.Around(5);
-            if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() || (float)Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance || IsSafeZone(checkPosition))
-            {
-                return;
-            }
+
+            var random4 = new Random();
+            var chance4 = random4.Next(0, 2);
+            spawnPosition = chance4 == 0
+                ? World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance * 2), true)
+                : World.GetNextPositionOnSidewalk(Game.Player.Character.Position.Around(MaxSpawnDistance * 2));
+            var checkPosition = spawnPosition.Around(5);
+            if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() ||
+                (float) Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance ||
+                IsSafeZone(checkPosition)) return;
             try
             {
                 SpawnSurvivorGroup(groupType, groupSize, spawnPosition, inVehicle);
@@ -563,46 +534,48 @@ namespace CWDM
             }
         }
 
-        public static void SpawnSurvivorGroup(GroupType groupType, int groupSize, Vector3 position, bool inVehicle = false)
+        public static void SpawnSurvivorGroup(GroupType groupType, int groupSize, Vector3 position,
+            bool inVehicle = false)
         {
-            List<Ped> peds = new List<Ped>();
-            PedGroup pedGroup = new PedGroup();
-            for (int i = 0; i < groupSize; i++)
+            var peds = new List<Ped>();
+            var pedGroup = new PedGroup();
+            for (var i = 0; i < groupSize; i++)
             {
                 SurvivorPeds.Add(SpawnSurvivor(position.Around(5f)));
-                peds.Add(SurvivorPeds[SurvivorPeds.Count - 1].pedEntity);
+                peds.Add(SurvivorPeds[SurvivorPeds.Count - 1].PedEntity);
             }
-            for (int i = 0; i < peds.Count; i++)
+
+            for (var i = 0; i < peds.Count; i++)
             {
                 switch (groupType)
                 {
                     case GroupType.Friendly:
-                        {
-                            peds[i].RelationshipGroup = Relationships.FriendlyGroup;
-                            Blip blip = peds[i].AddBlip();
-                            blip.Color = BlipColor.Blue;
-                            blip.Scale = 0.65f;
-                            blip.Name = "Friendly";
-                            break;
-                        }
+                    {
+                        peds[i].RelationshipGroup = Relationships.FriendlyGroup;
+                        var blip = peds[i].AddBlip();
+                        blip.Color = BlipColor.Blue;
+                        blip.Scale = 0.65f;
+                        blip.Name = "Friendly";
+                        break;
+                    }
                     case GroupType.Neutral:
-                        {
-                            peds[i].RelationshipGroup = Relationships.NeutralGroup;
-                            Blip blip = peds[i].AddBlip();
-                            blip.Color = BlipColor.Yellow;
-                            blip.Scale = 0.65f;
-                            blip.Name = "Neutral";
-                            break;
-                        }
+                    {
+                        peds[i].RelationshipGroup = Relationships.NeutralGroup;
+                        var blip = peds[i].AddBlip();
+                        blip.Color = BlipColor.Yellow;
+                        blip.Scale = 0.65f;
+                        blip.Name = "Neutral";
+                        break;
+                    }
                     case GroupType.Hostile:
-                        {
-                            peds[i].RelationshipGroup = Relationships.HostileGroup;
-                            Blip blip = peds[i].AddBlip();
-                            blip.Color = BlipColor.Red;
-                            blip.Scale = 0.65f;
-                            blip.Name = "Hostile";
-                            break;
-                        }
+                    {
+                        peds[i].RelationshipGroup = Relationships.HostileGroup;
+                        var blip = peds[i].AddBlip();
+                        blip.Color = BlipColor.Red;
+                        blip.Scale = 0.65f;
+                        blip.Name = "Hostile";
+                        break;
+                    }
                 }
 
                 if (i == 0)
@@ -619,7 +592,7 @@ namespace CWDM
 
             if (!inVehicle) return;
             {
-                Model model = GetRandomVehicleModel();
+                var model = GetRandomVehicleModel();
                 switch (groupType)
                 {
                     case GroupType.Friendly:
@@ -635,25 +608,19 @@ namespace CWDM
                         break;
                 }
 
-                Vehicles.Add(new VehicleEntity(CreatePersistentVehicle(model, World.GetNextPositionOnStreet(position), MathExtensions.RandomHeading())));
-                Vehicle vehicle = Vehicles[Vehicles.Count - 1].vehicle;
-                for (int i = 0; i < peds.Count; i++)
-                {
+                Vehicles.Add(new VehicleEntity(CreatePersistentVehicle(model, World.GetNextPositionOnStreet(position),
+                    MathExtensions.RandomHeading())));
+                var vehicle = Vehicles[Vehicles.Count - 1].Vehicle;
+                for (var i = 0; i < peds.Count; i++)
                     if (i == 0)
                     {
-                        if (vehicle.IsSeatFree(VehicleSeat.Driver))
-                        {
-                            peds[i].SetIntoVehicle(vehicle, VehicleSeat.Driver);
-                        }
+                        if (vehicle.IsSeatFree(VehicleSeat.Driver)) peds[i].SetIntoVehicle(vehicle, VehicleSeat.Driver);
                     }
                     else
                     {
-                        if (vehicle.IsSeatFree(VehicleSeat.Any))
-                        {
-                            peds[i].SetIntoVehicle(vehicle, VehicleSeat.Any);
-                        }
+                        if (vehicle.IsSeatFree(VehicleSeat.Any)) peds[i].SetIntoVehicle(vehicle, VehicleSeat.Any);
                     }
-                }
+
                 peds[0].Task.CruiseWithVehicle(vehicle, 15f);
             }
         }
@@ -661,7 +628,9 @@ namespace CWDM
         public static SurvivorPed SpawnSurvivor(Vector3 position)
         {
             Ped ped;
-            ped = CustomSurvivors ? World.CreatePed(GetRandomSurvivorModel(), position) : World.CreateRandomPed(position);
+            ped = CustomSurvivors
+                ? World.CreatePed(GetRandomSurvivorModel(), position)
+                : World.CreateRandomPed(position);
             Function.Call(Hash.SET_PED_FLEE_ATTRIBUTES, ped.Handle, 0, 0);
             Function.Call(Hash.SET_PED_PATH_CAN_USE_CLIMBOVERS, ped.Handle, true);
             Function.Call(Hash.SET_PED_PATH_CAN_USE_LADDERS, ped.Handle, true);
@@ -671,8 +640,8 @@ namespace CWDM
             ped.Accuracy = 75;
             ped.DiesInstantlyInWater = false;
             Function.Call(Hash.SET_PED_COMBAT_MOVEMENT, ped.Handle, 1, true);
-            Random random = new Random();
-            int rndWeapon = random.Next(0, 10);
+            var random = new Random();
+            var rndWeapon = random.Next(0, 10);
             ped.MaxHealth = SurvivorHealth;
             ped.Health = ped.MaxHealth;
             ped.Armor = SurvivorArmor;
@@ -682,12 +651,14 @@ namespace CWDM
                 ped.Weapons.Give(WeaponHash.Pistol, 120, true, true);
                 ped.Weapons.Give(WeaponHash.Knife, 0, false, true);
             }
+
             if (rndWeapon >= 5)
             {
                 ped.Weapons.Give(WeaponHash.AssaultRifle, 300, true, true);
                 ped.Weapons.Give(WeaponHash.CombatPistol, 120, true, true);
                 ped.Weapons.Give(WeaponHash.BattleAxe, 0, false, true);
             }
+
             ped.Weapons.Select(ped.Weapons.BestWeapon.Hash, true);
             ped.Money = 0;
             ped.NeverLeavesGroup = true;
@@ -716,31 +687,33 @@ namespace CWDM
 
         public static Model GetRandomSurvivorModel()
         {
-            Model model = new Model(SurvivorModels.GetRandomElementFromList());
+            var model = new Model(SurvivorModels.GetRandomElementFromList());
             return model.Request(1500) ? model : null;
         }
 
         public static Model GetRandomAnimalModel()
         {
             Model model;
-            model = IsCityZone(Game.Player.Character.Position) ? new Model(CityAnimalModels.GetRandomElementFromList()) : new Model(CountryAnimalModels.GetRandomElementFromList());
+            model = IsCityZone(Game.Player.Character.Position)
+                ? new Model(CityAnimalModels.GetRandomElementFromList())
+                : new Model(CountryAnimalModels.GetRandomElementFromList());
             return model.Request(1500) ? model : null;
         }
 
         public static Model GetRandomVehicleModel()
         {
             Model model;
-            model = IsCityZone(Game.Player.Character.Position) ? new Model(CityVehicleModels.GetRandomElementFromList()) : new Model(CountryVehicleModels.GetRandomElementFromList());
+            model = IsCityZone(Game.Player.Character.Position)
+                ? new Model(CityVehicleModels.GetRandomElementFromList())
+                : new Model(CountryVehicleModels.GetRandomElementFromList());
             return model.Request(1500) ? model : null;
         }
 
         public static Vehicle CreatePersistentVehicle(Model model, Vector3 position, float heading = 0.0f)
         {
-            if (!model.IsVehicle || !model.Request(1000))
-            {
-                return null;
-            }
-            Vehicle vehicle = Function.Call<Vehicle>(Hash.CREATE_VEHICLE, model.Hash, position.X, position.Y, position.Z, heading, false, false);
+            if (!model.IsVehicle || !model.Request(1000)) return null;
+            var vehicle = Function.Call<Vehicle>(Hash.CREATE_VEHICLE, model.Hash, position.X, position.Y, position.Z,
+                heading, false, false);
             Function.Call(Hash.SET_VEHICLE_ON_GROUND_PROPERLY, vehicle);
             Function.Call(Hash.SET_ENTITY_AS_MISSION_ENTITY, vehicle, true, false);
             return vehicle;
@@ -748,20 +721,20 @@ namespace CWDM
 
         public static AnimalPed SpawnAnimal(Vector3 position)
         {
-            Model model = GetRandomAnimalModel();
-            Ped animal = World.CreatePed(model, position);
+            var model = GetRandomAnimalModel();
+            var animal = World.CreatePed(model, position);
             animal.RelationshipGroup = Relationships.AnimalGroup;
-            AnimalPed animalPed = new AnimalPed(animal);
+            var animalPed = new AnimalPed(animal);
             animal.Task.WanderAround();
             return animalPed;
         }
 
         public static VehicleEntity SpawnVehicle(Vector3 position)
         {
-            Model model = GetRandomVehicleModel();
-            float heading = MathExtensions.RandomHeading();
-            Vehicle vehicle = CreatePersistentVehicle(model, position, heading);
-            VehicleEntity vehicleEntity = new VehicleEntity(vehicle);
+            var model = GetRandomVehicleModel();
+            var heading = MathExtensions.RandomHeading();
+            var vehicle = CreatePersistentVehicle(model, position, heading);
+            var vehicleEntity = new VehicleEntity(vehicle);
             vehicle.SmashWindow(VehicleWindow.BackLeftWindow);
             vehicle.SmashWindow(VehicleWindow.BackRightWindow);
             vehicle.SmashWindow(VehicleWindow.FrontLeftWindow);
@@ -770,12 +743,9 @@ namespace CWDM
             vehicle.OpenDoor(vehicle.GetRandomDoor(), false, true);
             vehicle.OpenDoor(vehicle.GetRandomDoor(), false, true);
             vehicle.OpenDoor(vehicle.GetRandomDoor(), false, true);
-            Random random = new Random();
-            int chance = random.Next(0, 100);
-            if (chance > 15)
-            {
-                vehicle.EngineHealth = 0f;
-            }
+            var random = new Random();
+            var chance = random.Next(0, 100);
+            if (chance > 15) vehicle.EngineHealth = 0f;
             return vehicleEntity;
         }
 
@@ -784,13 +754,14 @@ namespace CWDM
             Ped ped;
             if (CustomZombies)
             {
-                Model model = GetRandomZombieModel();
+                var model = GetRandomZombieModel();
                 ped = World.CreatePed(model, position);
             }
             else
             {
                 ped = World.CreateRandomPed(position);
             }
+
             Infect(ped);
             return new ZombiePed(ped);
         }
@@ -821,28 +792,24 @@ namespace CWDM
             ped.DrownsInWater = true;
             ped.DiesInstantlyInWater = true;
             if (Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, ped.Handle))
-            {
                 Function.Call(Hash.STOP_CURRENT_PLAYING_AMBIENT_SPEECH, ped.Handle);
-            }
             Function.Call(Hash.STOP_PED_SPEAKING, ped.Handle, 1);
             Function.Call(Hash.DISABLE_PED_PAIN_AUDIO, ped.Handle, true);
             int runnerRnd;
-            TimeSpan time = World.CurrentDayTime;
+            var time = World.CurrentDayTime;
             if (time.Hours >= 20 || time.Hours <= 3)
             {
-                Random random = new Random();
+                var random = new Random();
                 runnerRnd = random.Next(0, 100);
             }
             else
             {
-                Random random = new Random();
+                var random = new Random();
                 runnerRnd = random.Next(0, 50);
             }
+
             bool isRunner;
-            if (!FastZombies)
-            {
-                runnerRnd = 100;
-            }
+            if (!FastZombies) runnerRnd = 100;
             if (runnerRnd <= 10)
             {
                 isRunner = true;
@@ -853,6 +820,7 @@ namespace CWDM
                 isRunner = false;
                 ped.SetMovementAnim("move_m@drunk@verydrunk");
             }
+
             ped.CanWrithe = false;
             ped.MaxHealth = ZombieHealth;
             ped.Health = ZombieHealth;
@@ -862,15 +830,9 @@ namespace CWDM
             ped.SetHearingRange(60f);
             ped.AlwaysDiesOnLowHealth = false;
             ped.AlwaysKeepTask = true;
-            ZombiePed newZombie = new ZombiePed(ped);
-            if (isRunner)
-            {
-                newZombie.isRunner = true;
-            }
-            if (!ZombiePeds.Exists(match: a => a.pedEntity == ped))
-            {
-                ZombiePeds.Add(newZombie);
-            }
+            var newZombie = new ZombiePed(ped);
+            if (isRunner) newZombie.IsRunner = true;
+            if (!ZombiePeds.Exists(a => a.PedEntity == ped)) ZombiePeds.Add(newZombie);
         }
     }
 }

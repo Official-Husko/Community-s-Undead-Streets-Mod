@@ -1,19 +1,18 @@
-﻿using CWDM.Extensions;
-using GTA;
-using GTA.Math;
-using GTA.Native;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using CWDM.Extensions;
+using GTA;
+using GTA.Native;
 
-namespace CWDM.Wrappers
+namespace CWDM.EntityWrappers
 {
     public class ZombiePed
     {
-        public Ped pedEntity;
-        public Ped target;
-        public bool isRunner = false;
-        public bool newSearch = true;
-        public bool movingToTarget = false;
+        private bool _movingToTarget;
+        private bool _newSearch = true;
+        private Ped _target;
+        public bool IsRunner = false;
+        public Ped PedEntity;
 
         public ZombiePed(Ped pedEntity)
         {
@@ -22,169 +21,168 @@ namespace CWDM.Wrappers
 
         public void AttachData(Ped pedEntity)
         {
-            this.pedEntity = pedEntity;
+            PedEntity = pedEntity;
         }
 
         public void Update()
         {
-            pedEntity.RelationshipGroup = Relationships.ZombieGroup;
-            if (pedEntity == null)
+            PedEntity.RelationshipGroup = Relationships.ZombieGroup;
+            if (PedEntity == null) return;
+            if (PedEntity.IsOnFire) PedEntity.Kill();
+            if (!PedEntity.IsAlive || PedEntity.DistanceBetween(Game.Player.Character) > 100)
             {
+                var blip = PedEntity.CurrentBlip;
+                if (blip.Handle != 0) blip.Remove();
                 return;
             }
-            if (pedEntity.IsOnFire)
+
+            if (Population.FastZombies && PedEntity.IsRunning)
             {
-                pedEntity.Kill();
-            }
-            if (!pedEntity.IsAlive || pedEntity.DistanceBetween(Game.Player.Character) > 100)
-            {
-                Blip blip = pedEntity.CurrentBlip;
-                if (blip.Handle != 0)
-                {
-                    blip.Remove();
-                }
-                return;
-            }
-            if (Population.FastZombies && pedEntity.IsRunning)
-            {
-                Function.Call(Hash.STOP_PED_SPEAKING, pedEntity.Handle, 0);
-                Function.Call(Hash.DISABLE_PED_PAIN_AUDIO, pedEntity.Handle, false);
-                Function.Call(Hash.PLAY_PAIN, pedEntity.Handle, 8, 0, 0);
-                Function.Call(Hash.PLAY_FACIAL_ANIM, pedEntity.Handle, "burning_1", "facials@gen_male@base");
+                Function.Call(Hash.STOP_PED_SPEAKING, PedEntity.Handle, 0);
+                Function.Call(Hash.DISABLE_PED_PAIN_AUDIO, PedEntity.Handle, false);
+                Function.Call(Hash.PLAY_PAIN, PedEntity.Handle, 8, 0, 0);
+                Function.Call(Hash.PLAY_FACIAL_ANIM, PedEntity.Handle, "burning_1", "facials@gen_male@base");
             }
             else
             {
-                Function.Call(Hash.STOP_PED_SPEAKING, pedEntity.Handle, 1);
-                Function.Call(Hash.DISABLE_PED_PAIN_AUDIO, pedEntity.Handle, true);
+                Function.Call(Hash.STOP_PED_SPEAKING, PedEntity.Handle, 1);
+                Function.Call(Hash.DISABLE_PED_PAIN_AUDIO, PedEntity.Handle, true);
             }
-            if (Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, pedEntity.Handle))
-            {
-                Function.Call(Hash.STOP_CURRENT_PLAYING_AMBIENT_SPEECH, pedEntity.Handle);
-            }
-            if (isRunner)
-            {
-                pedEntity.SetMovementAnim("move_m@injured");
-            }
+
+            if (Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, PedEntity.Handle))
+                Function.Call(Hash.STOP_CURRENT_PLAYING_AMBIENT_SPEECH, PedEntity.Handle);
+            if (IsRunner)
+                PedEntity.SetMovementAnim("move_m@injured");
             else
+                PedEntity.SetMovementAnim("move_m@drunk@verydrunk");
+            if (_target == null)
             {
-                pedEntity.SetMovementAnim("move_m@drunk@verydrunk");
-            }
-            if (target == null)
-            {
-                movingToTarget = false;
-                target = FindTarget();
+                _movingToTarget = false;
+                _target = FindTarget();
                 Task.Delay(100);
-                if (target == null && newSearch)
+                if (_target == null && _newSearch)
                 {
-                    pedEntity.Task.WanderAround();
-                    newSearch = false;
-                    return;
+                    PedEntity.Task.WanderAround();
+                    _newSearch = false;
                 }
             }
             else
             {
-                if (!target.IsAlive || pedEntity.DistanceBetween(target) >= 80 || target.RelationshipGroup == Relationships.ZombieGroup)
+                if (!_target.IsAlive || PedEntity.DistanceBetween(_target) >= 80 ||
+                    _target.RelationshipGroup == Relationships.ZombieGroup)
                 {
-                    target = null;
-                    newSearch = true;
-                    movingToTarget = false;
-                    target = FindTarget();
+                    _target = null;
+                    _newSearch = true;
+                    _movingToTarget = false;
+                    _target = FindTarget();
                     Task.Delay(100);
-                    if (target == null && newSearch)
+                    if (_target == null && _newSearch)
                     {
-                        pedEntity.Task.WanderAround();
-                        newSearch = false;
+                        PedEntity.Task.WanderAround();
+                        _newSearch = false;
                         return;
                     }
                 }
-                if (pedEntity.DistanceBetween(target) <= 1.2 && !target.IsInVehicle())
+
+                if (_target != null && PedEntity.DistanceBetween(_target) <= 1.2 && !_target.IsInVehicle())
                 {
-                    movingToTarget = false;
-                    Vector3 val = target.Position - pedEntity.Position;
-                    pedEntity.Heading = val.ToHeading();
+                    _movingToTarget = false;
+                    var val = _target.Position - PedEntity.Position;
+                    PedEntity.Heading = val.ToHeading();
                     Task.Delay(100);
-                    if (target.IsDead)
+                    if (_target.IsDead)
                     {
-                        if (!Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, pedEntity, "amb@world_human_bum_wash@male@high@idle_a", "idle_b", 3))
+                        if (!Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, PedEntity,
+                            "amb@world_human_bum_wash@male@high@idle_a", "idle_b", 3))
                         {
-                            pedEntity.Task.PlayAnimation("amb@world_human_bum_wash@male@high@idle_a", "idle_b", 8f, -1, AnimationFlags.Loop);
+                            PedEntity.Task.PlayAnimation("amb@world_human_bum_wash@male@high@idle_a", "idle_b", 8f, -1,
+                                AnimationFlags.Loop);
                             Task.Delay(5000);
                         }
                     }
-                    else if (!Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, pedEntity, "rcmbarry", "bar_1_teleport_aln", 3))
+                    else if (!Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, PedEntity, "rcmbarry",
+                        "bar_1_teleport_aln", 3))
                     {
-                        pedEntity.Task.PlayAnimation("rcmbarry", "bar_1_teleport_aln", 8f, 1000, (AnimationFlags)16);
+                        PedEntity.Task.PlayAnimation("rcmbarry", "bar_1_teleport_aln", 8f, 1000, (AnimationFlags) 16);
                         Task.Delay(1000);
-                        target.ApplyDamage(Population.ZombieDamage);
-                        if (target == Game.Player.Character)
+                        _target.ApplyDamage(Population.ZombieDamage);
+                        if (_target == Game.Player.Character)
                         {
                             // Placeholder for Zombie Infection mode code
                         }
                         else
                         {
-                            Random random = new Random();
-                            int rnd = random.Next(0, 2);
-                            Blip targetBlip = target.CurrentBlip;
-                            if (targetBlip.Handle != 0)
-                            {
-                                targetBlip.Remove();
-                            }
+                            var random = new Random();
+                            var rnd = random.Next(0, 2);
+                            var targetBlip = _target.CurrentBlip;
+                            if (targetBlip.Handle != 0) targetBlip.Remove();
                             if (rnd == 0)
                             {
-                                Function.Call(Hash.SET_PED_TO_RAGDOLL, target.Handle, 3000, 0, 0, false, false, false);
-                                target.Weapons.Drop();
+                                Function.Call(Hash.SET_PED_TO_RAGDOLL, _target.Handle, 3000, 0, 0, false, false, false);
+                                _target.Weapons.Drop();
                                 Task.Delay(7000);
-                                InfectTarget(target);
-                                target.LeaveGroup();
-                                target.Weapons.Drop();
-                                target = null;
-                                newSearch = true;
-                                target = FindTarget();
-                                if (target == null && newSearch)
+                                InfectTarget(_target);
+                                _target.LeaveGroup();
+                                _target.Weapons.Drop();
+                                _target = null;
+                                _newSearch = true;
+                                _target = FindTarget();
+                                if (_target == null && _newSearch)
                                 {
-                                    pedEntity.Task.WanderAround();
-                                    newSearch = false;
+                                    PedEntity.Task.WanderAround();
+                                    _newSearch = false;
                                     return;
                                 }
                             }
                             else
                             {
-                                target.Weapons.Drop();
-                                target.Kill();
+                                _target.Weapons.Drop();
+                                _target.Kill();
                             }
                         }
                     }
-                    if (target != null)
+
+                    if (_target != null)
                     {
-                        if (isRunner)
+                        if (IsRunner)
                         {
-                            pedEntity.SetMovementAnim("move_m@injured");
-                            Function.Call(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, pedEntity.Handle, target.Handle, 1f, 1f, 0f, 5f, -1, 1f, true);
-                            movingToTarget = true;
+                            PedEntity.SetMovementAnim("move_m@injured");
+                            Function.Call(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, PedEntity.Handle, _target.Handle, 1f,
+                                1f,
+                                0f, 5f, -1, 1f, true);
+                            _movingToTarget = true;
                         }
                         else
                         {
-                            pedEntity.SetMovementAnim("move_m@drunk@verydrunk");
-                            Function.Call(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, pedEntity.Handle, target.Handle, 1f, 1f, 0f, 1f, -1, 1f, true);
-                            movingToTarget = true;
+                            PedEntity.SetMovementAnim("move_m@drunk@verydrunk");
+                            Function.Call(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, PedEntity.Handle, _target.Handle, 1f,
+                                1f,
+                                0f, 1f, -1, 1f, true);
+                            _movingToTarget = true;
                         }
                     }
                 }
                 else
                 {
-                    if (!movingToTarget)
+                    if (!_movingToTarget)
                     {
-                        if (isRunner)
+                        if (IsRunner)
                         {
-                            pedEntity.SetMovementAnim("move_m@injured");
-                            Function.Call(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, pedEntity.Handle, target.Handle, 1f, 1f, 0f, 5f, -1, 1f, true);
-                            movingToTarget = true;
+                            PedEntity.SetMovementAnim("move_m@injured");
+                            if (_target != null)
+                                Function.Call(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, PedEntity.Handle, _target.Handle,
+                                    1f, 1f,
+                                    0f, 5f, -1, 1f, true);
+                            _movingToTarget = true;
                         }
                         else
                         {
-                            pedEntity.SetMovementAnim("move_m@drunk@verydrunk");
-                            Function.Call(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, pedEntity.Handle, target.Handle, 1f, 1f, 0f, 1f, -1, 1f, true);
-                            movingToTarget = true;
+                            PedEntity.SetMovementAnim("move_m@drunk@verydrunk");
+                            if (_target != null)
+                                Function.Call(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, PedEntity.Handle, _target.Handle,
+                                    1f, 1f,
+                                    0f, 1f, -1, 1f, true);
+                            _movingToTarget = true;
                         }
                     }
                 }
@@ -195,24 +193,20 @@ namespace CWDM.Wrappers
         {
             Population.Infect(ped);
             Population.ZombiePeds.Add(new ZombiePed(ped));
-            if (Population.SurvivorPeds.Exists(match: a => a.pedEntity == ped))
-            {
-                Population.SurvivorPeds.RemoveAt(Population.SurvivorPeds.FindIndex(match: a => a.pedEntity == ped));
-            }
+            if (Population.SurvivorPeds.Exists(a => a.PedEntity == ped))
+                Population.SurvivorPeds.RemoveAt(Population.SurvivorPeds.FindIndex(a => a.PedEntity == ped));
         }
 
         private static bool CanHearPed(Ped hearer, Ped target)
         {
-            float distance = target.Position.DistanceTo(hearer.Position);
-            return !IsWeaponWellSilenced(target, distance) || IsBehindZombie(distance) || IsRunningNoticed(target, distance);
+            var distance = target.Position.DistanceTo(hearer.Position);
+            return !IsWeaponWellSilenced(target, distance) || IsBehindZombie(distance) ||
+                   IsRunningNoticed(target, distance);
         }
 
         private static bool IsWeaponWellSilenced(Ped ped, float distance)
         {
-            if (ped.IsShooting)
-            {
-                return ped.IsCurrentWeaponSileced() && distance > 15f;
-            }
+            if (ped.IsShooting) return ped.IsCurrentWeaponSileced() && distance > 15f;
             return true;
         }
 
@@ -228,14 +222,11 @@ namespace CWDM.Wrappers
 
         private Ped FindTarget()
         {
-            Ped[] targets = World.GetNearbyPeds(pedEntity.Position, 50f);
-            foreach (Ped ped in targets)
-            {
-                if (ped != null && ped.RelationshipGroup != Relationships.ZombieGroup && ped.IsAlive && ped.IsHuman && (pedEntity.HasClearLineOfSight(ped, 35f) || CanHearPed(pedEntity, ped)))
-                {
+            var targets = World.GetNearbyPeds(PedEntity.Position, 50f);
+            foreach (var ped in targets)
+                if (ped != null && ped.RelationshipGroup != Relationships.ZombieGroup && ped.IsAlive && ped.IsHuman &&
+                    (PedEntity.HasClearLineOfSight(ped, 35f) || CanHearPed(PedEntity, ped)))
                     return ped;
-                }
-            }
             return null;
         }
     }

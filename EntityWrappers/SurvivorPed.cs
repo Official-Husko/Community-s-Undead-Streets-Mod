@@ -1,12 +1,12 @@
 ﻿using CWDM.Enums;
 using GTA;
 
-namespace CWDM.Wrappers
+namespace CWDM.EntityWrappers
 {
     public class SurvivorPed
     {
-        public Ped pedEntity;
-        public PedTask task;
+        public Ped PedEntity;
+        public PedTask Task;
 
         public SurvivorPed(Ped pedEntity)
         {
@@ -15,13 +15,13 @@ namespace CWDM.Wrappers
 
         public void AttachData(Ped pedEntity)
         {
-            this.pedEntity = pedEntity;
+            PedEntity = pedEntity;
         }
 
         public void Update()
         {
-            Blip blip = pedEntity.CurrentBlip;
-            if (!pedEntity.IsAlive)
+            var blip = PedEntity.CurrentBlip;
+            if (!PedEntity.IsAlive)
             {
                 if (blip.Handle != 0)
                 {
@@ -29,19 +29,13 @@ namespace CWDM.Wrappers
                 }
                 else
                 {
-                    if (pedEntity.IsInVehicle())
+                    if (PedEntity.IsInVehicle())
                     {
-                        if (blip.Handle != 0)
-                        {
-                            blip.Alpha = 0;
-                        }
+                        if (blip.Handle != 0) blip.Alpha = 0;
                     }
                     else
                     {
-                        if (blip.Handle != 0)
-                        {
-                            blip.Alpha = 255;
-                        }
+                        if (blip.Handle != 0) blip.Alpha = 255;
                     }
                 }
             }

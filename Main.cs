@@ -1,17 +1,17 @@
-﻿using CWDM.Enums;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+using CWDM.Enums;
 using CWDM.Extensions;
 using GTA;
 using GTA.Native;
 using NativeUI;
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace CWDM
 {
     public class Main : Script
     {
-        public static bool ModActive = false;
+        public static bool ModActive;
         public static Keys MenuKey = Keys.F10;
         public static Keys InventoryKey = Keys.I;
         public static MenuPool MasterMenuPool = new MenuPool();
@@ -33,6 +33,7 @@ namespace CWDM
                 Game.Player.WantedLevel = 0;
                 CustomRespawn();
             }
+
             MasterMenuPool.ProcessMenus();
         }
 
@@ -42,29 +43,26 @@ namespace CWDM
             switch (e.KeyCode)
             {
                 case Keys.F6:
-                    {
-                        Ped[] all_ped = World.GetAllPeds();
-                        Vehicle[] all_veh = World.GetAllVehicles();
-                        List<Ped> pedsList = new List<Ped>(all_ped);
-                        for (int i = 0; i < pedsList.Count; i++)
-                        {
-                            if (pedsList[i].RelationshipGroup != Relationships.ZombieGroup)
-                            {
-                                pedsList.RemoveAt(i);
-                            }
-                        }
-                        UI.Notify($"Zombies: {Population.ZombiePeds.Count}~n~Animals: {Population.AnimalPeds.Count}~n~Total Peds: {all_ped.Length}~n~Total Zombie Peds: {pedsList.Count}~n~Vehicles: {Population.Vehicles.Count}~n~Total Vehicles: {all_veh.Length}");
-                        break;
-                    }
+                {
+                    var allPed = World.GetAllPeds();
+                    var allVeh = World.GetAllVehicles();
+                    var pedsList = new List<Ped>(allPed);
+                    for (var i = 0; i < pedsList.Count; i++)
+                        if (pedsList[i].RelationshipGroup != Relationships.ZombieGroup)
+                            pedsList.RemoveAt(i);
+                    UI.Notify(
+                        $"Zombies: {Population.ZombiePeds.Count}~n~Animals: {Population.AnimalPeds.Count}~n~Total Peds: {allPed.Length}~n~Total Zombie Peds: {pedsList.Count}~n~Vehicles: {Population.Vehicles.Count}~n~Total Vehicles: {allVeh.Length}");
+                    break;
+                }
                 case Keys.F7:
-                    {
-                        string coords = $"Co-ordinates: {Game.Player.Character.Position}";
-                        string heading = $"Heading: {Game.Player.Character.Heading}";
-                        UI.Notify($"{coords}~n~{heading}~n~~n~Written to log!");
-                        Log.Write(coords);
-                        Log.Write(heading);
-                        break;
-                    }
+                {
+                    var coords = $"Co-ordinates: {Game.Player.Character.Position}";
+                    var heading = $"Heading: {Game.Player.Character.Heading}";
+                    UI.Notify($"{coords}~n~{heading}~n~~n~Written to log!");
+                    Log.Write(coords);
+                    Log.Write(heading);
+                    break;
+                }
             }
         }
 
@@ -77,9 +75,10 @@ namespace CWDM
             Character.Setup();
             Wait(10000);
             Game.FadeScreenIn(1500);
-            BigMessageThread.MessageInstance.ShowOldMessage("~r~COMMUNITY'S WALKING DEAD MOD", 5000);
+            BigMessageThread.MessageInstance.ShowOldMessage("~r~COMMUNITY'S WALKING DEAD MOD");
             Wait(5000);
-            UI.Notify("Welcome to Community's Walking Dead Mod!~n~~n~Make sure you run the latest version!~n~Please make sure your GTA and all~n~Dependencies are updated!~n~~n~Current Version: Debug Build Aurora");
+            UI.Notify(
+                "Welcome to Community's Walking Dead Mod!~n~~n~Make sure you run the latest version!~n~Please make sure your GTA and all~n~Dependencies are updated!~n~~n~Current Version: Debug Build Aurora");
         }
 
         public static void CustomRespawn()
@@ -93,18 +92,16 @@ namespace CWDM
             ScreenEffect.DeathFailMpDark.StartEffect();
             try
             {
-                BigMessageThread.MessageInstance.ShowOldMessage("~r~WASTED", 5000);
+                BigMessageThread.MessageInstance.ShowOldMessage("~r~WASTED");
             }
             catch (Exception x)
             {
                 Log.Write(x.ToString());
             }
+
             Game.TimeScale = 0.3f;
             Character.CharacterReset = false;
-            while (!Game.IsScreenFadedOut)
-            {
-                Wait(0);
-            }
+            while (!Game.IsScreenFadedOut) Wait(0);
             Function.Call(Hash.TERMINATE_ALL_SCRIPTS_WITH_THIS_NAME, "respawn_controller");
             Game.TimeScale = 1f;
             Function.Call(Hash._STOP_ALL_SCREEN_EFFECTS);
@@ -117,7 +114,9 @@ namespace CWDM
             {
                 Log.Write(x.ToString());
             }
-            Function.Call(Hash.NETWORK_RESURRECT_LOCAL_PLAYER, Character.StartingLocation.X, Character.StartingLocation.Y, Character.StartingLocation.Z, Character.StartingHeading, false, false);
+
+            Function.Call(Hash.NETWORK_RESURRECT_LOCAL_PLAYER, Character.StartingLocation.X,
+                Character.StartingLocation.Y, Character.StartingLocation.Z, Character.StartingHeading, false, false);
             Wait(8000);
             Character.ResetCharacter();
             Game.FadeScreenIn(5000);

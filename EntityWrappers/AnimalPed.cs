@@ -1,10 +1,10 @@
 ﻿using GTA;
 
-namespace CWDM.Wrappers
+namespace CWDM.EntityWrappers
 {
     public class AnimalPed
     {
-        public Ped pedEntity;
+        public Ped PedEntity;
 
         public AnimalPed(Ped pedEntity)
         {
@@ -13,7 +13,7 @@ namespace CWDM.Wrappers
 
         public void AttachData(Ped pedEntity)
         {
-            this.pedEntity = pedEntity;
+            PedEntity = pedEntity;
         }
     }
 }

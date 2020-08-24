@@ -1,7 +1,7 @@
-﻿using GTA;
-using GTA.Native;
-using System;
+﻿using System;
 using System.Linq;
+using GTA;
+using GTA.Native;
 
 namespace CWDM.Extensions
 {
@@ -9,23 +9,26 @@ namespace CWDM.Extensions
     {
         public static VehicleDoor GetRandomDoor(this Vehicle vehicle)
         {
-            VehicleDoor[] vehicleDoors = vehicle.GetDoors();
+            var vehicleDoors = vehicle.GetDoors();
             return vehicleDoors.GetRandomElementFromArray();
         }
 
         public static VehicleWindow GetRandomWindow(this Vehicle vehicle)
         {
-            VehicleWindow[] vehicleWindows = (VehicleWindow[])Enum.GetValues(typeof(VehicleWindow));
+            var vehicleWindows = (VehicleWindow[]) Enum.GetValues(typeof(VehicleWindow));
             vehicleWindows = (from v in vehicleWindows
-                              where Function.Call<bool>(Hash.IS_VEHICLE_WINDOW_INTACT, vehicle.Handle, (int)v)
-                              select v).ToArray();
-            VehicleWindow window = vehicleWindows.GetRandomElementFromArray();
+                where Function.Call<bool>(Hash.IS_VEHICLE_WINDOW_INTACT, vehicle.Handle, (int) v)
+                select v).ToArray();
+            var window = vehicleWindows.GetRandomElementFromArray();
             return window;
         }
 
         public static BlipSprite GetVehicleTypeSprite(this Vehicle vehicle)
         {
-            return ((int)vehicle.ClassType == 8) ? BlipSprite.PersonalVehicleBike : (((int)vehicle.ClassType == 14) ? BlipSprite.Boat : (((int)vehicle.ClassType == 15) ? BlipSprite.Helicopter : (((int)vehicle.ClassType == 16) ? BlipSprite.Plane : BlipSprite.PersonalVehicleCar)));
+            return (int) vehicle.ClassType == 8 ? BlipSprite.PersonalVehicleBike :
+                (int) vehicle.ClassType == 14 ? BlipSprite.Boat :
+                (int) vehicle.ClassType == 15 ? BlipSprite.Helicopter :
+                (int) vehicle.ClassType == 16 ? BlipSprite.Plane : BlipSprite.PersonalVehicleCar;
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using CWDM.Enums;
-using System;
+﻿using System;
+using CWDM.Enums;
 
 namespace CWDM.Inventory
 {

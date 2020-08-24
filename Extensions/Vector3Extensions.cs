@@ -7,11 +7,11 @@ namespace CWDM.Extensions
     {
         public static bool IsOnScreen(this Vector3 vector3)
         {
-            Vector3 camPos = GameplayCamera.Position;
-            Vector3 camDir = GameplayCamera.Direction;
-            float fov = GameplayCamera.FieldOfView;
-            Vector3 dir = vector3 - camPos;
-            float angle = Vector3.Angle(dir, camDir);
+            var camPos = GameplayCamera.Position;
+            var camDir = GameplayCamera.Direction;
+            var fov = GameplayCamera.FieldOfView;
+            var dir = vector3 - camPos;
+            var angle = Vector3.Angle(dir, camDir);
             return angle < fov;
         }
     }

@@ -92,10 +92,7 @@ namespace CWDM.Extensions
 
         private static string EffectToString(ScreenEffect screenEffect)
         {
-            if (screenEffect >= 0 && (int)screenEffect <= Eff.Length)
-            {
-                return Eff[(int)screenEffect];
-            }
+            if (screenEffect >= 0 && (int) screenEffect <= Eff.Length) return Eff[(int) screenEffect];
 
             return "INVALID";
         }

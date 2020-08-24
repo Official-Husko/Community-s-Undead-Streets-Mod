@@ -1,41 +1,33 @@
-﻿using CWDM.Interfaces;
+﻿using System;
+using CWDM.Interfaces;
 using GTA.Native;
-using System;
 
 namespace CWDM.Collections
 {
     [Serializable]
     public class WeaponData : IWeapon
     {
-        public int Ammo
-        {
-            get;
-            set;
-        }
-
-        public WeaponHash Hash
-        {
-            get;
-            set;
-        }
-
-        private WeaponComponent[] components;
-
-        public WeaponComponent[] GetComponents()
-        {
-            return components;
-        }
-
-        public void SetComponents(WeaponComponent[] value)
-        {
-            components = value;
-        }
+        private WeaponComponent[] _components;
 
         public WeaponData(int ammo, WeaponHash hash, WeaponComponent[] components)
         {
             Ammo = ammo;
             Hash = hash;
             SetComponents(components);
+        }
+
+        public int Ammo { get; set; }
+
+        public WeaponHash Hash { get; set; }
+
+        public WeaponComponent[] GetComponents()
+        {
+            return _components;
+        }
+
+        public void SetComponents(WeaponComponent[] value)
+        {
+            _components = value;
         }
     }
 }

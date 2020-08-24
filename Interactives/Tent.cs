@@ -1,8 +1,7 @@
-﻿using CWDM.Extensions;
-using GTA;
-using GTA.Math;
-using System;
+﻿using System;
 using System.Linq;
+using CWDM.Extensions;
+using GTA;
 
 namespace CWDM.Interactives
 {
@@ -17,58 +16,52 @@ namespace CWDM.Interactives
         {
             if (Main.ModActive)
             {
-                Prop prop = World.GetClosest(Game.Player.Character.Position, World.GetNearbyProps(Game.Player.Character.Position, 2.5f));
+                var prop = World.GetClosest(Game.Player.Character.Position,
+                    World.GetNearbyProps(Game.Player.Character.Position, 2.5f));
                 if (prop != null && prop == Character.Tent)
                 {
-                    UIExtensions.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to sleep in Tent");
+                    "Press ~INPUT_CONTEXT~ to sleep in Tent".DisplayHelpTextThisFrame();
                     Game.DisableControlThisFrame(2, Control.Context);
                     if (Game.IsDisabledControlJustPressed(2, Control.Context))
                     {
-                        Ped[] peds = World.GetNearbyPeds(Game.Player.Character.Position, 50f).Where(IsEnemy).ToArray();
+                        var peds = World.GetNearbyPeds(Game.Player.Character.Position, 50f).Where(IsEnemy).ToArray();
                         if (peds.Length == 0)
                         {
-                            Vector3 val = prop.Position - Game.Player.Character.Position;
+                            var val = prop.Position - Game.Player.Character.Position;
                             Game.Player.Character.Heading = val.ToHeading();
                             Game.Player.Character.FreezePosition = true;
                             Game.FadeScreenOut(2000);
                             Wait(3000);
                             Character.CurrentEnergyLevel += 0.4f;
                             if (Character.CurrentEnergyLevel > Character.MaxEnergyLevel)
-                            {
                                 Character.CurrentEnergyLevel = Character.MaxEnergyLevel;
-                            }
                             Character.CurrentHungerLevel -= 0.25f;
                             Character.CurrentThirstLevel -= 0.3f;
-                            World.CurrentDayTime.Add(new TimeSpan(6, 0, 0));
+                            var unused = World.CurrentDayTime.Add(new TimeSpan(6, 0, 0));
                             World.Weather = Map.Weathers.GetRandomElementFromArray();
                             if (Population.AnimalPeds.Count > 0)
-                            {
-                                for (int i = 0; i < Population.AnimalPeds.Count; i++)
+                                for (var i = 0; i < Population.AnimalPeds.Count; i++)
                                 {
-                                    Population.AnimalPeds[i].pedEntity?.Delete();
+                                    Population.AnimalPeds[i].PedEntity?.Delete();
                                     Population.AnimalPeds.RemoveAt(i);
                                 }
-                            }
+
                             if (Population.ZombiePeds.Count > 0)
-                            {
-                                for (int i = 0; i < Population.ZombiePeds.Count; i++)
+                                for (var i = 0; i < Population.ZombiePeds.Count; i++)
                                 {
-                                    Population.ZombiePeds[i].pedEntity?.Delete();
+                                    Population.ZombiePeds[i].PedEntity?.Delete();
                                     Population.ZombiePeds.RemoveAt(i);
                                 }
-                            }
+
                             if (Population.SurvivorPeds.Count > 0)
-                            {
-                                for (int i = 0; i < Population.SurvivorPeds.Count; i++)
+                                for (var i = 0; i < Population.SurvivorPeds.Count; i++)
                                 {
-                                    if (Game.Player.Character.CurrentPedGroup.Contains(Population.SurvivorPeds[i].pedEntity))
-                                    {
-                                        continue;
-                                    }
-                                    Population.SurvivorPeds[i].pedEntity?.Delete();
+                                    if (Game.Player.Character.CurrentPedGroup.Contains(Population.SurvivorPeds[i]
+                                        .PedEntity)) continue;
+                                    Population.SurvivorPeds[i].PedEntity?.Delete();
                                     Population.SurvivorPeds.RemoveAt(i);
                                 }
-                            }
+
                             Stats.StatsLastUpdateTime = DateTime.UtcNow;
                             Population.SurvivorLastSpawnTime = DateTime.UtcNow;
                             Config.SavePlayerAll();
@@ -87,7 +80,9 @@ namespace CWDM.Interactives
 
         private static bool IsEnemy(Ped ped)
         {
-            return (ped.IsHuman && ped.IsAlive && ped.GetRelationshipWithPed(Game.Player.Character) == Relationship.Hate) || ped.IsInCombatAgainst(Game.Player.Character);
+            return ped.IsHuman && ped.IsAlive &&
+                   ped.GetRelationshipWithPed(Game.Player.Character) == Relationship.Hate ||
+                   ped.IsInCombatAgainst(Game.Player.Character);
         }
     }
 }

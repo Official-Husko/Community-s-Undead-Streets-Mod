@@ -1,9 +1,9 @@
-﻿using CWDM.Enums;
+﻿using System.Collections.Generic;
+using CWDM.Enums;
 using CWDM.Inventory;
 using GTA;
 using GTA.Native;
 using NativeUI;
-using System.Collections.Generic;
 
 namespace CWDM
 {
@@ -11,70 +11,60 @@ namespace CWDM
     {
         public static void AddCraftingItemsToMenu(UIMenu menu, CraftType craftType)
         {
-            List<InventoryItem> craftables = new List<InventoryItem>();
-            for (int i = 0; i < PlayerInventory.PlayerInventoryItems.Count; i++)
-            {
+            var craftables = new List<InventoryItem>();
+            for (var i = 0; i < PlayerInventory.PlayerInventoryItems.Count; i++)
                 if (PlayerInventory.PlayerInventoryItems[i].GetType() == typeof(InventoryItemCraftable))
                 {
-                    InventoryItemCraftable item = (InventoryItemCraftable)PlayerInventory.PlayerInventoryItems[i];
-                    if (item.CraftType == craftType)
-                    {
-                        craftables.Add(PlayerInventory.PlayerInventoryItems[i]);
-                    }
+                    var item = (InventoryItemCraftable) PlayerInventory.PlayerInventoryItems[i];
+                    if (item.CraftType == craftType) craftables.Add(PlayerInventory.PlayerInventoryItems[i]);
                 }
                 else if (PlayerInventory.PlayerInventoryItems[i].GetType() == typeof(InventoryItemRestoreCraftable))
                 {
-                    InventoryItemRestoreCraftable item = (InventoryItemRestoreCraftable)PlayerInventory.PlayerInventoryItems[i];
-                    if (item.CraftType == craftType)
-                    {
-                        craftables.Add(PlayerInventory.PlayerInventoryItems[i]);
-                    }
+                    var item = (InventoryItemRestoreCraftable) PlayerInventory.PlayerInventoryItems[i];
+                    if (item.CraftType == craftType) craftables.Add(PlayerInventory.PlayerInventoryItems[i]);
                 }
-            }
-            for (int i = 0; i < PlayerInventory.PlayerInventoryMaterials.Count; i++)
-            {
+
+            for (var i = 0; i < PlayerInventory.PlayerInventoryMaterials.Count; i++)
                 if (PlayerInventory.PlayerInventoryMaterials[i].GetType() == typeof(InventoryMaterialCraftable))
                 {
-                    InventoryMaterialCraftable item = (InventoryMaterialCraftable)PlayerInventory.PlayerInventoryMaterials[i];
-                    if (item.CraftType == craftType)
-                    {
-                        craftables.Add(PlayerInventory.PlayerInventoryMaterials[i]);
-                    }
+                    var item = (InventoryMaterialCraftable) PlayerInventory.PlayerInventoryMaterials[i];
+                    if (item.CraftType == craftType) craftables.Add(PlayerInventory.PlayerInventoryMaterials[i]);
                 }
-            }
-            for (int i = 0; i < craftables.Count; i++)
+
+            for (var i = 0; i < craftables.Count; i++)
             {
-                string description = "Requirements: ";
+                var description = "Requirements: ";
                 if (craftables[i].GetType() == typeof(InventoryItemCraftable))
                 {
-                    InventoryItemCraftable item = (InventoryItemCraftable)craftables[i];
-                    foreach (RequiredMaterial requiredMaterial in item.GetRequiredMaterials())
+                    var item = (InventoryItemCraftable) craftables[i];
+                    foreach (var requiredMaterial in item.GetRequiredMaterials())
                     {
-                        string name = requiredMaterial.Material.Name;
-                        int amount = requiredMaterial.RequiredAmount;
+                        var name = requiredMaterial.Material.Name;
+                        var amount = requiredMaterial.RequiredAmount;
                         description += "" + name + " (" + amount + "); ";
                     }
                 }
                 else if (craftables[i].GetType() == typeof(InventoryItemRestoreCraftable))
                 {
-                    InventoryItemRestoreCraftable item = (InventoryItemRestoreCraftable)craftables[i];
-                    foreach (RequiredMaterial requiredMaterial in item.GetRequiredMaterials())
+                    var item = (InventoryItemRestoreCraftable) craftables[i];
+                    foreach (var requiredMaterial in item.GetRequiredMaterials())
                     {
-                        string name = requiredMaterial.Material.Name;
-                        int amount = requiredMaterial.RequiredAmount;
+                        var name = requiredMaterial.Material.Name;
+                        var amount = requiredMaterial.RequiredAmount;
                         description += "" + name + " (" + amount + "); ";
                     }
                 }
                 else if (craftables[i].GetType() == typeof(InventoryMaterialCraftable))
                 {
-                    InventoryMaterialCraftable item = (InventoryMaterialCraftable)craftables[i];
-                    foreach (RequiredMaterial requiredMaterial in item.GetRequiredMaterials())
+                    var item = (InventoryMaterialCraftable) craftables[i];
+                    foreach (var requiredMaterial in item.GetRequiredMaterials())
                     {
-                        string name = requiredMaterial.Material.Name;
-                        int amount = requiredMaterial.RequiredAmount;
+                        var name = requiredMaterial.Material.Name;
+                        var amount = requiredMaterial.RequiredAmount;
                         description += "" + name + " (" + amount + "); ";
                     }
                 }
+
                 menu.AddItem(new UIMenuItem(craftables[i].Name, description));
             }
         }
@@ -83,37 +73,29 @@ namespace CWDM
         {
             if (item.GetType() == typeof(InventoryItemCraftable))
             {
-                InventoryItemCraftable check = (InventoryItemCraftable)item;
-                foreach (RequiredMaterial requiredMaterial in check.GetRequiredMaterials())
-                {
-                    if (requiredMaterial.RequiredAmount > PlayerInventory.PlayerInventoryItems.Find(match: a => a.Name == requiredMaterial.Material.Name).Amount)
-                    {
+                var check = (InventoryItemCraftable) item;
+                foreach (var requiredMaterial in check.GetRequiredMaterials())
+                    if (requiredMaterial.RequiredAmount > PlayerInventory.PlayerInventoryItems
+                        .Find(a => a.Name == requiredMaterial.Material.Name).Amount)
                         return false;
-                    }
-                }
             }
             else if (item.GetType() == typeof(InventoryItemRestoreCraftable))
             {
-                InventoryItemRestoreCraftable check = (InventoryItemRestoreCraftable)item;
-                foreach (RequiredMaterial requiredMaterial in check.GetRequiredMaterials())
-                {
-                    if (requiredMaterial.RequiredAmount > PlayerInventory.PlayerInventoryItems.Find(match: a => a.Name == requiredMaterial.Material.Name).Amount)
-                    {
+                var check = (InventoryItemRestoreCraftable) item;
+                foreach (var requiredMaterial in check.GetRequiredMaterials())
+                    if (requiredMaterial.RequiredAmount > PlayerInventory.PlayerInventoryItems
+                        .Find(a => a.Name == requiredMaterial.Material.Name).Amount)
                         return false;
-                    }
-                }
             }
             else if (item.GetType() == typeof(InventoryMaterialCraftable))
             {
-                InventoryMaterialCraftable check = (InventoryMaterialCraftable)item;
-                foreach (RequiredMaterial requiredMaterial in check.GetRequiredMaterials())
-                {
-                    if (requiredMaterial.RequiredAmount > PlayerInventory.PlayerInventoryMaterials.Find(match: a => a.Name == requiredMaterial.Material.Name).Amount)
-                    {
+                var check = (InventoryMaterialCraftable) item;
+                foreach (var requiredMaterial in check.GetRequiredMaterials())
+                    if (requiredMaterial.RequiredAmount > PlayerInventory.PlayerInventoryMaterials
+                        .Find(a => a.Name == requiredMaterial.Material.Name).Amount)
                         return false;
-                    }
-                }
             }
+
             return true;
         }
 
@@ -121,16 +103,17 @@ namespace CWDM
         {
             int amount;
             int maxAmount;
-            if (PlayerInventory.PlayerInventoryItems.Exists(match: a => a.Name == item.Name))
+            if (PlayerInventory.PlayerInventoryItems.Exists(a => a.Name == item.Name))
             {
-                amount = PlayerInventory.PlayerInventoryItems.Find(match: a => a.Name == item.Name).Amount;
-                maxAmount = PlayerInventory.PlayerInventoryItems.Find(match: a => a.Name == item.Name).MaxAmount;
+                amount = PlayerInventory.PlayerInventoryItems.Find(a => a.Name == item.Name).Amount;
+                maxAmount = PlayerInventory.PlayerInventoryItems.Find(a => a.Name == item.Name).MaxAmount;
             }
             else
             {
-                amount = PlayerInventory.PlayerInventoryMaterials.Find(match: a => a.Name == item.Name).Amount;
-                maxAmount = PlayerInventory.PlayerInventoryMaterials.Find(match: a => a.Name == item.Name).MaxAmount;
+                amount = PlayerInventory.PlayerInventoryMaterials.Find(a => a.Name == item.Name).Amount;
+                maxAmount = PlayerInventory.PlayerInventoryMaterials.Find(a => a.Name == item.Name).MaxAmount;
             }
+
             return maxAmount < amount;
         }
 
@@ -142,37 +125,36 @@ namespace CWDM
                 {
                     if (item.GetType() == typeof(InventoryItemCraftable))
                     {
-                        InventoryItemCraftable check = (InventoryItemCraftable)item;
-                        foreach (RequiredMaterial requiredMaterial in check.GetRequiredMaterials())
-                        {
-                            PlayerInventory.UpdateMaterialsInventory(requiredMaterial.Material, requiredMaterial.RequiredAmount, InventoryUpdate.Decrease);
-                        }
+                        var check = (InventoryItemCraftable) item;
+                        foreach (var requiredMaterial in check.GetRequiredMaterials())
+                            PlayerInventory.UpdateMaterialsInventory(requiredMaterial.Material,
+                                requiredMaterial.RequiredAmount, InventoryUpdate.Decrease);
                     }
                     else if (item.GetType() == typeof(InventoryItemRestoreCraftable))
                     {
-                        InventoryItemRestoreCraftable check = (InventoryItemRestoreCraftable)item;
-                        foreach (RequiredMaterial requiredMaterial in check.GetRequiredMaterials())
-                        {
-                            PlayerInventory.UpdateMaterialsInventory(requiredMaterial.Material, requiredMaterial.RequiredAmount, InventoryUpdate.Decrease);
-                        }
+                        var check = (InventoryItemRestoreCraftable) item;
+                        foreach (var requiredMaterial in check.GetRequiredMaterials())
+                            PlayerInventory.UpdateMaterialsInventory(requiredMaterial.Material,
+                                requiredMaterial.RequiredAmount, InventoryUpdate.Decrease);
                     }
                     else if (item.GetType() == typeof(InventoryMaterialCraftable))
                     {
-                        InventoryMaterialCraftable check = (InventoryMaterialCraftable)item;
-                        foreach (RequiredMaterial requiredMaterial in check.GetRequiredMaterials())
-                        {
-                            PlayerInventory.UpdateMaterialsInventory(requiredMaterial.Material, requiredMaterial.RequiredAmount, InventoryUpdate.Decrease);
-                        }
+                        var check = (InventoryMaterialCraftable) item;
+                        foreach (var requiredMaterial in check.GetRequiredMaterials())
+                            PlayerInventory.UpdateMaterialsInventory(requiredMaterial.Material,
+                                requiredMaterial.RequiredAmount, InventoryUpdate.Decrease);
                     }
-                    if (PlayerInventory.PlayerInventoryItems.Exists(match: a => a.Name == item.Name))
+
+                    if (PlayerInventory.PlayerInventoryItems.Exists(a => a.Name == item.Name))
                     {
                         PlayerInventory.UpdateItemsInventory(item, 1, InventoryUpdate.Increase);
                     }
                     else
                     {
-                        InventoryMaterial material = (InventoryMaterial)item;
+                        var material = (InventoryMaterial) item;
                         PlayerInventory.UpdateMaterialsInventory(material, 1, InventoryUpdate.Increase);
                     }
+
                     Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "CONTINUE", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
                     UI.Notify("Crafted ~b~" + item.Name + "~s~!");
                 }

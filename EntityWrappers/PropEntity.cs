@@ -1,10 +1,10 @@
 ﻿using GTA;
 
-namespace CWDM.Wrappers
+namespace CWDM.EntityWrappers
 {
     public class PropEntity
     {
-        public Prop prop;
+        public Prop Prop;
 
         public PropEntity(Prop prop)
         {
@@ -13,7 +13,7 @@ namespace CWDM.Wrappers
 
         public void AttachData(Prop prop)
         {
-            this.prop = prop;
+            Prop = prop;
         }
     }
 }

@@ -1,35 +1,32 @@
-﻿using CWDM.Enums;
+﻿using System;
+using CWDM.Enums;
 using CWDM.Interfaces;
-using System;
 
 namespace CWDM.Inventory
 {
     [Serializable]
     public class InventoryMaterialCraftable : InventoryMaterial, ICraftable
     {
-        public CraftType CraftType
-        {
-            get;
-            set;
-        }
+        private RequiredMaterial[] _requiredMaterials;
 
-        private RequiredMaterial[] requiredMaterials;
-
-        public RequiredMaterial[] GetRequiredMaterials()
-        {
-            return requiredMaterials;
-        }
-
-        public void SetRequiredMaterials(RequiredMaterial[] value)
-        {
-            requiredMaterials = value;
-        }
-
-        public InventoryMaterialCraftable(string name, string description, int amount, int maxAmount, LootType[] lootTypes, CraftType craftType, RequiredMaterial[] requiredMaterials)
+        public InventoryMaterialCraftable(string name, string description, int amount, int maxAmount,
+            LootType[] lootTypes, CraftType craftType, RequiredMaterial[] requiredMaterials)
             : base(name, description, amount, maxAmount, lootTypes)
         {
             CraftType = craftType;
             SetRequiredMaterials(requiredMaterials);
+        }
+
+        public CraftType CraftType { get; set; }
+
+        public RequiredMaterial[] GetRequiredMaterials()
+        {
+            return _requiredMaterials;
+        }
+
+        public void SetRequiredMaterials(RequiredMaterial[] value)
+        {
+            _requiredMaterials = value;
         }
     }
 }

@@ -1,14 +1,13 @@
-﻿using CWDM.Extensions;
+﻿using System.Linq;
+using CWDM.Extensions;
 using GTA;
-using GTA.Math;
 using GTA.Native;
-using System.Linq;
 
 namespace CWDM
 {
     public static class Map
     {
-        public static bool MapPrepared = false;
+        public static bool MapPrepared;
         public static bool Electricity = false;
 
         public static Weather[] Weathers =
@@ -1071,12 +1070,11 @@ namespace CWDM
         {
             KillAllGameScripts();
             Game.MissionFlag = false;
-            if (Function.Call<bool>(Hash.IS_CUTSCENE_ACTIVE))
-            {
-                Function.Call(Hash.STOP_CUTSCENE_IMMEDIATELY);
-            }
-            Function.Call(Hash.ADD_SCENARIO_BLOCKING_AREA, -10000.0f, -10000.0f, -1000.0f, 10000.0f, 10000.0f, 1000.0f, 0, 1, 1, 1);
-            Function.Call(Hash.CLEAR_AREA, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z, 1000F, false, false, false, false);
+            if (Function.Call<bool>(Hash.IS_CUTSCENE_ACTIVE)) Function.Call(Hash.STOP_CUTSCENE_IMMEDIATELY);
+            Function.Call(Hash.ADD_SCENARIO_BLOCKING_AREA, -10000.0f, -10000.0f, -1000.0f, 10000.0f, 10000.0f, 1000.0f,
+                0, 1, 1, 1);
+            Function.Call(Hash.CLEAR_AREA, Game.Player.Character.Position.X, Game.Player.Character.Position.Y,
+                Game.Player.Character.Position.Z, 1000F, false, false, false, false);
             Function.Call(Hash.SET_CREATE_RANDOM_COPS, false);
             Function.Call(Hash.SET_RANDOM_BOATS, false);
             Function.Call(Hash.SET_RANDOM_TRAINS, false);
@@ -1086,53 +1084,42 @@ namespace CWDM
             Function.Call(Hash.SET_VEHICLE_POPULATION_BUDGET, 0);
             Function.Call(Hash.SET_ALL_LOW_PRIORITY_VEHICLE_GENERATORS_ACTIVE, false);
             Function.Call(Hash.SET_NUMBER_OF_PARKED_VEHICLES, 0);
-            Function.Call((Hash)0xF796359A959DF65D, false);
+            Function.Call((Hash) 0xF796359A959DF65D, false);
             Function.Call(Hash.DISABLE_VEHICLE_DISTANTLIGHTS, true);
-            Ped[] all_ped = World.GetAllPeds();
-            if (all_ped.Length > 0)
-            {
-                foreach (Ped ped in all_ped)
-                {
+            var allPed = World.GetAllPeds();
+            if (allPed.Length > 0)
+                foreach (var ped in allPed)
                     ped.Delete();
-                }
-            }
-            Vehicle[] all_vecs = World.GetAllVehicles();
-            if (all_vecs.Length > 0)
-            {
-                foreach (Vehicle vehicle in all_vecs)
-                {
+            var allVecs = World.GetAllVehicles();
+            if (allVecs.Length > 0)
+                foreach (var vehicle in allVecs)
                     vehicle.Delete();
-                }
-            }
             if (!Electricity)
-            {
                 World.SetBlackout(true);
-            }
             else
-            {
                 World.SetBlackout(false);
-            }
-            Weather rndWeather = Weathers.GetRandomElementFromArray();
+            var rndWeather = Weathers.GetRandomElementFromArray();
             World.TransitionToWeather(rndWeather, 0f);
             Function.Call(Hash.SET_CLOCK_TIME, 07, 00, 00);
             Function.Call(Hash.SET_CLOCK_DATE, 01, 01, 2020);
-            foreach (Vector3 pos in Looting.StoreLocations)
+            foreach (var pos in Looting.StoreLocations)
             {
-                Blip blip = World.CreateBlip(pos);
+                var blip = World.CreateBlip(pos);
                 blip.Sprite = BlipSprite.Store;
                 blip.Name = "Store";
                 blip.IsShortRange = true;
             }
+
             MapPrepared = true;
         }
 
         public static void Update()
         {
-            Game.DisableControlThisFrame(0, GTA.Control.VehicleRadioWheel);
-            Game.DisableControlThisFrame(0, GTA.Control.VehicleNextRadio);
-            Game.DisableControlThisFrame(0, GTA.Control.VehiclePrevRadio);
-            Game.DisableControlThisFrame(0, GTA.Control.RadioWheelLeftRight);
-            Game.DisableControlThisFrame(0, GTA.Control.RadioWheelUpDown);
+            Game.DisableControlThisFrame(0, Control.VehicleRadioWheel);
+            Game.DisableControlThisFrame(0, Control.VehicleNextRadio);
+            Game.DisableControlThisFrame(0, Control.VehiclePrevRadio);
+            Game.DisableControlThisFrame(0, Control.RadioWheelLeftRight);
+            Game.DisableControlThisFrame(0, Control.RadioWheelUpDown);
             Function.Call(Hash.DISABLE_CONTROL_ACTION, 2, 19, true);
             Function.Call(Hash.DESTROY_MOBILE_PHONE);
             Function.Call(Hash.SET_VEHICLE_POPULATION_BUDGET, 0);
@@ -1145,7 +1132,7 @@ namespace CWDM
             Function.Call(Hash.SET_AUDIO_FLAG, "PoliceScannerDisabled", true);
             Function.Call(Hash.START_AUDIO_SCENE, "FBI_HEIST_H5_MUTE_AMBIENCE_SCENE");
             Function.Call(Hash.START_AUDIO_SCENE, "MIC1_RADIO_DISABLE");
-            Function.Call((Hash)0x808519373FD336A3, true);
+            Function.Call((Hash) 0x808519373FD336A3, true);
             Function.Call(Hash.CLEAR_AMBIENT_ZONE_LIST_STATE, "AZ_AFB_ALARM_SPEECH", 0, 0);
             Function.Call(Hash.CLEAR_AMBIENT_ZONE_LIST_STATE, "AZ_COUNTRYSIDE_CHILEAD_CABLE_CAR_LINE", 0, 0);
             Function.Call(Hash.CLEAR_AMBIENT_ZONE_LIST_STATE, "AZ_COUNTRYSIDE_DISTANT_CARS_ZONE_01", 0, 0);
@@ -1183,128 +1170,80 @@ namespace CWDM
 
         public static void UnlockAllDoors()
         {
-            Prop[] GetProps = World.GetNearbyProps(Game.Player.Character.Position, 50f);
-            if (GetProps.Length > 0)
-            {
-                for (int i = 0; i < GetProps.Length; i++)
+            var getProps = World.GetNearbyProps(Game.Player.Character.Position, 50f);
+            if (getProps.Length > 0)
+                for (var i = 0; i < getProps.Length; i++)
                 {
-                    if (GetProps[i] == null)
-                    {
-                        continue;
-                    }
+                    if (getProps[i] == null) continue;
                     if (!Electricity)
                     {
-                        if (ElectricDoors.Contains(GetProps[i].Model))
-                        {
-                            Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE, GetProps[i].Model.Hash, GetProps[i].Position.X, GetProps[i].Position.Y, GetProps[i].Position.Z, true, 0, 0);
-                        }
+                        if (ElectricDoors.Contains(getProps[i].Model))
+                            Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE, getProps[i].Model.Hash,
+                                getProps[i].Position.X, getProps[i].Position.Y, getProps[i].Position.Z, true, 0, 0);
                         else
-                        {
-                            Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE, GetProps[i].Model.Hash, GetProps[i].Position.X, GetProps[i].Position.Y, GetProps[i].Position.Z, false, 0, 0);
-                        }
+                            Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE, getProps[i].Model.Hash,
+                                getProps[i].Position.X, getProps[i].Position.Y, getProps[i].Position.Z, false, 0, 0);
                     }
                     else
                     {
-                        Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE, GetProps[i].Model.Hash, GetProps[i].Position.X, GetProps[i].Position.Y, GetProps[i].Position.Z, false, 0, 0);
+                        Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE, getProps[i].Model.Hash,
+                            getProps[i].Position.X, getProps[i].Position.Y, getProps[i].Position.Z, false, 0, 0);
                     }
-                    if (LockedDoors.Contains(GetProps[i].Model))
-                    {
-                        Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE, GetProps[i].Model.Hash, GetProps[i].Position.X, GetProps[i].Position.Y, GetProps[i].Position.Z, true, 0, 0);
-                    }
+
+                    if (LockedDoors.Contains(getProps[i].Model))
+                        Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE, getProps[i].Model.Hash,
+                            getProps[i].Position.X, getProps[i].Position.Y, getProps[i].Position.Z, true, 0, 0);
                 }
-            }
         }
 
         public static void KillAllGameScripts()
         {
-            foreach (string script in KillScripts)
-            {
-                script.TerminateScript();
-            }
+            foreach (var script in KillScripts) script.TerminateScript();
         }
 
         public static void ClearUpEntities()
         {
             if (Population.ZombiePeds.Count > 0)
-            {
-                for (int i = 0; i < Population.ZombiePeds.Count; i++)
-                {
-                    if (Population.ZombiePeds[i].pedEntity.IsDead != false)
-                    {
+                for (var i = 0; i < Population.ZombiePeds.Count; i++)
+                    if (Population.ZombiePeds[i].PedEntity.IsDead)
                         Population.ZombiePeds.RemoveAt(i);
-                    }
-                }
-            }
             if (Population.AnimalPeds.Count > 0)
-            {
-                for (int i = 0; i < Population.AnimalPeds.Count; i++)
-                {
-                    if (Population.AnimalPeds[i].pedEntity.IsDead != false)
-                    {
+                for (var i = 0; i < Population.AnimalPeds.Count; i++)
+                    if (Population.AnimalPeds[i].PedEntity.IsDead)
                         Population.AnimalPeds.RemoveAt(i);
-                    }
-                }
-            }
             if (Population.SurvivorPeds.Count > 0)
-            {
-                for (int i = 0; i < Population.SurvivorPeds.Count; i++)
-                {
-                    if (Population.SurvivorPeds[i].pedEntity.IsDead != false)
-                    {
+                for (var i = 0; i < Population.SurvivorPeds.Count; i++)
+                    if (Population.SurvivorPeds[i].PedEntity.IsDead)
                         Population.SurvivorPeds.RemoveAt(i);
-                    }
-                }
-            }
             if (Population.Vehicles.Count > 0)
-            {
-                for (int i = 0; i < Population.Vehicles.Count; i++)
-                {
-                    if (Population.Vehicles[i].vehicle == null || Population.Vehicles[i].vehicle.Health == 0)
-                    {
+                for (var i = 0; i < Population.Vehicles.Count; i++)
+                    if (Population.Vehicles[i].Vehicle == null || Population.Vehicles[i].Vehicle.Health == 0)
                         Population.Vehicles.RemoveAt(i);
-                    }
-                }
-            }
-            Ped[] all_ped = World.GetAllPeds();
-            if (all_ped.Length > 0)
-            {
-                foreach (Ped ped in all_ped)
+            var allPed = World.GetAllPeds();
+            if (allPed.Length > 0)
+                foreach (var ped in allPed)
                 {
                     if (!ped.IsAlive)
-                    {
                         if (ped.CurrentBlip.Handle != 0)
-                        {
                             ped.CurrentBlip.Remove();
-                        }
-                    }
-                    if (ped.DistanceBetween(Game.Player.Character) > Population.MaxSpawnDistance && (ped.RelationshipGroup == Relationships.ZombieGroup || ped.RelationshipGroup == Relationships.AnimalGroup))
+                    if (ped.DistanceBetween(Game.Player.Character) > Population.MaxSpawnDistance &&
+                        (ped.RelationshipGroup == Relationships.ZombieGroup ||
+                         ped.RelationshipGroup == Relationships.AnimalGroup))
                     {
-                        if (ped.CurrentBlip.Handle != 0)
-                        {
-                            ped.CurrentBlip.Remove();
-                        }
+                        if (ped.CurrentBlip.Handle != 0) ped.CurrentBlip.Remove();
                         ped.Delete();
                     }
                 }
-            }
-            Vehicle[] all_vecs = World.GetAllVehicles();
-            if (all_vecs.Length > 0)
-            {
-                foreach (Vehicle vehicle in all_vecs)
-                {
-                    if (!Character.PlayerVehicles.Exists(match: a => a == vehicle) || vehicle.PassengerCount > 0)
-                    {
+
+            var allVecs = World.GetAllVehicles();
+            if (allVecs.Length > 0)
+                foreach (var vehicle in allVecs)
+                    if (!Character.PlayerVehicles.Exists(a => a == vehicle) || vehicle.PassengerCount > 0)
                         if (vehicle.DistanceBetween(Game.Player.Character) > Population.MaxSpawnDistance)
                         {
-                            if (vehicle.CurrentBlip.Handle != 0)
-                            {
-                                vehicle.CurrentBlip.Remove();
-                            }
+                            if (vehicle.CurrentBlip.Handle != 0) vehicle.CurrentBlip.Remove();
                             vehicle.Delete();
                         }
-                    }
-                }
-            }
         }
     }
 }

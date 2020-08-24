@@ -1,28 +1,47 @@
-﻿using GTA;
-using NativeUI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using GTA;
+using NativeUI;
 
 namespace CWDM
 {
     public class StartMenu : Script
     {
-        public static bool Runners = false;
-        public static bool Electricity = false;
+        public static bool Runners;
+        public static bool Electricity;
         public static bool CharacterStats = true;
         public static UIMenu StartupMenu;
 
+        public StartMenu()
+        {
+            StartupMenu = new UIMenu("Undead Streets", "Starting Settings");
+            AddMenuRunners(StartupMenu);
+            AddMenuElectricity(StartupMenu);
+            AddMenuStats(StartupMenu);
+            AddMenuGender(StartupMenu);
+            AddMenuStart(StartupMenu);
+            var banner = new UIResRectangle
+            {
+                Color = Color.FromArgb(255, Color.DarkRed)
+            };
+            StartupMenu.SetBannerType(banner);
+            Main.MasterMenuPool.Add(StartupMenu);
+            Main.MasterMenuPool.RefreshIndex();
+            Tick += OnTick;
+            KeyDown += OnKeyDown;
+        }
+
         public static void AddMenuRunners(UIMenu menu)
         {
-            UIMenuCheckboxItem newitem = new UIMenuCheckboxItem("Fast Zombies", Runners, "Enable/Disable fast zombies");
+            var newitem = new UIMenuCheckboxItem("Fast Zombies", Runners, "Enable/Disable fast zombies");
             menu.AddItem(newitem);
-            menu.OnCheckboxChange += (sender, item, checked_) =>
+            menu.OnCheckboxChange += (sender, item, @checked) =>
             {
                 if (item == newitem)
                 {
-                    Runners = checked_;
+                    Runners = @checked;
                     Population.FastZombies = Runners;
                 }
             };
@@ -30,13 +49,13 @@ namespace CWDM
 
         public static void AddMenuElectricity(UIMenu menu)
         {
-            UIMenuCheckboxItem newitem = new UIMenuCheckboxItem("Electricity", Electricity, "Enable/Disable electricity");
+            var newitem = new UIMenuCheckboxItem("Electricity", Electricity, "Enable/Disable electricity");
             menu.AddItem(newitem);
-            menu.OnCheckboxChange += (sender, item, checked_) =>
+            menu.OnCheckboxChange += (sender, item, @checked) =>
             {
                 if (item == newitem)
                 {
-                    Electricity = checked_;
+                    Electricity = @checked;
                     Map.Electricity = Electricity;
                 }
             };
@@ -44,13 +63,14 @@ namespace CWDM
 
         public static void AddMenuStats(UIMenu menu)
         {
-            UIMenuCheckboxItem newitem = new UIMenuCheckboxItem("Stats", CharacterStats, "Enable/Disable survival stats (hunger, thirst, etc...)");
+            var newitem = new UIMenuCheckboxItem("Stats", CharacterStats,
+                "Enable/Disable survival stats (hunger, thirst, etc...)");
             menu.AddItem(newitem);
-            menu.OnCheckboxChange += (sender, item, checked_) =>
+            menu.OnCheckboxChange += (sender, item, @checked) =>
             {
                 if (item == newitem)
                 {
-                    CharacterStats = checked_;
+                    CharacterStats = @checked;
                     Stats.EnableStats = CharacterStats;
                 }
             };
@@ -58,18 +78,18 @@ namespace CWDM
 
         public static void AddMenuGender(UIMenu menu)
         {
-            List<dynamic> gender = new List<dynamic>
+            var gender = new List<dynamic>
             {
                 "Male",
                 "Female"
-             };
-            UIMenuListItem newitem = new UIMenuListItem("Gender", gender, 0, "Select gender for character");
+            };
+            var newitem = new UIMenuListItem("Gender", gender, 0, "Select gender for character");
             menu.AddItem(newitem);
             menu.OnListChange += (sender, item, index) =>
             {
                 if (item == newitem)
                 {
-                    string genderString = item.Items[index].ToString();
+                    var genderString = item.Items[index].ToString();
                     Character.PlayerGender = genderString == "Male" ? Gender.Male : Gender.Female;
                 }
             };
@@ -77,7 +97,7 @@ namespace CWDM
 
         public static void AddMenuStart(UIMenu menu)
         {
-            UIMenuItem newitem = new UIMenuItem("Start", "Begin playing Undead Streets");
+            var newitem = new UIMenuItem("Start", "Begin playing Undead Streets");
             newitem.SetRightBadge(UIMenuItem.BadgeStyle.Tick);
             menu.AddItem(newitem);
             menu.OnItemSelect += (sender, item, index) =>
@@ -90,39 +110,15 @@ namespace CWDM
             };
         }
 
-        public StartMenu()
-        {
-            StartupMenu = new UIMenu("Undead Streets", "Starting Settings");
-            AddMenuRunners(StartupMenu);
-            AddMenuElectricity(StartupMenu);
-            AddMenuStats(StartupMenu);
-            AddMenuGender(StartupMenu);
-            AddMenuStart(StartupMenu);
-            UIResRectangle banner = new UIResRectangle
-            {
-                Color = Color.FromArgb(255, Color.DarkRed)
-            };
-            StartupMenu.SetBannerType(banner);
-            Main.MasterMenuPool.Add(StartupMenu);
-            Main.MasterMenuPool.RefreshIndex();
-            Tick += OnTick;
-            KeyDown += OnKeyDown;
-        }
-
         public void OnTick(object sender, EventArgs e)
         {
-            if (Game.Player.Character.IsDead)
-            {
-                StartupMenu.Visible = false;
-            }
+            if (Game.Player.Character.IsDead) StartupMenu.Visible = false;
         }
 
         public void OnKeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Main.MenuKey && !Main.ModActive && !Main.MasterMenuPool.IsAnyMenuOpen())
-            {
                 StartupMenu.Visible = !StartupMenu.Visible;
-            }
         }
     }
 }

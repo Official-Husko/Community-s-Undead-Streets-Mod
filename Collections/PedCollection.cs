@@ -5,28 +5,25 @@ using System.Collections.Generic;
 namespace CWDM.Collections
 {
     [Serializable]
-    public class PedCollection : IList<PedData>, ICollection<PedData>, IEnumerable<PedData>, IEnumerable
+    public class PedCollection : IList<PedData>
     {
         public delegate void ListChangedEvent(PedCollection sender);
 
-        private readonly List<PedData> peds;
-
-        public int Count => peds.Count;
-
-        public bool IsReadOnly => ((ICollection<PedData>)peds).IsReadOnly;
-
-        public PedData this[int index]
-        {
-            get => peds[index];
-            set => peds[index] = value;
-        }
-
-        [field: NonSerialized]
-        public event ListChangedEvent ListChanged;
+        private readonly List<PedData> _peds;
 
         public PedCollection()
         {
-            peds = new List<PedData>();
+            _peds = new List<PedData>();
+        }
+
+        public int Count => _peds.Count;
+
+        public bool IsReadOnly => ((ICollection<PedData>) _peds).IsReadOnly;
+
+        public PedData this[int index]
+        {
+            get => _peds[index];
+            set => _peds[index] = value;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -36,51 +33,53 @@ namespace CWDM.Collections
 
         public IEnumerator<PedData> GetEnumerator()
         {
-            return peds.GetEnumerator();
+            return _peds.GetEnumerator();
         }
 
         public void Add(PedData item)
         {
-            peds.Add(item);
+            _peds.Add(item);
             ListChanged?.Invoke(this);
         }
 
         public void Clear()
         {
-            peds.Clear();
+            _peds.Clear();
             ListChanged?.Invoke(this);
         }
 
         public bool Contains(PedData item)
         {
-            return peds.Contains(item);
+            return _peds.Contains(item);
         }
 
         public void CopyTo(PedData[] array, int arrayIndex)
         {
-            peds.CopyTo(array, arrayIndex);
+            _peds.CopyTo(array, arrayIndex);
         }
 
         public bool Remove(PedData item)
         {
-            bool remove = peds.Remove(item);
+            var remove = _peds.Remove(item);
             ListChanged?.Invoke(this);
             return remove;
         }
 
         public int IndexOf(PedData item)
         {
-            return peds.IndexOf(item);
+            return _peds.IndexOf(item);
         }
 
         public void Insert(int index, PedData item)
         {
-            peds.Insert(index, item);
+            _peds.Insert(index, item);
         }
 
         public void RemoveAt(int index)
         {
-            peds.RemoveAt(index);
+            _peds.RemoveAt(index);
         }
+
+        [field: NonSerialized] public event ListChangedEvent ListChanged;
     }
 }

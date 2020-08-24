@@ -1,7 +1,7 @@
-﻿using CWDM.Enums;
+﻿using System.Linq;
+using CWDM.Enums;
 using GTA;
 using GTA.Native;
-using System.Linq;
 
 namespace CWDM.Extensions
 {
@@ -14,10 +14,7 @@ namespace CWDM.Extensions
 
         public static void SetMovementAnim(this Ped ped, string anim)
         {
-            if (!Function.Call<bool>(Hash.HAS_ANIM_SET_LOADED, anim))
-            {
-                Function.Call(Hash.REQUEST_ANIM_SET, anim);
-            }
+            if (!Function.Call<bool>(Hash.HAS_ANIM_SET_LOADED, anim)) Function.Call(Hash.REQUEST_ANIM_SET, anim);
             Function.Call(Hash.SET_PED_MOVEMENT_CLIPSET, ped.Handle, anim, 1048576000);
         }
 
@@ -35,31 +32,22 @@ namespace CWDM.Extensions
         {
             if (leader != null)
             {
-                int groupLimit = Character.MaxPlayerGroupSize;
+                var groupLimit = Character.MaxPlayerGroupSize;
                 if (leader == Game.Player.Character && leader.CurrentPedGroup.Count() < groupLimit)
                 {
-                    PedGroup group = leader.CurrentPedGroup;
+                    var group = leader.CurrentPedGroup;
                     ped.LeaveGroup();
                     Function.Call(Hash.SET_PED_RAGDOLL_ON_COLLISION, ped.Handle, false);
                     ped.Task.ClearAll();
                     group.SeparationRange = 2.14748365E+09f;
-                    if (!group.Contains(leader))
-                    {
-                        group.Add(leader, true);
-                    }
-                    if (!group.Contains(ped))
-                    {
-                        group.Add(ped, false);
-                    }
+                    if (!group.Contains(leader)) @group.Add(leader, true);
+                    if (!group.Contains(ped)) @group.Add(ped, false);
                     ped.IsPersistent = true;
                     ped.RelationshipGroup = leader.RelationshipGroup;
                     ped.NeverLeavesGroup = true;
-                    Blip currentBlip = ped.CurrentBlip;
-                    if (currentBlip.Type != 0)
-                    {
-                        currentBlip.Remove();
-                    }
-                    Blip blip = ped.AddBlip();
+                    var currentBlip = ped.CurrentBlip;
+                    if (currentBlip.Type != 0) currentBlip.Remove();
+                    var blip = ped.AddBlip();
                     blip.Color = BlipColor.Green;
                     blip.Scale = 0.65f;
                     blip.Name = "Group";
@@ -77,7 +65,7 @@ namespace CWDM.Extensions
 
         public static void SetTask(this Ped ped, PedTask task)
         {
-            if (Population.SurvivorPeds.Exists(match: a => a.pedEntity == ped))
+            if (Population.SurvivorPeds.Exists(a => a.PedEntity == ped))
             {
                 ped.Task.ClearAll();
                 if (task == PedTask.Guard)
@@ -95,38 +83,33 @@ namespace CWDM.Extensions
                 else if (task == PedTask.Leave)
                 {
                     ped.LeaveGroup();
-                    Blip currentBlip = ped.CurrentBlip;
-                    if (currentBlip.Handle != 0)
-                    {
-                        currentBlip.Remove();
-                    }
+                    var currentBlip = ped.CurrentBlip;
+                    if (currentBlip.Handle != 0) currentBlip.Remove();
                     ped.RelationshipGroup = Relationships.FriendlyGroup;
                     ped.Task.ClearAll();
-                    Blip blip = ped.AddBlip();
+                    var blip = ped.AddBlip();
                     blip.Color = BlipColor.Blue;
                     blip.Scale = 0.65f;
                     blip.Name = "Friendly";
                     task = PedTask.Wander;
                     ped.Task.WanderAround(ped.Position, 100f);
                 }
-                Population.SurvivorPeds.Find(match: a => a.pedEntity == ped).task = task;
+
+                Population.SurvivorPeds.Find(a => a.PedEntity == ped).Task = task;
             }
         }
 
         public static void GiveWeaponHashName(this Ped ped, string weapon, int ammo, bool equipNow, bool isAmmoLoaded)
         {
-            WeaponHash weaponHash = (WeaponHash)Game.GenerateHash(weapon);
+            var weaponHash = (WeaponHash) Game.GenerateHash(weapon);
             ped.Weapons.Give(weaponHash, ammo, equipNow, isAmmoLoaded);
         }
 
         public static void GiveWeaponHashName(this Ped ped, string weapon, bool equipNow, bool isAmmoLoaded)
         {
-            WeaponHash weaponHash = (WeaponHash)Game.GenerateHash(weapon);
-            int ammo = Function.Call<int>(Hash.GET_WEAPON_CLIP_SIZE, weaponHash.GetHashCode());
-            if (ammo < 0)
-            {
-                ammo = 0;
-            }
+            var weaponHash = (WeaponHash) Game.GenerateHash(weapon);
+            var ammo = Function.Call<int>(Hash.GET_WEAPON_CLIP_SIZE, weaponHash.GetHashCode());
+            if (ammo < 0) ammo = 0;
             ped.Weapons.Give(weaponHash, ammo, equipNow, isAmmoLoaded);
         }
     }

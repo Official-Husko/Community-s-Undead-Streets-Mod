@@ -1,12 +1,11 @@
-﻿using CWDM.Enums;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using CWDM.Enums;
 using CWDM.Extensions;
-using CWDM.Inventory;
 using GTA;
 using GTA.Math;
 using GTA.Native;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace CWDM
 {
@@ -117,18 +116,17 @@ namespace CWDM
                 if (Game.Player.Character.Weapons.HasWeapon(WeaponHash.Knife))
                 {
                     Game.Player.Character.Weapons.Select(WeaponHash.Knife, true);
-                    Game.Player.Character.Task.PlayAnimation("pickup_object", "pickup_low", 8f, 3000, AnimationFlags.None);
-                    List<InventoryMaterial> materialsToFind = PlayerInventory.PlayerInventoryMaterials;
-                    for (int i = 0; i < materialsToFind.Count; i++)
-                    {
+                    Game.Player.Character.Task.PlayAnimation("pickup_object", "pickup_low", 8f, 3000,
+                        AnimationFlags.None);
+                    var materialsToFind = PlayerInventory.PlayerInventoryMaterials;
+                    for (var i = 0; i < materialsToFind.Count; i++)
                         if (!materialsToFind[i].GetLootTypes().Contains(LootType.Animal))
-                        {
                             materialsToFind.RemoveAt(i);
-                        }
-                    }
-                    InventoryMaterial materialFound = materialsToFind.GetRandomElementFromList();
-                    int invCheckAmount = PlayerInventory.PlayerInventoryMaterials.Find(material => material.Name == materialFound.Name).Amount;
-                    int invCheckMaxAmount = PlayerInventory.PlayerInventoryMaterials.Find(material => material.Name == materialFound.Name).MaxAmount;
+                    var materialFound = materialsToFind.GetRandomElementFromList();
+                    var invCheckAmount = PlayerInventory.PlayerInventoryMaterials
+                        .Find(material => material.Name == materialFound.Name).Amount;
+                    var invCheckMaxAmount = PlayerInventory.PlayerInventoryMaterials
+                        .Find(material => material.Name == materialFound.Name).MaxAmount;
                     if (invCheckAmount == invCheckMaxAmount)
                     {
                         Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "ERROR", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
@@ -139,13 +137,19 @@ namespace CWDM
                         Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "CONTINUE", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
                         LootedEntities.Add(entity);
                         PlayerInventory.UpdateItemsInventory(materialFound, 1, InventoryUpdate.Increase);
-                        UI.Notify("You have harvested ~b~" + materialFound.Name + "~g~ (" + PlayerInventory.PlayerInventoryItems.Find(item => item.Name == materialFound.Name).Amount + "/" + PlayerInventory.PlayerInventoryItems.Find(item => item.Name == materialFound.Name).MaxAmount + ")", true);
+                        UI.Notify(
+                            "You have harvested ~b~" + materialFound.Name + "~g~ (" +
+                            PlayerInventory.PlayerInventoryItems.Find(item => item.Name == materialFound.Name).Amount +
+                            "/" + PlayerInventory.PlayerInventoryItems.Find(item => item.Name == materialFound.Name)
+                                .MaxAmount + ")", true);
                     }
                 }
                 else
                 {
                     Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "ERROR", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
-                    UI.Notify("You need a knife to harvest ~b~" + PlayerInventory.RawMeatMaterial.Name + "~s~ from dead animals!", true);
+                    UI.Notify(
+                        "You need a knife to harvest ~b~" + PlayerInventory.RawMeatMaterial.Name +
+                        "~s~ from dead animals!", true);
                 }
             }
             else
@@ -162,26 +166,25 @@ namespace CWDM
                 }
                 else
                 {
-                    Vector3 val = entity.Position - Game.Player.Character.Position;
+                    var val = entity.Position - Game.Player.Character.Position;
                     Game.Player.Character.Heading = val.ToHeading();
                     Game.Player.Character.Task.PlayAnimation("oddjobs@shop_robbery@rob_till", "loop");
                     Wait(300);
                 }
-                Random random = new Random();
-                int chance = random.Next(0, 3);
+
+                var random = new Random();
+                var chance = random.Next(0, 3);
                 if (chance == 0)
                 {
-                    List<InventoryItem> itemsToFind = PlayerInventory.PlayerInventoryItems;
-                    for (int i = 0; i < itemsToFind.Count; i++)
-                    {
+                    var itemsToFind = PlayerInventory.PlayerInventoryItems;
+                    for (var i = 0; i < itemsToFind.Count; i++)
                         if (!itemsToFind[i].GetLootTypes().Contains(type))
-                        {
                             itemsToFind.RemoveAt(i);
-                        }
-                    }
-                    InventoryItem itemFound = itemsToFind.GetRandomElementFromList();
-                    int invCheckAmount = PlayerInventory.PlayerInventoryItems.Find(item => item.Name == itemFound.Name).Amount;
-                    int invCheckMaxAmount = PlayerInventory.PlayerInventoryItems.Find(item => item.Name == itemFound.Name).MaxAmount;
+                    var itemFound = itemsToFind.GetRandomElementFromList();
+                    var invCheckAmount = PlayerInventory.PlayerInventoryItems.Find(item => item.Name == itemFound.Name)
+                        .Amount;
+                    var invCheckMaxAmount = PlayerInventory.PlayerInventoryItems
+                        .Find(item => item.Name == itemFound.Name).MaxAmount;
                     if (invCheckAmount == invCheckMaxAmount)
                     {
                         Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "ERROR", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
@@ -192,22 +195,24 @@ namespace CWDM
                         Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "CONTINUE", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
                         LootedEntities.Add(entity);
                         PlayerInventory.UpdateItemsInventory(itemFound, 1, InventoryUpdate.Increase);
-                        UI.Notify("Found ~b~" + itemFound.Name + "~g~ (" + PlayerInventory.PlayerInventoryItems.Find(item => item.Name == itemFound.Name).Amount + "/" + PlayerInventory.PlayerInventoryItems.Find(item => item.Name == itemFound.Name).MaxAmount + ")", true);
+                        UI.Notify(
+                            "Found ~b~" + itemFound.Name + "~g~ (" +
+                            PlayerInventory.PlayerInventoryItems.Find(item => item.Name == itemFound.Name).Amount +
+                            "/" + PlayerInventory.PlayerInventoryItems.Find(item => item.Name == itemFound.Name)
+                                .MaxAmount + ")", true);
                     }
                 }
                 else if (chance == 1)
                 {
-                    List<InventoryMaterial> materialsToFind = PlayerInventory.PlayerInventoryMaterials;
-                    for (int i = 0; i < materialsToFind.Count; i++)
-                    {
+                    var materialsToFind = PlayerInventory.PlayerInventoryMaterials;
+                    for (var i = 0; i < materialsToFind.Count; i++)
                         if (!materialsToFind[i].GetLootTypes().Contains(type))
-                        {
                             materialsToFind.RemoveAt(i);
-                        }
-                    }
-                    InventoryMaterial materialFound = materialsToFind.GetRandomElementFromList();
-                    int invCheckAmount = PlayerInventory.PlayerInventoryMaterials.Find(material => material.Name == materialFound.Name).Amount;
-                    int invCheckMaxAmount = PlayerInventory.PlayerInventoryMaterials.Find(material => material.Name == materialFound.Name).MaxAmount;
+                    var materialFound = materialsToFind.GetRandomElementFromList();
+                    var invCheckAmount = PlayerInventory.PlayerInventoryMaterials
+                        .Find(material => material.Name == materialFound.Name).Amount;
+                    var invCheckMaxAmount = PlayerInventory.PlayerInventoryMaterials
+                        .Find(material => material.Name == materialFound.Name).MaxAmount;
                     if (invCheckAmount == invCheckMaxAmount)
                     {
                         Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "ERROR", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
@@ -218,7 +223,12 @@ namespace CWDM
                         Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "CONTINUE", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
                         LootedEntities.Add(entity);
                         PlayerInventory.UpdateMaterialsInventory(materialFound, 1, InventoryUpdate.Increase);
-                        UI.Notify("Found ~b~" + materialFound.Name + "~g~ (" + PlayerInventory.PlayerInventoryMaterials.Find(material => material.Name == materialFound.Name).Amount + "/" + PlayerInventory.PlayerInventoryMaterials.Find(material => material.Name == materialFound.Name).MaxAmount + ")", true);
+                        UI.Notify(
+                            "Found ~b~" + materialFound.Name + "~g~ (" +
+                            PlayerInventory.PlayerInventoryMaterials
+                                .Find(material => material.Name == materialFound.Name).Amount + "/" + PlayerInventory
+                                .PlayerInventoryMaterials.Find(material => material.Name == materialFound.Name)
+                                .MaxAmount + ")", true);
                     }
                 }
                 else
@@ -234,66 +244,54 @@ namespace CWDM
         {
             if (Main.ModActive)
             {
-                Ped ped = World.GetClosest(Game.Player.Character.Position, World.GetNearbyPeds(Game.Player.Character, 1.5f));
+                var ped = World.GetClosest(Game.Player.Character.Position,
+                    World.GetNearbyPeds(Game.Player.Character, 1.5f));
                 if (ped?.IsDead == true && ped.IsHuman && !LootedEntities.Contains(ped))
                 {
-                    UIExtensions.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to search corpse");
-                    Game.DisableControlThisFrame(2, GTA.Control.Context);
-                    if (Game.IsDisabledControlJustPressed(2, GTA.Control.Context))
-                    {
-                        Loot(ped, LootType.Ped);
-                    }
+                    "Press ~INPUT_CONTEXT~ to search corpse".DisplayHelpTextThisFrame();
+                    Game.DisableControlThisFrame(2, Control.Context);
+                    if (Game.IsDisabledControlJustPressed(2, Control.Context)) Loot(ped, LootType.Ped);
                 }
                 else if (ped?.IsDead == true && !ped.IsHuman && !LootedEntities.Contains(ped))
                 {
-                    UIExtensions.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to harvest meat from animal corpse");
-                    Game.DisableControlThisFrame(2, GTA.Control.Context);
-                    if (Game.IsDisabledControlJustPressed(2, GTA.Control.Context))
-                    {
-                        Loot(ped, LootType.Animal);
-                    }
+                    "Press ~INPUT_CONTEXT~ to harvest meat from animal corpse".DisplayHelpTextThisFrame();
+                    Game.DisableControlThisFrame(2, Control.Context);
+                    if (Game.IsDisabledControlJustPressed(2, Control.Context)) Loot(ped, LootType.Animal);
                 }
-                Prop prop = World.GetClosest(Game.Player.Character.Position, World.GetNearbyProps(Game.Player.Character.Position, 1.5f));
+
+                var prop = World.GetClosest(Game.Player.Character.Position,
+                    World.GetNearbyProps(Game.Player.Character.Position, 1.5f));
                 if (prop != null && StoreModels.Contains(prop.Model) && !LootedEntities.Contains(prop))
                 {
-                    UIExtensions.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to search shelves");
-                    Game.DisableControlThisFrame(2, GTA.Control.Context);
-                    if (Game.IsDisabledControlJustPressed(2, GTA.Control.Context))
-                    {
-                        Loot(prop, LootType.Store);
-                    }
+                    "Press ~INPUT_CONTEXT~ to search shelves".DisplayHelpTextThisFrame();
+                    Game.DisableControlThisFrame(2, Control.Context);
+                    if (Game.IsDisabledControlJustPressed(2, Control.Context)) Loot(prop, LootType.Store);
                 }
                 else if (prop != null && BinModels.Contains(prop.Model) && !LootedEntities.Contains(prop))
                 {
-                    UIExtensions.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to search bin");
-                    Game.DisableControlThisFrame(2, GTA.Control.Context);
-                    if (Game.IsDisabledControlJustPressed(2, GTA.Control.Context))
-                    {
-                        Loot(prop, LootType.Bin);
-                    }
+                    "Press ~INPUT_CONTEXT~ to search bin".DisplayHelpTextThisFrame();
+                    Game.DisableControlThisFrame(2, Control.Context);
+                    if (Game.IsDisabledControlJustPressed(2, Control.Context)) Loot(prop, LootType.Bin);
                 }
-                Prop prop2 = World.GetClosest(Game.Player.Character.Position, World.GetNearbyProps(Game.Player.Character.Position, 2.5f));
+
+                var prop2 = World.GetClosest(Game.Player.Character.Position,
+                    World.GetNearbyProps(Game.Player.Character.Position, 2.5f));
                 if (prop2 != null && SkipModels.Contains(prop2.Model) && !LootedEntities.Contains(prop2))
                 {
-                    UIExtensions.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to search skip");
-                    Game.DisableControlThisFrame(2, GTA.Control.Context);
-                    if (Game.IsDisabledControlJustPressed(2, GTA.Control.Context))
-                    {
-                        Loot(prop, LootType.Skip);
-                    }
+                    "Press ~INPUT_CONTEXT~ to search skip".DisplayHelpTextThisFrame();
+                    Game.DisableControlThisFrame(2, Control.Context);
+                    if (Game.IsDisabledControlJustPressed(2, Control.Context)) Loot(prop, LootType.Skip);
                 }
+
                 if (Game.Player.Character.IsInVehicle())
-                {
-                    if (Game.Player.Character.CurrentVehicle.Driver == Game.Player.Character && !LootedEntities.Contains(Game.Player.Character.CurrentVehicle))
+                    if (Game.Player.Character.CurrentVehicle.Driver == Game.Player.Character &&
+                        !LootedEntities.Contains(Game.Player.Character.CurrentVehicle))
                     {
-                        UIExtensions.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to search glovebox");
-                        Game.DisableControlThisFrame(2, GTA.Control.Context);
-                        if (Game.IsDisabledControlJustPressed(2, GTA.Control.Context))
-                        {
+                        "Press ~INPUT_CONTEXT~ to search glovebox".DisplayHelpTextThisFrame();
+                        Game.DisableControlThisFrame(2, Control.Context);
+                        if (Game.IsDisabledControlJustPressed(2, Control.Context))
                             Loot(Game.Player.Character.CurrentVehicle, LootType.Vehicle);
-                        }
                     }
-                }
             }
         }
     }

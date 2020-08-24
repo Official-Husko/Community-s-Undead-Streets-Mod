@@ -1,39 +1,29 @@
-﻿using GTA.Math;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using GTA.Math;
 
 namespace CWDM.Extensions
 {
     public static class MathExtensions
     {
-        public static Random CachedRandom
-        {
-            get
-            {
-                return random ?? (random = new Random());
-            }
-        }
+        private static Random _random;
 
-        private static Random random;
+        public static Random CachedRandom => _random ?? (_random = new Random());
 
         public static Vector3 RandomDirection(this bool zeroZ)
         {
             Vector3 direction;
             if (zeroZ)
-            {
                 direction = Vector3.RandomXY();
-            }
             else
-            {
                 direction = Vector3.RandomXYZ();
-            }
             direction.Normalize();
             return direction;
         }
 
         public static float RandomHeading()
         {
-            return ((float)CachedRandom.NextDouble()) * 360.0f;
+            return (float) CachedRandom.NextDouble() * 360.0f;
         }
 
         public static bool RandomBool()
@@ -43,20 +33,14 @@ namespace CWDM.Extensions
 
         public static T GetRandomElementFromList<T>(this List<T> list)
         {
-            if (list == null)
-            {
-                return default;
-            }
+            if (list == null) return default;
 
             return list[CachedRandom.Next(list.Count)];
         }
 
         public static T GetRandomElementFromArray<T>(this T[] array)
         {
-            if (array == null)
-            {
-                return default;
-            }
+            if (array == null) return default;
 
             return array[CachedRandom.Next(array.Length)];
         }
@@ -64,61 +48,36 @@ namespace CWDM.Extensions
         public static int Abs(this int value)
         {
             if (value >= 0)
-            {
                 return value;
-            }
-            else
-            {
-                return value * -1;
-            }
+            return value * -1;
         }
 
         public static float Min(this float x, float y)
         {
             if (x <= y)
-            {
                 return x;
-            }
-            else
-            {
-                return y;
-            }
+            return y;
         }
 
         public static int Min(this int x, int y)
         {
             if (x <= y)
-            {
                 return x;
-            }
-            else
-            {
-                return y;
-            }
+            return y;
         }
 
         public static int Max(this int x, int y)
         {
             if (x >= y)
-            {
                 return x;
-            }
-            else
-            {
-                return y;
-            }
+            return y;
         }
 
         public static float Max(this float x, float y)
         {
             if (x >= y)
-            {
                 return x;
-            }
-            else
-            {
-                return y;
-            }
+            return y;
         }
 
         public static int TrimValue(this int value, int min, int max)

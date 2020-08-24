@@ -1,12 +1,11 @@
-﻿using CWDM.Enums;
+﻿using System;
+using System.Drawing;
+using System.Linq;
+using CWDM.Enums;
 using CWDM.Extensions;
 using CWDM.Inventory;
 using GTA;
-using GTA.Math;
 using NativeUI;
-using System;
-using System.Drawing;
-using System.Linq;
 
 namespace CWDM.Interactives
 {
@@ -18,7 +17,7 @@ namespace CWDM.Interactives
         {
             Tick += OnTick;
             CampfireMenu = new UIMenu("Campfire", "Cook Raw Meat here so it can be consumed");
-            UIResRectangle banner = new UIResRectangle
+            var banner = new UIResRectangle
             {
                 Color = Color.FromArgb(255, Color.OrangeRed)
             };
@@ -33,20 +32,20 @@ namespace CWDM.Interactives
             if (Main.ModActive)
             {
                 if (!CampfireMenu.Visible && !Main.MasterMenuPool.IsAnyMenuOpen() && Game.Player.Character.IsAlive)
-                {
                     Game.Player.Character.FreezePosition = false;
-                }
-                Prop prop = World.GetClosest(Game.Player.Character.Position, World.GetNearbyProps(Game.Player.Character.Position, 2.5f));
+                var prop = World.GetClosest(Game.Player.Character.Position,
+                    World.GetNearbyProps(Game.Player.Character.Position, 2.5f));
                 if (prop != null && prop == Character.CampFire)
                 {
-                    UIExtensions.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to cook on campfire");
+                    "Press ~INPUT_CONTEXT~ to cook on campfire".DisplayHelpTextThisFrame();
                     Game.DisableControlThisFrame(2, Control.Context);
-                    if (Game.IsDisabledControlJustPressed(2, Control.Context) && !CampfireMenu.Visible && !Main.MasterMenuPool.IsAnyMenuOpen())
+                    if (Game.IsDisabledControlJustPressed(2, Control.Context) && !CampfireMenu.Visible &&
+                        !Main.MasterMenuPool.IsAnyMenuOpen())
                     {
-                        Ped[] peds = World.GetNearbyPeds(Game.Player.Character.Position, 50f).Where(IsEnemy).ToArray();
+                        var peds = World.GetNearbyPeds(Game.Player.Character.Position, 50f).Where(IsEnemy).ToArray();
                         if (peds.Length == 0)
                         {
-                            Vector3 val = prop.Position - Game.Player.Character.Position;
+                            var val = prop.Position - Game.Player.Character.Position;
                             Game.Player.Character.Heading = val.ToHeading();
                             Game.Player.Character.FreezePosition = true;
                             CampfireMenu.Visible = !CampfireMenu.Visible;
@@ -66,21 +65,19 @@ namespace CWDM.Interactives
             menu.OnItemSelect += (sender, item, index) =>
             {
                 InventoryItem craftingItem;
-                if (PlayerInventory.PlayerInventoryItems.Exists(match: a => a.Name == item.Text))
-                {
-                    craftingItem = PlayerInventory.PlayerInventoryItems.Find(match: a => a.Name == item.Text);
-                }
+                if (PlayerInventory.PlayerInventoryItems.Exists(a => a.Name == item.Text))
+                    craftingItem = PlayerInventory.PlayerInventoryItems.Find(a => a.Name == item.Text);
                 else
-                {
-                    craftingItem = PlayerInventory.PlayerInventoryMaterials.Find(match: a => a.Name == item.Text);
-                }
+                    craftingItem = PlayerInventory.PlayerInventoryMaterials.Find(a => a.Name == item.Text);
                 Crafting.Craft(craftingItem);
             };
         }
 
         private static bool IsEnemy(Ped ped)
         {
-            return (ped.IsHuman && ped.IsAlive && ped.GetRelationshipWithPed(Game.Player.Character) == Relationship.Hate) || ped.IsInCombatAgainst(Game.Player.Character);
+            return ped.IsHuman && ped.IsAlive &&
+                   ped.GetRelationshipWithPed(Game.Player.Character) == Relationship.Hate ||
+                   ped.IsInCombatAgainst(Game.Player.Character);
         }
     }
 }
