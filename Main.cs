@@ -91,7 +91,14 @@ namespace CWDM
             Audio.PlaySoundFrontend("Bed", "WastedSounds");
             World.RenderingCamera.Shake(CameraShake.DeathFail, 1f);
             ScreenEffect.DeathFailMpDark.StartEffect();
-            BigMessageThread.MessageInstance.ShowOldMessage("~r~WASTED", 5000);
+            try
+            {
+                BigMessageThread.MessageInstance.ShowOldMessage("~r~WASTED", 5000);
+            }
+            catch (Exception x)
+            {
+                Log.Write(x.ToString());
+            }
             Game.TimeScale = 0.3f;
             Character.CharacterReset = false;
             while (!Game.IsScreenFadedOut)
@@ -102,7 +109,14 @@ namespace CWDM
             Game.TimeScale = 1f;
             Function.Call(Hash._STOP_ALL_SCREEN_EFFECTS);
             Function.Call(Hash.NETWORK_REQUEST_CONTROL_OF_ENTITY, Game.Player.Character.Handle);
-            BigMessageThread.MessageInstance.Dispose();
+            try
+            {
+                BigMessageThread.MessageInstance.Dispose();
+            }
+            catch (Exception x)
+            {
+                Log.Write(x.ToString());
+            }
             Function.Call(Hash.NETWORK_RESURRECT_LOCAL_PLAYER, Character.StartingLocation.X, Character.StartingLocation.Y, Character.StartingLocation.Z, Character.StartingHeading, false, false);
             Wait(8000);
             Character.ResetCharacter();

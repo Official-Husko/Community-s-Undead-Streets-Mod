@@ -1229,7 +1229,7 @@ namespace CWDM
             {
                 for (int i = 0; i < Population.ZombiePeds.Count; i++)
                 {
-                    if (Population.ZombiePeds[i].pedEntity?.IsDead != false)
+                    if (Population.ZombiePeds[i].pedEntity.IsDead != false)
                     {
                         Population.ZombiePeds.RemoveAt(i);
                     }
@@ -1239,7 +1239,7 @@ namespace CWDM
             {
                 for (int i = 0; i < Population.AnimalPeds.Count; i++)
                 {
-                    if (Population.AnimalPeds[i].pedEntity?.IsDead != false)
+                    if (Population.AnimalPeds[i].pedEntity.IsDead != false)
                     {
                         Population.AnimalPeds.RemoveAt(i);
                     }
@@ -1249,7 +1249,7 @@ namespace CWDM
             {
                 for (int i = 0; i < Population.SurvivorPeds.Count; i++)
                 {
-                    if (Population.SurvivorPeds[i].pedEntity?.IsDead != false)
+                    if (Population.SurvivorPeds[i].pedEntity.IsDead != false)
                     {
                         Population.SurvivorPeds.RemoveAt(i);
                     }

@@ -27,6 +27,7 @@ namespace CWDM.Wrappers
 
         public void Update()
         {
+            pedEntity.RelationshipGroup = Relationships.ZombieGroup;
             if (pedEntity == null)
             {
                 return;
@@ -72,6 +73,7 @@ namespace CWDM.Wrappers
             {
                 movingToTarget = false;
                 target = FindTarget();
+                Task.Delay(100);
                 if (target == null && newSearch)
                 {
                     pedEntity.Task.WanderAround();
@@ -87,6 +89,7 @@ namespace CWDM.Wrappers
                     newSearch = true;
                     movingToTarget = false;
                     target = FindTarget();
+                    Task.Delay(100);
                     if (target == null && newSearch)
                     {
                         pedEntity.Task.WanderAround();
