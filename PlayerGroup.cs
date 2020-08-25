@@ -188,26 +188,28 @@ namespace CWDM
 
         public void OnTick(object sender, EventArgs e)
         {
-            if (Main.ModActive)
+            if (!Main.ModActive) return;
+            var ped = World.GetClosest(Game.Player.Character.Position,
+                World.GetNearbyPeds(Game.Player.Character, 1.5f));
+            switch (ped?.IsDead)
             {
-                var ped = World.GetClosest(Game.Player.Character.Position,
-                    World.GetNearbyPeds(Game.Player.Character, 1.5f));
-                if (ped?.IsDead == false && ped.IsHuman && ped.RelationshipGroup == Relationships.FriendlyGroup)
+                case false when ped.IsHuman && ped.RelationshipGroup == Relationships.FriendlyGroup:
                 {
                     "Press ~INPUT_CONTEXT~ to recruit".DisplayHelpTextThisFrame();
                     Game.DisableControlThisFrame(0, Control.Context);
-                    if (Game.IsDisabledControlJustPressed(2, Control.Context))
-                        try
-                        {
-                            ped.Recruit(Game.Player.Character);
-                        }
-                        catch (Exception x)
-                        {
-                            Log.Write(x.ToString());
-                        }
+                    if (!Game.IsDisabledControlJustPressed(2, Control.Context)) return;
+                    try
+                    {
+                        ped.Recruit(Game.Player.Character);
+                    }
+                    catch (Exception x)
+                    {
+                        Log.Write(x.ToString());
+                    }
+
+                    break;
                 }
-                else if (ped?.IsDead == false && ped.IsHuman &&
-                         ped.RelationshipGroup == Game.Player.Character.RelationshipGroup)
+                case false when ped.IsHuman && ped.RelationshipGroup == Game.Player.Character.RelationshipGroup:
                 {
                     "Press ~INPUT_CONTEXT~ to manage Group".DisplayHelpTextThisFrame();
                     Game.DisableControlThisFrame(0, Control.Context);
@@ -216,6 +218,8 @@ namespace CWDM
                         _currentGroupPed = ped;
                         GroupMenu.Visible = !GroupMenu.Visible;
                     }
+
+                    break;
                 }
             }
         }

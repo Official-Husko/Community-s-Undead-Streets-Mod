@@ -345,7 +345,11 @@ namespace CWDM
 
         public void OnTick(object sender, EventArgs e)
         {
-            if (!Main.ModActive || !Map.MapPrepared || !Character.CharacterReset) return;
+            if (!Main.ModActive || !Map.MapPrepared || !Character.CharacterReset)
+            {
+                return;
+            }
+
             PopulateZombies();
             PopulateVehicles();
             PopulateAnimals();
@@ -354,7 +358,11 @@ namespace CWDM
 
         public static bool IsSafeZone(Vector3 position)
         {
-            if (!EnableSafeZones) return false;
+            if (!EnableSafeZones)
+            {
+                return false;
+            }
+
             return SafeZones.Exists(a => a.Equals(World.GetZoneName(position)));
         }
 
@@ -368,27 +376,48 @@ namespace CWDM
             Vector3 spawnPosition;
             var zoneMaxZombies = MaxZombies;
             if (EnableCityPopulationDifference && !IsCityZone(Game.Player.Character.Position))
+            {
                 zoneMaxZombies = MaxZombies / 2;
+            }
+
             var peds = World.GetAllPeds();
             var pedsList = new List<Ped>(peds);
             for (var i = 0; i < pedsList.Count; i++)
+            {
                 if (pedsList[i].RelationshipGroup != Relationships.ZombieGroup)
+                {
                     pedsList.RemoveAt(i);
+                }
+            }
+
             for (var i = 0; i < zoneMaxZombies; i++)
             {
-                if (pedsList.Count >= zoneMaxZombies) continue;
+                if (pedsList.Count >= zoneMaxZombies)
+                {
+                    continue;
+                }
+
                 var random = new Random();
                 var chance = random.Next(0, 1);
                 if (chance == 0)
+                {
                     spawnPosition =
                         World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance), true);
+                }
                 else
+                {
                     spawnPosition =
                         World.GetNextPositionOnSidewalk(Game.Player.Character.Position.Around(MaxSpawnDistance));
+                }
+
                 var checkPosition = spawnPosition.Around(5);
                 if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() ||
                     (float) Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance ||
-                    IsSafeZone(checkPosition)) continue;
+                    IsSafeZone(checkPosition))
+                {
+                    continue;
+                }
+
                 try
                 {
                     ZombiePeds.Add(SpawnZombie(spawnPosition));
@@ -402,22 +431,37 @@ namespace CWDM
 
         public static void PopulateVehicles()
         {
-            if (!EnableVehicles) return;
+            if (!EnableVehicles)
+            {
+                return;
+            }
+
             Vector3 spawnPosition;
             var zoneMaxVehicles = MaxVehicles;
             if (EnableCityPopulationDifference && !IsCityZone(Game.Player.Character.Position))
+            {
                 zoneMaxVehicles = MaxVehicles / 2;
+            }
+
             var vehicles = World.GetAllVehicles();
             var vehiclesList = new List<Vehicle>(vehicles);
             for (var i = 0; i < zoneMaxVehicles; i++)
             {
-                if (vehiclesList.Count >= zoneMaxVehicles) continue;
+                if (vehiclesList.Count >= zoneMaxVehicles)
+                {
+                    continue;
+                }
+
                 spawnPosition =
                     World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance), true);
                 var checkPosition = spawnPosition.Around(5);
                 if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() ||
                     (float) Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance ||
-                    IsSafeZone(checkPosition)) continue;
+                    IsSafeZone(checkPosition))
+                {
+                    continue;
+                }
+
                 try
                 {
                     Vehicles.Add(SpawnVehicle(spawnPosition));
@@ -431,20 +475,38 @@ namespace CWDM
 
         public static void PopulateAnimals()
         {
-            if (!EnableAnimals) return;
+            if (!EnableAnimals)
+            {
+                return;
+            }
+
             Vector3 spawnPosition;
             var zoneMaxAnimals = MaxAnimals;
             if (EnableCityPopulationDifference)
+            {
                 if (!IsCityZone(Game.Player.Character.Position))
+                {
                     zoneMaxAnimals = MaxAnimals / 2;
+                }
+            }
+
             var peds = World.GetAllPeds();
             var pedsList = new List<Ped>(peds);
             for (var i = 0; i < pedsList.Count; i++)
+            {
                 if (pedsList[i].RelationshipGroup != Relationships.AnimalGroup)
+                {
                     pedsList.RemoveAt(i);
+                }
+            }
+
             for (var i = 0; i < zoneMaxAnimals; i++)
             {
-                if (pedsList.Count >= zoneMaxAnimals) continue;
+                if (pedsList.Count >= zoneMaxAnimals)
+                {
+                    continue;
+                }
+
                 var random = new Random();
                 var chance = random.Next(0, 1);
                 spawnPosition = chance == 0
@@ -453,7 +515,11 @@ namespace CWDM
                 var checkPosition = spawnPosition.Around(5);
                 if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() ||
                     (float) Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance ||
-                    IsSafeZone(checkPosition)) continue;
+                    IsSafeZone(checkPosition))
+                {
+                    continue;
+                }
+
                 try
                 {
                     AnimalPeds.Add(SpawnAnimal(spawnPosition));
@@ -467,10 +533,18 @@ namespace CWDM
 
         public static void PopulateSurvivors()
         {
-            if (!EnableSurvivors) return;
+            if (!EnableSurvivors)
+            {
+                return;
+            }
+
             var timeSpan = new TimeSpan(0, SurvivorTimeMins, 0);
             var checkTime = SurvivorLastSpawnTime.Add(timeSpan);
-            if (checkTime >= DateTime.UtcNow) return;
+            if (checkTime >= DateTime.UtcNow)
+            {
+                return;
+            }
+
             SurvivorLastSpawnTime = DateTime.UtcNow;
             Vector3 spawnPosition;
             var inVehicle = false;
@@ -478,7 +552,10 @@ namespace CWDM
             {
                 var random1 = new Random();
                 var chance1 = random1.Next(0, 10);
-                if (chance1 > 6) inVehicle = true;
+                if (chance1 > 6)
+                {
+                    inVehicle = true;
+                }
             }
 
             var groupType = GroupType.Friendly;
@@ -523,7 +600,11 @@ namespace CWDM
             var checkPosition = spawnPosition.Around(5);
             if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() ||
                 (float) Game.Player.Character.DistanceTo(spawnPosition) < MinSpawnDistance ||
-                IsSafeZone(checkPosition)) return;
+                IsSafeZone(checkPosition))
+            {
+                return;
+            }
+
             try
             {
                 SpawnSurvivorGroup(groupType, groupSize, spawnPosition, inVehicle);
@@ -590,7 +671,11 @@ namespace CWDM
                 }
             }
 
-            if (!inVehicle) return;
+            if (!inVehicle)
+            {
+                return;
+            }
+
             {
                 var model = GetRandomVehicleModel();
                 switch (groupType)
@@ -612,14 +697,22 @@ namespace CWDM
                     MathExtensions.RandomHeading())));
                 var vehicle = Vehicles[Vehicles.Count - 1].Vehicle;
                 for (var i = 0; i < peds.Count; i++)
+                {
                     if (i == 0)
                     {
-                        if (vehicle.IsSeatFree(VehicleSeat.Driver)) peds[i].SetIntoVehicle(vehicle, VehicleSeat.Driver);
+                        if (vehicle.IsSeatFree(VehicleSeat.Driver))
+                        {
+                            peds[i].SetIntoVehicle(vehicle, VehicleSeat.Driver);
+                        }
                     }
                     else
                     {
-                        if (vehicle.IsSeatFree(VehicleSeat.Any)) peds[i].SetIntoVehicle(vehicle, VehicleSeat.Any);
+                        if (vehicle.IsSeatFree(VehicleSeat.Any))
+                        {
+                            peds[i].SetIntoVehicle(vehicle, VehicleSeat.Any);
+                        }
                     }
+                }
 
                 peds[0].Task.CruiseWithVehicle(vehicle, 15f);
             }
@@ -627,8 +720,7 @@ namespace CWDM
 
         public static SurvivorPed SpawnSurvivor(Vector3 position)
         {
-            Ped ped;
-            ped = CustomSurvivors
+            Ped ped = CustomSurvivors
                 ? World.CreatePed(GetRandomSurvivorModel(), position)
                 : World.CreateRandomPed(position);
             Function.Call(Hash.SET_PED_FLEE_ATTRIBUTES, ped.Handle, 0, 0);
@@ -693,8 +785,7 @@ namespace CWDM
 
         public static Model GetRandomAnimalModel()
         {
-            Model model;
-            model = IsCityZone(Game.Player.Character.Position)
+            Model model = IsCityZone(Game.Player.Character.Position)
                 ? new Model(CityAnimalModels.GetRandomElementFromList())
                 : new Model(CountryAnimalModels.GetRandomElementFromList());
             return model.Request(1500) ? model : null;
@@ -702,8 +793,7 @@ namespace CWDM
 
         public static Model GetRandomVehicleModel()
         {
-            Model model;
-            model = IsCityZone(Game.Player.Character.Position)
+            Model model = IsCityZone(Game.Player.Character.Position)
                 ? new Model(CityVehicleModels.GetRandomElementFromList())
                 : new Model(CountryVehicleModels.GetRandomElementFromList());
             return model.Request(1500) ? model : null;
@@ -711,7 +801,11 @@ namespace CWDM
 
         public static Vehicle CreatePersistentVehicle(Model model, Vector3 position, float heading = 0.0f)
         {
-            if (!model.IsVehicle || !model.Request(1000)) return null;
+            if (!model.IsVehicle || !model.Request(1000))
+            {
+                return null;
+            }
+
             var vehicle = Function.Call<Vehicle>(Hash.CREATE_VEHICLE, model.Hash, position.X, position.Y, position.Z,
                 heading, false, false);
             Function.Call(Hash.SET_VEHICLE_ON_GROUND_PROPERLY, vehicle);
@@ -745,7 +839,11 @@ namespace CWDM
             vehicle.OpenDoor(vehicle.GetRandomDoor(), false, true);
             var random = new Random();
             var chance = random.Next(0, 100);
-            if (chance > 15) vehicle.EngineHealth = 0f;
+            if (chance > 15)
+            {
+                vehicle.EngineHealth = 0f;
+            }
+
             return vehicleEntity;
         }
 
@@ -792,7 +890,10 @@ namespace CWDM
             ped.DrownsInWater = true;
             ped.DiesInstantlyInWater = true;
             if (Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, ped.Handle))
+            {
                 Function.Call(Hash.STOP_CURRENT_PLAYING_AMBIENT_SPEECH, ped.Handle);
+            }
+
             Function.Call(Hash.STOP_PED_SPEAKING, ped.Handle, 1);
             Function.Call(Hash.DISABLE_PED_PAIN_AUDIO, ped.Handle, true);
             int runnerRnd;
@@ -809,7 +910,11 @@ namespace CWDM
             }
 
             bool isRunner;
-            if (!FastZombies) runnerRnd = 100;
+            if (!FastZombies)
+            {
+                runnerRnd = 100;
+            }
+
             if (runnerRnd <= 10)
             {
                 isRunner = true;
@@ -831,8 +936,15 @@ namespace CWDM
             ped.AlwaysDiesOnLowHealth = false;
             ped.AlwaysKeepTask = true;
             var newZombie = new ZombiePed(ped);
-            if (isRunner) newZombie.IsRunner = true;
-            if (!ZombiePeds.Exists(a => a.PedEntity == ped)) ZombiePeds.Add(newZombie);
+            if (isRunner)
+            {
+                newZombie.IsRunner = true;
+            }
+
+            if (!ZombiePeds.Exists(a => a.PedEntity == ped))
+            {
+                ZombiePeds.Add(newZombie);
+            }
         }
     }
 }

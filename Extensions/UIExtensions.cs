@@ -17,15 +17,16 @@ namespace CWDM.Extensions
 
         public static void DisplayHelpTextThisFrame(this string helpText)
         {
-            if (!Main.MasterMenuPool.IsAnyMenuOpen())
+            if (Main.MasterMenuPool.IsAnyMenuOpen()) return;
+            Function.Call(Hash._SET_TEXT_COMPONENT_FORMAT, "CELL_EMAIL_BCON");
+            for (var i = 0; i < helpText.Length; i += 99)
             {
-                Function.Call(Hash._SET_TEXT_COMPONENT_FORMAT, "CELL_EMAIL_BCON");
-                for (var i = 0; i < helpText.Length; i += 99)
-                    Function.Call(Hash._ADD_TEXT_COMPONENT_STRING,
-                        helpText.Substring(i, Math.Min(99, helpText.Length - i)));
-                Function.Call(Hash._DISPLAY_HELP_TEXT_FROM_STRING_LABEL, 0, 0,
-                    !Function.Call<bool>(Hash.IS_HELP_MESSAGE_BEING_DISPLAYED) ? 1 : 0, -1);
+                Function.Call(Hash._ADD_TEXT_COMPONENT_STRING,
+                    helpText.Substring(i, Math.Min(99, helpText.Length - i)));
             }
+
+            Function.Call(Hash._DISPLAY_HELP_TEXT_FROM_STRING_LABEL, 0, 0,
+                !Function.Call<bool>(Hash.IS_HELP_MESSAGE_BEING_DISPLAYED) ? 1 : 0, -1);
         }
     }
 }

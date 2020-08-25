@@ -98,9 +98,9 @@ namespace CWDM
 
         public void OnTick(object sender, EventArgs e)
         {
-            if (Main.ModActive)
-                if (Game.Player.Character.IsDead)
-                    MainModMenu.Visible = false;
+            if (!Main.ModActive) return;
+            if (Game.Player.Character.IsDead)
+                MainModMenu.Visible = false;
         }
 
         public void OnKeyDown(object sender, KeyEventArgs e)

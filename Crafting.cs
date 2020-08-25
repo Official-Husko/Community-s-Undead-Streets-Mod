@@ -13,6 +13,7 @@ namespace CWDM
         {
             var craftables = new List<InventoryItem>();
             for (var i = 0; i < PlayerInventory.PlayerInventoryItems.Count; i++)
+            {
                 if (PlayerInventory.PlayerInventoryItems[i].GetType() == typeof(InventoryItemCraftable))
                 {
                     var item = (InventoryItemCraftable) PlayerInventory.PlayerInventoryItems[i];
@@ -23,13 +24,16 @@ namespace CWDM
                     var item = (InventoryItemRestoreCraftable) PlayerInventory.PlayerInventoryItems[i];
                     if (item.CraftType == craftType) craftables.Add(PlayerInventory.PlayerInventoryItems[i]);
                 }
+            }
 
             for (var i = 0; i < PlayerInventory.PlayerInventoryMaterials.Count; i++)
+            {
                 if (PlayerInventory.PlayerInventoryMaterials[i].GetType() == typeof(InventoryMaterialCraftable))
                 {
                     var item = (InventoryMaterialCraftable) PlayerInventory.PlayerInventoryMaterials[i];
                     if (item.CraftType == craftType) craftables.Add(PlayerInventory.PlayerInventoryMaterials[i]);
                 }
+            }
 
             for (var i = 0; i < craftables.Count; i++)
             {
@@ -75,25 +79,37 @@ namespace CWDM
             {
                 var check = (InventoryItemCraftable) item;
                 foreach (var requiredMaterial in check.GetRequiredMaterials())
+                {
                     if (requiredMaterial.RequiredAmount > PlayerInventory.PlayerInventoryItems
                         .Find(a => a.Name == requiredMaterial.Material.Name).Amount)
+                    {
                         return false;
+                    }
+                }
             }
             else if (item.GetType() == typeof(InventoryItemRestoreCraftable))
             {
                 var check = (InventoryItemRestoreCraftable) item;
                 foreach (var requiredMaterial in check.GetRequiredMaterials())
+                {
                     if (requiredMaterial.RequiredAmount > PlayerInventory.PlayerInventoryItems
                         .Find(a => a.Name == requiredMaterial.Material.Name).Amount)
+                    {
                         return false;
+                    }
+                }
             }
             else if (item.GetType() == typeof(InventoryMaterialCraftable))
             {
                 var check = (InventoryMaterialCraftable) item;
                 foreach (var requiredMaterial in check.GetRequiredMaterials())
+                {
                     if (requiredMaterial.RequiredAmount > PlayerInventory.PlayerInventoryMaterials
                         .Find(a => a.Name == requiredMaterial.Material.Name).Amount)
+                    {
                         return false;
+                    }
+                }
             }
 
             return true;
@@ -127,22 +143,28 @@ namespace CWDM
                     {
                         var check = (InventoryItemCraftable) item;
                         foreach (var requiredMaterial in check.GetRequiredMaterials())
+                        {
                             PlayerInventory.UpdateMaterialsInventory(requiredMaterial.Material,
                                 requiredMaterial.RequiredAmount, InventoryUpdate.Decrease);
+                        }
                     }
                     else if (item.GetType() == typeof(InventoryItemRestoreCraftable))
                     {
                         var check = (InventoryItemRestoreCraftable) item;
                         foreach (var requiredMaterial in check.GetRequiredMaterials())
+                        {
                             PlayerInventory.UpdateMaterialsInventory(requiredMaterial.Material,
                                 requiredMaterial.RequiredAmount, InventoryUpdate.Decrease);
+                        }
                     }
                     else if (item.GetType() == typeof(InventoryMaterialCraftable))
                     {
                         var check = (InventoryMaterialCraftable) item;
                         foreach (var requiredMaterial in check.GetRequiredMaterials())
+                        {
                             PlayerInventory.UpdateMaterialsInventory(requiredMaterial.Material,
                                 requiredMaterial.RequiredAmount, InventoryUpdate.Decrease);
+                        }
                     }
 
                     if (PlayerInventory.PlayerInventoryItems.Exists(a => a.Name == item.Name))

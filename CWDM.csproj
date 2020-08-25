@@ -73,6 +73,7 @@
     <Compile Include="Collections\WeaponData.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Crafting.cs" />
+    <Compile Include="DebugExtensions\FPSCheck.cs" />
     <Compile Include="Enums\CraftType.cs" />
     <Compile Include="FixVehicles.cs" />
     <Compile Include="Interactives\Campfire.cs" />

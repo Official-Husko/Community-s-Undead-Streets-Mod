@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using CWDM.Enums;
 using CWDM.Extensions;
+using CWDM.DebugExtensions;
 using GTA;
 using GTA.Native;
 using NativeUI;
@@ -13,9 +14,11 @@ namespace CWDM
     {
         public static bool ModActive;
         public static Keys MenuKey = Keys.F10;
+        public static Keys FpsKeys = Keys.F8;
         public static Keys InventoryKey = Keys.I;
         public static MenuPool MasterMenuPool = new MenuPool();
         public static double Version = 0.2;
+        private readonly string dbg_fps = "DEBUG AURORA"; //Debug Build Version
 
         public Main()
         {
@@ -39,28 +42,43 @@ namespace CWDM
 
         public void OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (!ModActive) return;
+            if (!ModActive)
+            {
+                return;
+            }
+
             switch (e.KeyCode)
             {
                 case Keys.F6:
-                {
-                    var allPed = World.GetAllPeds();
-                    var allVeh = World.GetAllVehicles();
-                    var pedsList = new List<Ped>(allPed);
-                    for (var i = 0; i < pedsList.Count; i++)
-                        if (pedsList[i].RelationshipGroup != Relationships.ZombieGroup)
-                            pedsList.RemoveAt(i);
-                    UI.Notify(
-                        $"Zombies: {Population.ZombiePeds.Count}~n~Animals: {Population.AnimalPeds.Count}~n~Total Peds: {allPed.Length}~n~Total Zombie Peds: {pedsList.Count}~n~Vehicles: {Population.Vehicles.Count}~n~Total Vehicles: {allVeh.Length}");
-                    break;
-                }
+                    {
+                        var allPed = World.GetAllPeds();
+                        var allVeh = World.GetAllVehicles();
+                        var pedsList = new List<Ped>(allPed);
+                        for (var i = 0; i < pedsList.Count; i++)
+                        {
+                            if (pedsList[i].RelationshipGroup != Relationships.ZombieGroup)
+                            {
+                                pedsList.RemoveAt(i);
+                            }
+                        }
+
+                        UI.Notify(
+                            $"Zombies: {Population.ZombiePeds.Count}~n~Animals: {Population.AnimalPeds.Count}~n~Total Peds: {allPed.Length}~n~Total Zombie Peds: {pedsList.Count}~n~Vehicles: {Population.Vehicles.Count}~n~Total Vehicles: {allVeh.Length}");
+                        break;
+                    }
                 case Keys.F7:
+                    {
+                        var coords = $"Co-ordinates: {Game.Player.Character.Position}";
+                        var heading = $"Heading: {Game.Player.Character.Heading}";
+                        UI.Notify($"{coords}~n~{heading}~n~~n~Written to log!");
+                        Log.Write(coords);
+                        Log.Write(heading);
+                        break;
+                    }
+                case Keys.F8: //I wasn't able to use the FPSCheck.cs so i made it like this for now - Jamos
                 {
-                    var coords = $"Co-ordinates: {Game.Player.Character.Position}";
-                    var heading = $"Heading: {Game.Player.Character.Heading}";
-                    UI.Notify($"{coords}~n~{heading}~n~~n~Written to log!");
-                    Log.Write(coords);
-                    Log.Write(heading);
+                    UI.Notify(dbg_fps);
+                    UI.Notify("You are getting " + ((int)Game.FPS).ToString() + " FPS", false);
                     break;
                 }
             }
@@ -86,7 +104,11 @@ namespace CWDM
             Function.Call(Hash.TERMINATE_ALL_SCRIPTS_WITH_THIS_NAME, "respawn_controller");
             Function.Call(Hash.IGNORE_NEXT_RESTART, true);
             Function.Call(Hash._DISABLE_AUTOMATIC_RESPAWN, true);
-            if (!Game.Player.Character.IsDead) return;
+            if (!Game.Player.Character.IsDead)
+            {
+                return;
+            }
+
             Audio.PlaySoundFrontend("Bed", "WastedSounds");
             World.RenderingCamera.Shake(CameraShake.DeathFail, 1f);
             ScreenEffect.DeathFailMpDark.StartEffect();
@@ -101,7 +123,11 @@ namespace CWDM
 
             Game.TimeScale = 0.3f;
             Character.CharacterReset = false;
-            while (!Game.IsScreenFadedOut) Wait(0);
+            while (!Game.IsScreenFadedOut)
+            {
+                Wait(0);
+            }
+
             Function.Call(Hash.TERMINATE_ALL_SCRIPTS_WITH_THIS_NAME, "respawn_controller");
             Game.TimeScale = 1f;
             Function.Call(Hash._STOP_ALL_SCREEN_EFFECTS);

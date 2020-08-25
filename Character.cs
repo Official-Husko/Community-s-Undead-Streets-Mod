@@ -49,14 +49,22 @@ namespace CWDM
             PedHash[] characterFemaleModels = {PedHash.FreemodeFemale01};
             PedHash[] characterModels;
             if (PlayerGender == Gender.Male)
+            {
                 characterModels = characterMaleModels;
+            }
             else
+            {
                 characterModels = characterFemaleModels;
+            }
+
             PlayerModel = new Model(characterModels.GetRandomElementFromArray());
             PlayerModel.Request(500);
             if (PlayerModel.IsInCdImage && PlayerModel.IsValid)
             {
-                while (!PlayerModel.IsLoaded) Script.Wait(100);
+                while (!PlayerModel.IsLoaded)
+                {
+                    Script.Wait(100);
+                }
 
                 Function.Call(Hash.SET_PLAYER_MODEL, Game.Player, PlayerModel.Hash);
                 if (PlayerGender == Gender.Male)
@@ -103,7 +111,10 @@ namespace CWDM
             model.Request(250);
             if (model.IsInCdImage && model.IsValid)
             {
-                while (!model.IsLoaded) Script.Wait(50);
+                while (!model.IsLoaded)
+                {
+                    Script.Wait(50);
+                }
 
                 var cFpos = new Vector3(-133.85f, -1288.70f, 46.4f);
                 CampFire = World.CreateProp(model, cFpos, true, false);
@@ -120,7 +131,10 @@ namespace CWDM
             model2.Request(250);
             if (model2.IsInCdImage && model2.IsValid)
             {
-                while (!model2.IsLoaded) Script.Wait(50);
+                while (!model2.IsLoaded)
+                {
+                    Script.Wait(50);
+                }
 
                 var tpos = new Vector3(-129.34f, -1284.49f, 45.90f);
                 Tent = World.CreateProp(model2, tpos, true, false);
@@ -140,7 +154,11 @@ namespace CWDM
         public static void LoadWeapons()
         {
             Game.Player.Character.Weapons.RemoveAll();
-            foreach (var weapon in WeaponLoadout) Game.Player.Character.GiveWeaponHashName(weapon, false, true);
+            foreach (var weapon in WeaponLoadout)
+            {
+                Game.Player.Character.GiveWeaponHashName(weapon, false, true);
+            }
+
             Game.Player.Character.Weapons.Give(WeaponHash.Unarmed, 0, true, true);
         }
 
@@ -157,49 +175,74 @@ namespace CWDM
             Stats.StatsLastUpdateTime = DateTime.UtcNow;
             Population.SurvivorLastSpawnTime = DateTime.UtcNow;
             if (PlayerVehicles.Count > 0)
+            {
                 for (var i = 0; i < PlayerVehicles.Count; i++)
+                {
                     PlayerVehicles.RemoveAt(i);
+                }
+            }
+
             if (Population.Vehicles.Count > 0)
+            {
                 for (var i = 0; i < Population.Props.Count; i++)
                 {
                     Population.Vehicles[i].Vehicle?.Delete();
                     Population.Vehicles.RemoveAt(i);
                 }
+            }
 
             if (Population.Props.Count > 0)
+            {
                 for (var i = 0; i < Population.Props.Count; i++)
                 {
                     Population.Props[i].Prop?.Delete();
                     Population.Props.RemoveAt(i);
                 }
+            }
 
             if (Population.AnimalPeds.Count > 0)
+            {
                 for (var i = 0; i < Population.AnimalPeds.Count; i++)
                 {
                     Population.AnimalPeds[i].PedEntity?.Delete();
                     Population.AnimalPeds.RemoveAt(i);
                 }
+            }
 
             if (Population.ZombiePeds.Count > 0)
+            {
                 for (var i = 0; i < Population.ZombiePeds.Count; i++)
                 {
                     Population.ZombiePeds[i].PedEntity?.Delete();
                     Population.ZombiePeds.RemoveAt(i);
                 }
+            }
 
             if (Population.SurvivorPeds.Count > 0)
+            {
                 for (var i = 0; i < Population.SurvivorPeds.Count; i++)
                 {
                     Population.SurvivorPeds[i].PedEntity?.Delete();
                     Population.SurvivorPeds.RemoveAt(i);
                 }
+            }
 
             if (Looting.LootedEntities.Count > 0)
+            {
                 for (var i = 0; i < Looting.LootedEntities.Count; i++)
+                {
                     Looting.LootedEntities?.RemoveAt(i);
+                }
+            }
+
             if (FixVehicles.FixedVehicles.Count > 0)
+            {
                 for (var i = 0; i < FixVehicles.FixedVehicles.Count; i++)
+                {
                     FixVehicles.FixedVehicles?.RemoveAt(i);
+                }
+            }
+
             CharacterReset = true;
         }
     }

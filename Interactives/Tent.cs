@@ -40,27 +40,37 @@ namespace CWDM.Interactives
                             var unused = World.CurrentDayTime.Add(new TimeSpan(6, 0, 0));
                             World.Weather = Map.Weathers.GetRandomElementFromArray();
                             if (Population.AnimalPeds.Count > 0)
+                            {
                                 for (var i = 0; i < Population.AnimalPeds.Count; i++)
                                 {
                                     Population.AnimalPeds[i].PedEntity?.Delete();
                                     Population.AnimalPeds.RemoveAt(i);
                                 }
+                            }
 
                             if (Population.ZombiePeds.Count > 0)
+                            {
                                 for (var i = 0; i < Population.ZombiePeds.Count; i++)
                                 {
                                     Population.ZombiePeds[i].PedEntity?.Delete();
                                     Population.ZombiePeds.RemoveAt(i);
                                 }
+                            }
 
                             if (Population.SurvivorPeds.Count > 0)
+                            {
                                 for (var i = 0; i < Population.SurvivorPeds.Count; i++)
                                 {
                                     if (Game.Player.Character.CurrentPedGroup.Contains(Population.SurvivorPeds[i]
-                                        .PedEntity)) continue;
+                                        .PedEntity))
+                                    {
+                                        continue;
+                                    }
+
                                     Population.SurvivorPeds[i].PedEntity?.Delete();
                                     Population.SurvivorPeds.RemoveAt(i);
                                 }
+                            }
 
                             Stats.StatsLastUpdateTime = DateTime.UtcNow;
                             Population.SurvivorLastSpawnTime = DateTime.UtcNow;
@@ -80,8 +90,8 @@ namespace CWDM.Interactives
 
         private static bool IsEnemy(Ped ped)
         {
-            return ped.IsHuman && ped.IsAlive &&
-                   ped.GetRelationshipWithPed(Game.Player.Character) == Relationship.Hate ||
+            return (ped.IsHuman && ped.IsAlive &&
+                   ped.GetRelationshipWithPed(Game.Player.Character) == Relationship.Hate) ||
                    ped.IsInCombatAgainst(Game.Player.Character);
         }
     }

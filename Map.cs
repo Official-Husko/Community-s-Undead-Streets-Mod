@@ -1088,12 +1088,18 @@ namespace CWDM
             Function.Call(Hash.DISABLE_VEHICLE_DISTANTLIGHTS, true);
             var allPed = World.GetAllPeds();
             if (allPed.Length > 0)
+            {
                 foreach (var ped in allPed)
                     ped.Delete();
+            }
+
             var allVecs = World.GetAllVehicles();
             if (allVecs.Length > 0)
+            {
                 foreach (var vehicle in allVecs)
                     vehicle.Delete();
+            }
+
             if (!Electricity)
                 World.SetBlackout(true);
             else
@@ -1171,29 +1177,20 @@ namespace CWDM
         public static void UnlockAllDoors()
         {
             var getProps = World.GetNearbyProps(Game.Player.Character.Position, 50f);
-            if (getProps.Length > 0)
-                for (var i = 0; i < getProps.Length; i++)
-                {
-                    if (getProps[i] == null) continue;
-                    if (!Electricity)
-                    {
-                        if (ElectricDoors.Contains(getProps[i].Model))
-                            Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE, getProps[i].Model.Hash,
-                                getProps[i].Position.X, getProps[i].Position.Y, getProps[i].Position.Z, true, 0, 0);
-                        else
-                            Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE, getProps[i].Model.Hash,
-                                getProps[i].Position.X, getProps[i].Position.Y, getProps[i].Position.Z, false, 0, 0);
-                    }
-                    else
-                    {
-                        Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE, getProps[i].Model.Hash,
-                            getProps[i].Position.X, getProps[i].Position.Y, getProps[i].Position.Z, false, 0, 0);
-                    }
+            if (getProps.Length == 0) return;
+            foreach (var t in getProps)
+            {
+                if (t == null) continue;
+                Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE, t.Model.Hash,
+                    t.Position.X, t.Position.Y, t.Position.Z,
+                    !Electricity && ElectricDoors.Contains(t.Model), 0, 0);
 
-                    if (LockedDoors.Contains(getProps[i].Model))
-                        Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE, getProps[i].Model.Hash,
-                            getProps[i].Position.X, getProps[i].Position.Y, getProps[i].Position.Z, true, 0, 0);
+                if (LockedDoors.Contains(t.Model))
+                {
+                    Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE, t.Model.Hash,
+                        t.Position.X, t.Position.Y, t.Position.Z, true, 0, 0);
                 }
+            }
         }
 
         public static void KillAllGameScripts()
@@ -1204,46 +1201,73 @@ namespace CWDM
         public static void ClearUpEntities()
         {
             if (Population.ZombiePeds.Count > 0)
+            {
                 for (var i = 0; i < Population.ZombiePeds.Count; i++)
+                {
                     if (Population.ZombiePeds[i].PedEntity.IsDead)
                         Population.ZombiePeds.RemoveAt(i);
+                }
+            }
+
             if (Population.AnimalPeds.Count > 0)
+            {
                 for (var i = 0; i < Population.AnimalPeds.Count; i++)
+                {
                     if (Population.AnimalPeds[i].PedEntity.IsDead)
                         Population.AnimalPeds.RemoveAt(i);
+                }
+            }
+
             if (Population.SurvivorPeds.Count > 0)
+            {
                 for (var i = 0; i < Population.SurvivorPeds.Count; i++)
+                {
                     if (Population.SurvivorPeds[i].PedEntity.IsDead)
                         Population.SurvivorPeds.RemoveAt(i);
+                }
+            }
+
             if (Population.Vehicles.Count > 0)
+            {
                 for (var i = 0; i < Population.Vehicles.Count; i++)
+                {
                     if (Population.Vehicles[i].Vehicle == null || Population.Vehicles[i].Vehicle.Health == 0)
                         Population.Vehicles.RemoveAt(i);
+                }
+            }
+
             var allPed = World.GetAllPeds();
             if (allPed.Length > 0)
+            {
                 foreach (var ped in allPed)
                 {
                     if (!ped.IsAlive)
+                    {
                         if (ped.CurrentBlip.Handle != 0)
                             ped.CurrentBlip.Remove();
-                    if (ped.DistanceBetween(Game.Player.Character) > Population.MaxSpawnDistance &&
-                        (ped.RelationshipGroup == Relationships.ZombieGroup ||
-                         ped.RelationshipGroup == Relationships.AnimalGroup))
-                    {
-                        if (ped.CurrentBlip.Handle != 0) ped.CurrentBlip.Remove();
-                        ped.Delete();
                     }
+
+                    if (!(ped.DistanceBetween(Game.Player.Character) > Population.MaxSpawnDistance) ||
+                        (ped.RelationshipGroup != Relationships.ZombieGroup &&
+                         ped.RelationshipGroup != Relationships.AnimalGroup))
+                    {
+                        continue;
+                    }
+
+                    if (ped.CurrentBlip.Handle != 0) ped.CurrentBlip.Remove();
+                    ped.Delete();
                 }
+            }
 
             var allVecs = World.GetAllVehicles();
-            if (allVecs.Length > 0)
-                foreach (var vehicle in allVecs)
-                    if (!Character.PlayerVehicles.Exists(a => a == vehicle) || vehicle.PassengerCount > 0)
-                        if (vehicle.DistanceBetween(Game.Player.Character) > Population.MaxSpawnDistance)
-                        {
-                            if (vehicle.CurrentBlip.Handle != 0) vehicle.CurrentBlip.Remove();
-                            vehicle.Delete();
-                        }
+            if (allVecs.Length == 0) return;
+            foreach (var vehicle in allVecs)
+            {
+                if (Character.PlayerVehicles.Exists(a => a == vehicle) && vehicle.PassengerCount <= 0) continue;
+                if (!(vehicle.DistanceBetween(Game.Player.Character) > Population.MaxSpawnDistance)) continue;
+                if (vehicle.CurrentBlip.Handle != 0) vehicle.CurrentBlip.Remove();
+                vehicle.Delete();
+            }
         }
     }
 }

@@ -75,8 +75,8 @@ namespace CWDM.Interactives
 
         private static bool IsEnemy(Ped ped)
         {
-            return ped.IsHuman && ped.IsAlive &&
-                   ped.GetRelationshipWithPed(Game.Player.Character) == Relationship.Hate ||
+            return (ped.IsHuman && ped.IsAlive &&
+                   ped.GetRelationshipWithPed(Game.Player.Character) == Relationship.Hate) ||
                    ped.IsInCombatAgainst(Game.Player.Character);
         }
     }

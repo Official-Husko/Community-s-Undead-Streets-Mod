@@ -42,8 +42,11 @@ namespace CWDM
                 Directory.CreateDirectory("./scripts/CWDM/Settings/Custom/");
             if (!Directory.Exists("./scripts/CWDM/Logs/")) Directory.CreateDirectory("./scripts/CWDM/Logs/");
             if (!File.Exists("./scripts/CWDM/Settings/Custom/CountryVehicles.lst"))
+            {
                 File.WriteAllLines("./scripts/CWDM/Settings/Custom/CountryVehicles.lst",
                     Population.CountryVehicleModels);
+            }
+
             if (!File.Exists("./scripts/CWDM/Settings/Custom/CityVehicles.lst"))
                 File.WriteAllLines("./scripts/CWDM/Settings/Custom/CityVehicles.lst", Population.CityVehicleModels);
             if (!File.Exists("./scripts/CWDM/Settings/Custom/Zombies.lst"))
@@ -55,14 +58,23 @@ namespace CWDM
             if (!File.Exists("./scripts/CWDM/Settings/Custom/CountryAnimals.lst"))
                 File.WriteAllLines("./scripts/CWDM/Settings/Custom/CountryAnimals.lst", Population.CountryAnimalModels);
             if (!File.Exists("./scripts/CWDM/Settings/Custom/FriendlyVehicles.lst"))
+            {
                 File.WriteAllLines("./scripts/CWDM/Settings/Custom/FriendlyVehicles.lst",
                     Population.FriendlyVehicleModels);
+            }
+
             if (!File.Exists("./scripts/CWDM/Settings/Custom/NeutralVehicles.lst"))
+            {
                 File.WriteAllLines("./scripts/CWDM/Settings/Custom/NeutralVehicles.lst",
                     Population.NeutralVehicleModels);
+            }
+
             if (!File.Exists("./scripts/CWDM/Settings/Custom/HostileVehicles.lst"))
+            {
                 File.WriteAllLines("./scripts/CWDM/Settings/Custom/HostileVehicles.lst",
                     Population.HostileVehicleModels);
+            }
+
             if (!File.Exists("./scripts/CWDM/Settings/Custom/WeaponLoadout.lst"))
                 File.WriteAllLines("./scripts/CWDM/Settings/Custom/WeaponLoadout.lst", Character.WeaponLoadout);
             if (File.Exists("./scripts/CWDM/Settings/Custom/Settings.ini"))
@@ -203,6 +215,7 @@ namespace CWDM
             }
 
             if (Population.CustomCityVehicles)
+            {
                 try
                 {
                     Population.CityVehicleModels =
@@ -212,8 +225,10 @@ namespace CWDM
                 {
                     Log.Write(x.ToString());
                 }
+            }
 
             if (Population.CustomCountryVehicles)
+            {
                 try
                 {
                     Population.CountryVehicleModels =
@@ -223,8 +238,10 @@ namespace CWDM
                 {
                     Log.Write(x.ToString());
                 }
+            }
 
             if (Population.CustomZombies)
+            {
                 try
                 {
                     Population.ZombieModels = File.ReadAllLines("./scripts/CWDM/Settings/Custom/Zombies.lst").ToList();
@@ -233,8 +250,10 @@ namespace CWDM
                 {
                     Log.Write(x.ToString());
                 }
+            }
 
             if (Population.CustomSurvivors)
+            {
                 try
                 {
                     Population.SurvivorModels =
@@ -244,8 +263,10 @@ namespace CWDM
                 {
                     Log.Write(x.ToString());
                 }
+            }
 
             if (Population.CustomCountryAnimals)
+            {
                 try
                 {
                     Population.CountryAnimalModels =
@@ -255,8 +276,10 @@ namespace CWDM
                 {
                     Log.Write(x.ToString());
                 }
+            }
 
             if (Population.CustomCityAnimals)
+            {
                 try
                 {
                     Population.CityAnimalModels =
@@ -266,8 +289,10 @@ namespace CWDM
                 {
                     Log.Write(x.ToString());
                 }
+            }
 
             if (Population.CustomFriendlyVehicles)
+            {
                 try
                 {
                     Population.FriendlyVehicleModels =
@@ -277,8 +302,10 @@ namespace CWDM
                 {
                     Log.Write(x.ToString());
                 }
+            }
 
             if (Population.CustomNeutralVehicles)
+            {
                 try
                 {
                     Population.NeutralVehicleModels =
@@ -288,8 +315,10 @@ namespace CWDM
                 {
                     Log.Write(x.ToString());
                 }
+            }
 
             if (Population.CustomHostileVehicles)
+            {
                 try
                 {
                     Population.HostileVehicleModels =
@@ -299,8 +328,10 @@ namespace CWDM
                 {
                     Log.Write(x.ToString());
                 }
+            }
 
             if (Character.CustomWeaponLoadout)
+            {
                 try
                 {
                     Character.WeaponLoadout =
@@ -310,6 +341,7 @@ namespace CWDM
                 {
                     Log.Write(x.ToString());
                 }
+            }
         }
 
         public static void SaveInventory()
@@ -329,6 +361,7 @@ namespace CWDM
         {
             if (File.Exists("./scripts/CWDM/SaveGame/Items.sav") &&
                 File.Exists("./scripts/CWDM/SaveGame/Materials.sav"))
+            {
                 try
                 {
                     PlayerInventory.PlayerInventoryItems =
@@ -344,6 +377,7 @@ namespace CWDM
                 {
                     Log.Write(x.ToString());
                 }
+            }
         }
 
         public static void SaveGroup()
@@ -366,6 +400,7 @@ namespace CWDM
         public static void LoadGroup()
         {
             if (File.Exists("./scripts/CWDM/SaveGame/Group.sav"))
+            {
                 try
                 {
                     var pedCollection = ReadFromBinaryFile<PedCollection>("./scripts/CWDM/SaveGame/Group.sav");
@@ -376,6 +411,7 @@ namespace CWDM
                 {
                     Log.Write(x.ToString());
                 }
+            }
         }
 
         public static void SaveVehicles()
@@ -398,6 +434,7 @@ namespace CWDM
         public static void LoadVehicles()
         {
             if (File.Exists("./scripts/CWDM/SaveGame/Vehicles.sav"))
+            {
                 try
                 {
                     var vehicleCollection =
@@ -409,6 +446,7 @@ namespace CWDM
                 {
                     Log.Write(x.ToString());
                 }
+            }
         }
 
         public static void SaveWeapons()
@@ -428,6 +466,7 @@ namespace CWDM
         public static void LoadWeapons()
         {
             if (File.Exists("./scripts/CWDM/SaveGame/Weapons.sav"))
+            {
                 try
                 {
                     PlayerGroup.PlayerWeapons =
@@ -438,6 +477,7 @@ namespace CWDM
                 {
                     Log.Write(x.ToString());
                 }
+            }
         }
 
         public static void SaveCharacter()
@@ -460,6 +500,7 @@ namespace CWDM
         public static void LoadCharacter()
         {
             if (File.Exists("./scripts/CWDM/SaveGame/Character.sav"))
+            {
                 try
                 {
                     Character.CharacterReset = false;
@@ -482,54 +523,73 @@ namespace CWDM
                     Stats.StatsLastUpdateTime = DateTime.UtcNow;
                     Population.SurvivorLastSpawnTime = DateTime.UtcNow;
                     if (Character.PlayerVehicles.Count > 0)
+                    {
                         for (var i = 0; i < Character.PlayerVehicles.Count; i++)
                             Character.PlayerVehicles.RemoveAt(i);
+                    }
+
                     if (Population.Vehicles.Count > 0)
+                    {
                         for (var i = 0; i < Population.Props.Count; i++)
                         {
                             Population.Vehicles[i].Vehicle?.Delete();
                             Population.Vehicles.RemoveAt(i);
                         }
+                    }
 
                     if (Population.Props.Count > 0)
+                    {
                         for (var i = 0; i < Population.Props.Count; i++)
                         {
                             Population.Props[i].Prop?.Delete();
                             Population.Props.RemoveAt(i);
                         }
+                    }
 
                     if (Population.AnimalPeds.Count > 0)
+                    {
                         for (var i = 0; i < Population.AnimalPeds.Count; i++)
                         {
                             Population.AnimalPeds[i].PedEntity?.Delete();
                             Population.AnimalPeds.RemoveAt(i);
                         }
+                    }
 
                     if (Population.ZombiePeds.Count > 0)
+                    {
                         for (var i = 0; i < Population.ZombiePeds.Count; i++)
                         {
                             Population.ZombiePeds[i].PedEntity?.Delete();
                             Population.ZombiePeds.RemoveAt(i);
                         }
+                    }
 
                     if (Population.SurvivorPeds.Count > 0)
+                    {
                         for (var i = 0; i < Population.SurvivorPeds.Count; i++)
                         {
                             Population.SurvivorPeds[i].PedEntity?.Delete();
                             Population.SurvivorPeds.RemoveAt(i);
                         }
+                    }
 
                     if (Looting.LootedEntities.Count > 0)
+                    {
                         for (var i = 0; i < Looting.LootedEntities.Count; i++)
                             Looting.LootedEntities?.RemoveAt(i);
+                    }
+
                     if (FixVehicles.FixedVehicles.Count > 0)
+                    {
                         for (var i = 0; i < FixVehicles.FixedVehicles.Count; i++)
                             FixVehicles.FixedVehicles?.RemoveAt(i);
+                    }
                 }
                 catch (Exception x)
                 {
                     Log.Write(x.ToString());
                 }
+            }
         }
 
         public static void SavePlayerAll()

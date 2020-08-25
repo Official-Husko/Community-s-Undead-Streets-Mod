@@ -170,18 +170,24 @@ namespace CWDM.EntityWrappers
                         {
                             PedEntity.SetMovementAnim("move_m@injured");
                             if (_target != null)
+                            {
                                 Function.Call(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, PedEntity.Handle, _target.Handle,
                                     1f, 1f,
                                     0f, 5f, -1, 1f, true);
+                            }
+
                             _movingToTarget = true;
                         }
                         else
                         {
                             PedEntity.SetMovementAnim("move_m@drunk@verydrunk");
                             if (_target != null)
+                            {
                                 Function.Call(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, PedEntity.Handle, _target.Handle,
                                     1f, 1f,
                                     0f, 1f, -1, 1f, true);
+                            }
+
                             _movingToTarget = true;
                         }
                     }
@@ -224,9 +230,14 @@ namespace CWDM.EntityWrappers
         {
             var targets = World.GetNearbyPeds(PedEntity.Position, 50f);
             foreach (var ped in targets)
+            {
                 if (ped != null && ped.RelationshipGroup != Relationships.ZombieGroup && ped.IsAlive && ped.IsHuman &&
                     (PedEntity.HasClearLineOfSight(ped, 35f) || CanHearPed(PedEntity, ped)))
+                {
                     return ped;
+                }
+            }
+
             return null;
         }
     }
