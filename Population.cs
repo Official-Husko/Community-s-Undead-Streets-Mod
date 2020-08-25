@@ -399,16 +399,7 @@ namespace CWDM
 
                 var random = new Random();
                 var chance = random.Next(0, 1);
-                if (chance == 0)
-                {
-                    spawnPosition =
-                        World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance), true);
-                }
-                else
-                {
-                    spawnPosition =
-                        World.GetNextPositionOnSidewalk(Game.Player.Character.Position.Around(MaxSpawnDistance));
-                }
+                spawnPosition = chance == 0 ? World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(MaxSpawnDistance), true) : World.GetNextPositionOnSidewalk(Game.Player.Character.Position.Around(MaxSpawnDistance));
 
                 var checkPosition = spawnPosition.Around(5);
                 if (spawnPosition == Vector3.Zero || checkPosition.IsOnScreen() ||

@@ -86,7 +86,7 @@ namespace CWDM.EntityWrappers
                 }
             }
 
-            if (Vehicle.Health == 0)
+            if (Vehicle.Health != 0) return;
             {
                 if (currentBlip.Handle != 0) currentBlip.Remove();
                 if (Character.PlayerVehicles.Exists(a => a == Vehicle)) Character.PlayerVehicles.Remove(Vehicle);

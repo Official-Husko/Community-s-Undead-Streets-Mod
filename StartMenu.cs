@@ -16,7 +16,7 @@ namespace CWDM
 
         public StartMenu()
         {
-            StartupMenu = new UIMenu("Undead Streets", "Starting Settings");
+            StartupMenu = new UIMenu("Community's Walking~n~Dead Mod", "Starting Settings");
             AddMenuRunners(StartupMenu);
             AddMenuElectricity(StartupMenu);
             AddMenuStats(StartupMenu);
@@ -24,7 +24,7 @@ namespace CWDM
             AddMenuStart(StartupMenu);
             var banner = new UIResRectangle
             {
-                Color = Color.FromArgb(255, Color.DarkRed)
+                Color = Color.FromArgb(255, Color.DodgerBlue)
             };
             StartupMenu.SetBannerType(banner);
             Main.MasterMenuPool.Add(StartupMenu);
@@ -39,11 +39,9 @@ namespace CWDM
             menu.AddItem(newitem);
             menu.OnCheckboxChange += (sender, item, @checked) =>
             {
-                if (item == newitem)
-                {
-                    Runners = @checked;
-                    Population.FastZombies = Runners;
-                }
+                if (item != newitem) return;
+                Runners = @checked;
+                Population.FastZombies = Runners;
             };
         }
 
@@ -53,11 +51,9 @@ namespace CWDM
             menu.AddItem(newitem);
             menu.OnCheckboxChange += (sender, item, @checked) =>
             {
-                if (item == newitem)
-                {
-                    Electricity = @checked;
-                    Map.Electricity = Electricity;
-                }
+                if (item != newitem) return;
+                Electricity = @checked;
+                Map.Electricity = Electricity;
             };
         }
 
@@ -68,11 +64,9 @@ namespace CWDM
             menu.AddItem(newitem);
             menu.OnCheckboxChange += (sender, item, @checked) =>
             {
-                if (item == newitem)
-                {
-                    CharacterStats = @checked;
-                    Stats.EnableStats = CharacterStats;
-                }
+                if (item != newitem) return;
+                CharacterStats = @checked;
+                Stats.EnableStats = CharacterStats;
             };
         }
 
@@ -87,11 +81,9 @@ namespace CWDM
             menu.AddItem(newitem);
             menu.OnListChange += (sender, item, index) =>
             {
-                if (item == newitem)
-                {
-                    var genderString = item.Items[index].ToString();
-                    Character.PlayerGender = genderString == "Male" ? Gender.Male : Gender.Female;
-                }
+                if (item != newitem) return;
+                var genderString = item.Items[index].ToString();
+                Character.PlayerGender = genderString == "Male" ? Gender.Male : Gender.Female;
             };
         }
 
@@ -102,11 +94,9 @@ namespace CWDM
             menu.AddItem(newitem);
             menu.OnItemSelect += (sender, item, index) =>
             {
-                if (item == newitem)
-                {
-                    StartupMenu.Visible = !StartupMenu.Visible;
-                    Main.StartMod();
-                }
+                if (item != newitem) return;
+                StartupMenu.Visible = !StartupMenu.Visible;
+                Main.StartMod();
             };
         }
 

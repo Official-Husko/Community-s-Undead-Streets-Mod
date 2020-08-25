@@ -30,6 +30,4 @@ namespace CWDM.DebugExtensions
         {
         }
     }
-
-
 }
