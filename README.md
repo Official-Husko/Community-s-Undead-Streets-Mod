@@ -7,11 +7,8 @@ Visit [Stable][3] Branch for a stable build
 
 ## Current WIP Features
     
-- **Player Configurable**
-  - [ ] Custom Vehicle List for the City, Friendlies, Neutral, and foes  
-  - [ ] Custom Safe Zones  
-  - [ ] Custom Zombies  
-  - [ ] Custom Survivors  
+- **Base Mod**
+  - [ ] Rewrite
     
 ## Do not Download and compile this source version!
   
