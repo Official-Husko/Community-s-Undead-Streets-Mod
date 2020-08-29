@@ -1,4 +1,4 @@
-![alt text](https://i.imgur.com/HYdOh7x.png?maxwidth=640&shape=thumb&fidelity=medium "Community's Walking Dead Mod")  
+![alt text](https://fontmeme.com/permalink/200830/e1ddfcaca3e42f9ac6f1b4955cfcec37.png?maxwidth=640&shape=thumb&fidelity=medium "Community's Undead Streets Mod")
 ### Source out of the Box  
     
 ## Read This!  
