@@ -3,6 +3,7 @@
     
 ## Read This!  
     
+The Latest Source Code is closed source which was requested by our Devs.  
 This is the Source unmodified, if you want to start with your own mod then you can use this untouuched source code.  
     
 Visit [Dev][1] Branch to see our WIP Features  
